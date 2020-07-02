@@ -1,0 +1,72 @@
+# Core
+Custom events:
+  [√] Dispatch
+  [√] Handler
+  [ ] Better typing
+
+Improve Resources:
+  [ ] Move resource loading to be on the Game class
+  [ ] Create api to load resources that can be used outside of `core`
+
+Create a preloader:
+  [ ] Something that displays while resources are loading
+
+Child Entities:
+  [√] They get added when the parent gets added
+  [√] They get destroyed when the parent gets destroyed
+  [√] When children destroy, they remove themselves from their parents
+
+Layers:
+  [ ] Move defined layers out of the engine
+  [ ] Allow custom defining layers
+  [ ] Custom layer scaling
+
+Switch away from using key codes (they're deprecated)
+
+# Features 
+Table Features
+  [√] Plunger
+  [ ] Multiwall
+  [ ] Drain
+  [ ] Drop Targets
+  [ ] Bowl
+  [ ] Loop
+  [ ] Rail
+  [ ] Catch and spit
+  [ ] Spinner
+  [ ] Lights
+
+Sounds
+  [ ] Flippers
+  [ ] Collisions
+    [ ] Bumper
+    [ ] Slingshot
+    [ ] Wall
+    [ ] Flipper
+  [ ] Score Thresholds
+  [ ] Music
+    [ ] Menu
+    [ ] In Game
+  [ ] Rolling?
+
+Upgrades
+  [ ] Bumpers
+    [ ] Number
+    [ ] Power
+    [ ] Score
+    [ ] Color
+  [ ] Flippers
+    [ ] Upper Flippers
+  [ ] Slow-Mo
+  [ ] 
+
+Game Flow
+  [ ] Main Menu
+  [ ] Upgrade states
+  [ ] Table setup
+
+[√] Scoring
+  [√] Use custom events
+  [√] Fire event when stuff is hit
+  [√] Score manager class with all scoring logic
+  [ ] Convert score to points

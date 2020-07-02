@@ -1,0 +1,121 @@
+import BaseEntity from "../../core/entity/BaseEntity";
+import { Graphics } from "pixi.js";
+import { Body, Capsule } from "p2";
+import { Vector } from "../../core/Vector";
+import { Materials } from "../Materials";
+import { CollisionGroups } from "./Collision";
+import Ball from "./Ball";
+import { clamp } from "../../core/util/MathUtil";
+import Entity from "../../core/entity/Entity";
+
+const DEAD_SPACE = 0.05;
+const STRENGTH = 400;
+const EXPAND_AMOUNT = 0.8;
+const ANIMATION_DURATION = 0.07;
+const WIDTH = 0.8;
+
+export default class Slingshot extends BaseEntity implements Entity {
+  lastHit: number = -Infinity;
+
+  middlePercent: number;
+  color: number;
+  start: Vector;
+  end: Vector;
+
+  constructor(
+    start: Vector,
+    end: Vector,
+    middlePercent: number = 0.5,
+    reverse: boolean = false,
+    color: number = 0x000000
+  ) {
+    super();
+    if (reverse) {
+      this.start = end;
+      this.end = start;
+    } else {
+      this.start = start;
+      this.end = end;
+    }
+    this.color = color;
+    this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
+
+    this.sprite = new Graphics();
+    this.makeBody();
+  }
+
+  makeBody() {
+    const delta = this.end.sub(this.start);
+    const center = this.start.add(delta.mul(0.5));
+    this.body = new Body({
+      position: center,
+      angle: delta.angle,
+      mass: 0,
+    });
+
+    const shape = new Capsule({
+      length: delta.magnitude,
+      radius: WIDTH / 2,
+    });
+    shape.material = Materials.slingshot;
+    shape.collisionGroup = CollisionGroups.Table;
+    shape.collisionMask = CollisionGroups.Ball;
+    this.body.addShape(shape);
+  }
+
+  getNormal(): Vector {
+    return this.end.sub(this.start).irotate90ccw().inormalize();
+  }
+
+  getAnimationPercent(): number {
+    const timeSinceHit = this.game.elapsedTime - this.lastHit;
+    return clamp(timeSinceHit, 0, ANIMATION_DURATION) / ANIMATION_DURATION;
+  }
+
+  onRender() {
+    const graphics = this.sprite as Graphics;
+    const { start, end } = this;
+
+    const displacement = this.getNormal().imul(
+      (1.0 - this.getAnimationPercent()) * EXPAND_AMOUNT
+    );
+    const midpoint = start.add(end).imul(0.5).iadd(displacement);
+
+    graphics.clear();
+    graphics.lineStyle(WIDTH, this.color);
+    graphics.moveTo(start.x, start.y);
+    graphics.lineTo(midpoint.x, midpoint.y);
+    graphics.moveTo(midpoint.x, midpoint.y);
+    graphics.lineTo(end.x, end.y);
+    graphics.lineStyle();
+    graphics.beginFill(this.color);
+    graphics.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
+    graphics.endFill();
+  }
+
+  getPercentAcross(C: Vector): number {
+    const A = this.start;
+    const B = this.end;
+    const AB = B.sub(A);
+    const AC = C.sub(A);
+
+    const a = AC.dot(AB.normalize());
+    const p = a / AB.magnitude;
+
+    return p;
+  }
+
+  onImpact(ball: Ball) {
+    // TODO: This should respond to continued contact probably
+    const impactLocation = this.getPercentAcross(ball.getPosition());
+
+    if (impactLocation > DEAD_SPACE && impactLocation < 1 - DEAD_SPACE) {
+      const impulse = this.getNormal().imul(STRENGTH);
+      ball.body.applyImpulse(impulse);
+
+      this.game.dispatch({ type: "score", points: 10 });
+
+      this.lastHit = this.game.elapsedTime;
+    }
+  }
+}

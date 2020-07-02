@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    ".cache": true
+  },
+  "editor.formatOnSave": true,
+  "git.ignoreLimitWarning": true
+}
