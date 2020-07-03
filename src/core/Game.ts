@@ -117,9 +117,11 @@ export default class Game {
    * handlers, and stops updating `pausable` entities.
    **/
   pause() {
-    this.paused = true;
-    for (const entity of this.entities.filtered.onPause) {
-      entity.onPause!();
+    if (!this.paused) {
+      this.paused = true;
+      for (const entity of this.entities.filtered.onPause) {
+        entity.onPause!();
+      }
     }
   }
 

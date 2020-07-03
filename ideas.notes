@@ -23,17 +23,29 @@ Layers:
 
 Switch away from using key codes (they're deprecated)
 
-# Features 
+# Features
+
+Misc
+  [ ] Display controls
+
+Other Features
+  [ ] Tilt
+
 Table Features
   [√] Plunger
-  [ ] Multiwall
-  [ ] Drain
+  [√] Multiwall
+  [√] Curved Wall
+  [√] Drain
+  [ ] One way gate
+  [ ] Simple sensor
+  [ ] Rollover
   [ ] Drop Targets
   [ ] Bowl
   [ ] Loop
   [ ] Rail
   [ ] Catch and spit
   [ ] Spinner
+  [ ] Merry-go-round
   [ ] Lights
 
 Sounds
@@ -69,4 +81,4 @@ Game Flow
   [√] Use custom events
   [√] Fire event when stuff is hit
   [√] Score manager class with all scoring logic
-  [ ] Convert score to points
+  [ ] Convert score to money

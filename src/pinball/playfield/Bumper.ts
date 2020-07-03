@@ -52,7 +52,6 @@ export default class Bumper extends BaseEntity implements Entity {
 
   onImpact(ball: Entity) {
     if (isBall(ball)) {
-      console.log(this.getPosition());
       const impulse = this.getPosition()
         .sub(ball.getPosition())
         .inormalize()

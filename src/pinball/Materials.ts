@@ -20,7 +20,7 @@ export const ContactMaterials = [
     friction: 10,
   }),
   new ContactMaterial(Materials.ball, Materials.flipper, {
-    restitution: 0.7,
+    restitution: 0.8,
     friction: 10,
     stiffness: 10000000,
   }),
@@ -33,7 +33,7 @@ export const ContactMaterials = [
     friction: 10,
   }),
   new ContactMaterial(Materials.ball, Materials.wall, {
-    restitution: 0.3,
+    restitution: 0.5,
     friction: 1,
   }),
 ];

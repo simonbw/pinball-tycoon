@@ -30,6 +30,11 @@ export function lerpOrSnap(
   return lerp(a, b, t);
 }
 
+/** Normalizes an angle in radians to be in the range [-pi, pi] */
+export function normalizeRad(angle: number) {
+  return mod(angle + Math.PI, Math.PI * 2) - Math.PI;
+}
+
 // Return the difference between two angles
 export function angleDelta(a: number, b: number): number {
   return mod(b - a + Math.PI, Math.PI * 2) - Math.PI;

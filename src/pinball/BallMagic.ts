@@ -4,8 +4,9 @@ import { V } from "../core/Vector";
 import Entity from "../core/entity/Entity";
 
 const FORCE = 50;
-const GRAVITY_COMP = 40;
+const GRAVITY_COMP = 132;
 
+const MULTIBALL_KEY = 66; // B
 const RESET_KEY = 82; // R
 const KEY_LEFT = 37;
 const KEY_UP = 38;
@@ -37,6 +38,7 @@ export default class BallMagic extends BaseEntity implements Entity {
       if (this.game.io.lmb) {
         const p = this.game.camera.toWorld(this.game.io.mousePosition);
         ball.body.position = p;
+        ball.body.velocity = [0, 0];
       }
     }
   }
@@ -56,6 +58,9 @@ export default class BallMagic extends BaseEntity implements Entity {
         case RESET_KEY:
           ball.body.position = RESET_POSITION.clone();
           ball.body.velocity = [0, 0];
+          break;
+        case MULTIBALL_KEY:
+          this.game.addEntity(new Ball(RESET_POSITION));
           break;
       }
     }

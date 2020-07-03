@@ -9,12 +9,19 @@ interface ScoreEvent {
 }
 
 export default class Scoreboard extends BaseEntity implements Entity {
+  highScore: number = 0;
   score: number = 0;
+  ballsLeft: number = 2;
   layer: LayerName = "hud";
-  handlers = { score: (e: ScoreEvent) => this.onScore(e) };
+
+  handlers = {
+    score: (e: ScoreEvent) => this.onScore(e),
+    drain: () => this.onDrain(),
+  };
 
   constructor() {
     super();
+    this.loadHighScore();
 
     const text = new Pixi.Text(``, {
       fill: 0xff3333,
@@ -36,12 +43,33 @@ export default class Scoreboard extends BaseEntity implements Entity {
     this.sprite.y = 5;
   }
 
+  loadHighScore() {
+    this.highScore = parseInt(localStorage.getItem("highScore")) || 0;
+  }
+
+  saveHighScore() {
+    localStorage.setItem("highScore", String(this.highScore));
+  }
+
   updateText() {
-    (this.sprite as Pixi.Text).text = `${this.score} pts`;
+    const newText = `${"◌".repeat(this.ballsLeft + 1)} ${this.score} pts`;
+    (this.sprite as Pixi.Text).text = newText;
   }
 
   onScore({ points }: ScoreEvent) {
     this.score += points;
+    this.updateText();
+  }
+
+  onDrain() {
+    if (this.ballsLeft > 0) {
+      this.ballsLeft -= 1;
+    } else {
+      this.ballsLeft = 2;
+      this.highScore = Math.max(this.score, this.highScore);
+      this.score = 0;
+      this.saveHighScore();
+    }
     this.updateText();
   }
 }

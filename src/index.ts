@@ -1,7 +1,7 @@
 import "./core/Polyfills";
 
 import Game from "./core/Game";
-import PauseController from "./core/PauseController";
+import AutoPauser from "./core/AutoPauser";
 import { waitForFontsLoaded } from "./core/resources/fonts";
 import { loadPixiAssets } from "./core/resources/images";
 import { loadAllSounds } from "./core/resources/sounds";
@@ -13,6 +13,7 @@ import { setupTable } from "./pinball/Table";
 // @ts-ignore
 import dsDigitalUrl from "../resources/fonts/ds-digi.ttf";
 import BallMagic from "./pinball/BallMagic";
+import PauseController from "./pinball/PauseController";
 
 declare global {
   interface Window {
@@ -38,6 +39,7 @@ window.addEventListener("load", async () => {
   const game = new Game(audioContext, ContactMaterials, 20);
   window.DEBUG = { game: null };
   game.renderer.showCursor();
+  game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new BallMagic());
   game.addEntity(new FPSMeter());

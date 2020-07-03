@@ -3,9 +3,12 @@ import BaseEntity from "./entity/BaseEntity";
 import { ControllerButton } from "./constants/Gamepad";
 import Entity from "./entity/Entity";
 
-export default class PauseController extends BaseEntity implements Entity {
+/** Pauses and unpauses the game when visibility is lost. */
+export default class AutoPauser extends BaseEntity implements Entity {
   pausable = false;
   persistent = true;
+
+  autoPaused: boolean = false;
 
   onAdd() {
     document.addEventListener("visibilitychange", this.onVisibilityChange);
@@ -17,25 +20,14 @@ export default class PauseController extends BaseEntity implements Entity {
 
   onVisibilityChange = () => {
     if (document.hidden) {
-      this.pause();
+      if (!this.game.paused) {
+        this.game.pause();
+        this.autoPaused = true;
+      }
+    } else {
+      if (this.autoPaused && this.game.paused) {
+        this.game.unpause();
+      }
     }
   };
-
-  onButtonDown(button: number) {
-    if (button === ControllerButton.START) {
-      this.pause();
-    }
-  }
-
-  onKeyDown(key: number) {
-    if (key === Keys.ESCAPE) {
-      this.game.togglePause();
-    }
-  }
-
-  pause() {
-    if (!this.game.paused) {
-      this.game.pause();
-    }
-  }
 }

@@ -1,0 +1,81 @@
+import { Body, Capsule, RevoluteConstraint } from "p2";
+import { Graphics } from "pixi.js";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import Game from "../../core/Game";
+import { Vector } from "../../core/Vector";
+import DampedRotationalSpring from "../../physics/DampedRotationalSpring";
+import { Materials } from "../Materials";
+import { CollisionGroups } from "./Collision";
+import { degToRad, radToDeg } from "../../core/util/MathUtil";
+
+export default class Gate extends BaseEntity implements Entity {
+  pivot: Vector;
+  swingAmount: number;
+
+  constructor(
+    pivot: Vector,
+    end: Vector,
+    swingAmount: number = Math.PI,
+    width: number = 1.0,
+    color: number = 0xeeeeee
+  ) {
+    super();
+    this.pivot = pivot;
+    this.swingAmount = swingAmount;
+    const graphics = new Graphics();
+
+    const delta = end.sub(pivot);
+
+    graphics.moveTo(0, 0);
+    graphics.lineStyle(width, color);
+    graphics.lineTo(delta.x, delta.y);
+    graphics.lineStyle();
+    graphics.beginFill(color);
+    graphics.drawCircle(0, 0, width / 2);
+    graphics.drawCircle(delta.x, delta.y, width / 2);
+    graphics.endFill();
+
+    this.sprite = graphics;
+    this.sprite.pivot.set(...delta.mul(0.5));
+
+    this.body = new Body({
+      position: pivot.add(delta.mul(0.5)),
+      mass: 0.18,
+    });
+
+    const shape = new Capsule({
+      length: delta.magnitude,
+      radius: width / 2,
+    });
+    shape.material = Materials.wall;
+    shape.collisionGroup = CollisionGroups.Table;
+    shape.collisionMask = CollisionGroups.Ball;
+    this.body.addShape(shape, [0, 0], delta.angle);
+  }
+
+  onAdd(game: Game) {
+    const hinge = new RevoluteConstraint(this.body, game.ground, {
+      worldPivot: this.pivot,
+    });
+    if (this.swingAmount > 0) {
+      hinge.setLimits(0, this.swingAmount);
+    } else {
+      hinge.setLimits(this.swingAmount, 0);
+    }
+    hinge.lowerLimitEnabled = true;
+    hinge.upperLimitEnabled = true;
+    this.constraints = [hinge];
+
+    const spring = new DampedRotationalSpring(this.body, game.ground, {
+      stiffness: 80,
+      damping: 3,
+    });
+    this.springs = [spring];
+  }
+
+  onRender() {
+    this.sprite.angle = radToDeg(this.body.angle);
+    this.sprite.position.set(...this.body.position);
+  }
+}
