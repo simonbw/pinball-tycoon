@@ -1,9 +1,12 @@
 import Game from "../Game";
 
+export interface CustomHandlersMap {
+  [eventType: string]: (event: any) => void;
+}
+
 export default interface GameEventHandler {
   // Custom event handlers
-  readonly handlers?: { [eventType: string]: (event: any) => void };
-
+  readonly handlers?: CustomHandlersMap;
   // Called when added to the game
   onAdd?(game: Game): void;
   // Called right after being added to the game

@@ -137,7 +137,7 @@ export default class Game {
   dispatch(event: any) {
     const type: string = event.type;
     for (const entity of this.entities.getHandlers(type)) {
-      entity.handlers[type](event);
+      entity.handlers![type](event);
     }
   }
 

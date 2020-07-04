@@ -5,6 +5,7 @@ import { Vector, V } from "../../core/Vector";
 import { Body, Box } from "p2";
 import { CollisionGroups } from "./Collision";
 import { isBall } from "./Ball";
+import Timer from "../../core/Timer";
 
 export default class Drain extends BaseEntity implements Entity {
   constructor(left: Vector, right: Vector) {
@@ -31,10 +32,7 @@ export default class Drain extends BaseEntity implements Entity {
   onImpact(other: Entity) {
     if (isBall(other)) {
       const ball = other;
-      ball.body.position = V([26, 95]);
-      ball.body.velocity = V([0, 0]);
-
-      this.game.dispatch({ type: "drain" });
+      this.game!.dispatch({ type: "drain", ball });
     }
   }
 }

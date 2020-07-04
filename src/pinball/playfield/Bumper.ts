@@ -8,8 +8,8 @@ import Ball, { isBall } from "./Ball";
 import { clamp } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
 
-const STRENGTH = 300;
-
+const STRENGTH = 250;
+const VELOCITY_MULTIPLIER = 0.2;
 const EXPAND_AMOUNT = 0.15;
 const ANIMATION_DURATION = 0.1;
 
@@ -20,11 +20,15 @@ export default class Bumper extends BaseEntity implements Entity {
     super();
     const graphics = new Graphics();
 
-    graphics.beginFill(0xff4400);
+    graphics.beginFill(0xffbb00);
     graphics.drawCircle(0, 0, size);
     graphics.endFill();
-    graphics.beginFill(0xffaa00);
+    graphics.beginFill(0xdd2200);
     graphics.drawCircle(0, 0, size * 0.8);
+    graphics.endFill();
+    graphics.beginFill(0xffbb00);
+    // graphics.beginFill(0xdd2200);
+    graphics.drawCircle(0, 0, size * 0.6);
     graphics.endFill();
 
     graphics.position.set(...position);
@@ -44,23 +48,25 @@ export default class Bumper extends BaseEntity implements Entity {
 
   onRender() {
     const animationPercent =
-      clamp(this.game.elapsedTime - this.lastHit, 0, ANIMATION_DURATION) /
+      clamp(this.game!.elapsedTime - this.lastHit, 0, ANIMATION_DURATION) /
       ANIMATION_DURATION;
     const scale = (1 - animationPercent) * EXPAND_AMOUNT + 1;
-    this.sprite.scale.set(scale, scale);
+    this.sprite!.scale.set(scale, scale);
   }
 
   onImpact(ball: Entity) {
     if (isBall(ball)) {
+      ball.body.velocity[0] *= VELOCITY_MULTIPLIER;
+      ball.body.velocity[1] *= VELOCITY_MULTIPLIER;
       const impulse = this.getPosition()
         .sub(ball.getPosition())
         .inormalize()
         .mul(-STRENGTH);
       ball.body.applyImpulse(impulse);
 
-      this.game.dispatch({ type: "score", points: 70 });
+      this.game!.dispatch({ type: "score", points: 70 });
 
-      this.lastHit = this.game.elapsedTime;
+      this.lastHit = this.game!.elapsedTime;
     }
   }
 }

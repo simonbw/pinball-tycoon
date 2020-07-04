@@ -1,7 +1,7 @@
 import BaseEntity from "./core/entity/BaseEntity";
 import * as Pixi from "pixi.js";
 import { LayerName } from "./core/Layers";
-import Ball from "./pinball/playfield/Ball";
+import Ball, { isBall } from "./pinball/playfield/Ball";
 import { V } from "./core/Vector";
 import Entity from "./core/entity/Entity";
 
@@ -13,11 +13,12 @@ interface ScoreEvent {
 export default class Speedometer extends BaseEntity implements Entity {
   score: number = 0;
   layer: LayerName = "hud";
+  sprite: Pixi.Text;
 
   constructor() {
     super();
 
-    const text = new Pixi.Text("", {
+    this.sprite = new Pixi.Text("", {
       fill: 0xff3333,
       fontFamily: ["DS Digital"],
       fontSize: 32,
@@ -27,18 +28,21 @@ export default class Speedometer extends BaseEntity implements Entity {
       dropShadowAlpha: 0.5,
       dropShadowDistance: 0,
     });
-    text.anchor.set(1, 0);
-    this.sprite = text;
+    this.sprite.anchor.set(1, 0);
   }
 
   onRender() {
-    const ball = this.game.entities.getTagged("ball")[0] as Ball;
-    const speed = V(ball.body.velocity).magnitude;
-    this.sprite.x = this.game.renderer.pixiRenderer.width / 2 - 5;
-    this.sprite.y = 45;
+    const ball = this.game!.entities.getTagged("ball")[0];
+    if (isBall(ball)) {
+      const speed = V(ball.body!.velocity).magnitude;
+      this.sprite.x = this.game!.renderer.pixiRenderer.width / 2 - 5;
+      this.sprite.y = 45;
 
-    if (this.game.framenumber % 5 == 0) {
-      (this.sprite as Pixi.Text).text = `${(speed / 17.6).toFixed(1)} mph`;
+      if (this.game!.framenumber % 5 == 0) {
+        this.sprite.text = `${(speed / 17.6).toFixed(1)} mph`;
+      }
+    } else {
+      this.sprite.text = `${(0).toFixed(1)} mph`;
     }
   }
 }

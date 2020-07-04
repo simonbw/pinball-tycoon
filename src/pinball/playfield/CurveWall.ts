@@ -14,8 +14,6 @@ export default class CurveWall extends BaseEntity implements Entity {
     super();
 
     const points = curve.getLUT(segments).map((point) => V([point.x, point.y]));
-    console.log("curve points:", points);
-
     this.children = [new MultiWall(points, width, color)];
   }
 }

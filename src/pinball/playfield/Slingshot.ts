@@ -16,7 +16,7 @@ const WIDTH = 0.8;
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
-
+  sprite: Graphics;
   middlePercent: number;
   color: number;
   start: Vector;
@@ -68,12 +68,11 @@ export default class Slingshot extends BaseEntity implements Entity {
   }
 
   getAnimationPercent(): number {
-    const timeSinceHit = this.game.elapsedTime - this.lastHit;
+    const timeSinceHit = this.game!.elapsedTime - this.lastHit;
     return clamp(timeSinceHit, 0, ANIMATION_DURATION) / ANIMATION_DURATION;
   }
 
   onRender() {
-    const graphics = this.sprite as Graphics;
     const { start, end } = this;
 
     const displacement = this.getNormal().imul(
@@ -81,16 +80,16 @@ export default class Slingshot extends BaseEntity implements Entity {
     );
     const midpoint = start.add(end).imul(0.5).iadd(displacement);
 
-    graphics.clear();
-    graphics.lineStyle(WIDTH, this.color);
-    graphics.moveTo(start.x, start.y);
-    graphics.lineTo(midpoint.x, midpoint.y);
-    graphics.moveTo(midpoint.x, midpoint.y);
-    graphics.lineTo(end.x, end.y);
-    graphics.lineStyle();
-    graphics.beginFill(this.color);
-    graphics.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
-    graphics.endFill();
+    this.sprite.clear();
+    this.sprite.lineStyle(WIDTH, this.color);
+    this.sprite.moveTo(start.x, start.y);
+    this.sprite.lineTo(midpoint.x, midpoint.y);
+    this.sprite.moveTo(midpoint.x, midpoint.y);
+    this.sprite.lineTo(end.x, end.y);
+    this.sprite.lineStyle();
+    this.sprite.beginFill(this.color);
+    this.sprite.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
+    this.sprite.endFill();
   }
 
   getPercentAcross(C: Vector): number {
@@ -113,9 +112,9 @@ export default class Slingshot extends BaseEntity implements Entity {
       const impulse = this.getNormal().imul(STRENGTH);
       ball.body.applyImpulse(impulse);
 
-      this.game.dispatch({ type: "score", points: 10 });
+      this.game!.dispatch({ type: "score", points: 10 });
 
-      this.lastHit = this.game.elapsedTime;
+      this.lastHit = this.game!.elapsedTime;
     }
   }
 }

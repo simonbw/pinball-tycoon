@@ -22,26 +22,34 @@ const WIDTH = 1.2;
 type Side = "left" | "right";
 
 export default class Flipper extends BaseEntity implements Entity {
-  joint: RevoluteConstraint;
-  spring: RotationalSpring;
+  sprite: Graphics;
+  body: Body;
+  joint?: RevoluteConstraint;
+  spring?: RotationalSpring;
   downAngle: number;
   upAngle: number;
   key: number;
   side: Side;
 
-  constructor(position: Vector, side: Side = "left", length: number = 6) {
+  constructor(
+    position: Vector,
+    side: Side = "left",
+    length: number = 6,
+    upAngle = UP_ANGLE,
+    downAngle = DOWN_ANGLE
+  ) {
     super();
     this.side = side;
 
     switch (side) {
       case "left":
-        this.upAngle = UP_ANGLE;
-        this.downAngle = DOWN_ANGLE;
+        this.upAngle = upAngle;
+        this.downAngle = downAngle;
         this.key = LEFT_KEY;
         break;
       case "right":
-        this.upAngle = -1 * Math.PI - UP_ANGLE;
-        this.downAngle = -1 * Math.PI - DOWN_ANGLE;
+        this.upAngle = -1 * Math.PI - upAngle;
+        this.downAngle = -1 * Math.PI - downAngle;
         this.key = RIGHT_KEY;
         break;
     }
@@ -102,12 +110,12 @@ export default class Flipper extends BaseEntity implements Entity {
   }
 
   onTick() {
-    if (this.game.io.keys[this.key]) {
-      this.spring.restAngle = this.upAngle;
-      this.spring.stiffness = UP_STIFFNESS;
+    if (this.game!.io.keys[this.key]) {
+      this.spring!.restAngle = this.upAngle;
+      this.spring!.stiffness = UP_STIFFNESS;
     } else {
-      this.spring.stiffness = DOWN_STIFFNESS;
-      this.spring.restAngle = this.downAngle;
+      this.spring!.stiffness = DOWN_STIFFNESS;
+      this.spring!.restAngle = this.downAngle;
     }
   }
 }

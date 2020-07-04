@@ -16,12 +16,14 @@ const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
+  body: Body;
+  sprite: Graphics;
 
   constructor(position: Vector, velocity: Vector = V([0, 0])) {
     super();
 
-    this.makeSprite();
-    this.makeBody();
+    this.sprite = this.makeSprite();
+    this.body = this.makeBody();
     this.body.position = position;
     this.body.velocity = velocity;
   }
@@ -39,11 +41,11 @@ export default class Ball extends BaseEntity implements Entity {
     graphics.lineTo(RADIUS * 0.8, 0);
     graphics.moveTo(0, 0);
     graphics.lineTo(-RADIUS * 0.8, 0);
-    this.sprite = graphics;
+    return graphics;
   }
 
   makeBody() {
-    this.body = new CCDBody({
+    const body = new CCDBody({
       mass: MASS,
       ccdSpeedThreshold: 0,
       ccdIterations: 15,
@@ -53,7 +55,8 @@ export default class Ball extends BaseEntity implements Entity {
     shape.material = Materials.ball;
     shape.collisionGroup = CollisionGroups.Ball;
     shape.collisionMask = CollisionGroups.Ball | CollisionGroups.Table;
-    this.body.addShape(shape);
+    body.addShape(shape);
+    return body;
   }
 
   onTick() {
@@ -80,6 +83,6 @@ export default class Ball extends BaseEntity implements Entity {
 }
 
 /** Type guard for ball entity */
-export function isBall(e: Entity): e is Ball {
-  return e.tags && e.tags.indexOf("ball") >= 0;
+export function isBall(e?: Entity): e is Ball {
+  return Boolean(e && e.tags && e.tags.indexOf("ball") >= 0);
 }

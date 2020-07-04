@@ -8,7 +8,8 @@
     "build": "parcel build src/index.html",
     "now": "now",
     "now-prod": "now --prod",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "tsc-watch": "tsc --noEmit --watch"
   },
   "author": "",
   "license": "MIT",

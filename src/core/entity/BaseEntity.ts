@@ -9,10 +9,10 @@ import { LayerName } from "../Layers";
  * Base class for lots of stuff in the game.
  */
 export default abstract class BaseEntity implements Entity {
-  game: Game | null;
+  game: Game | null = null;
   sprite?: Pixi.DisplayObject;
   body?: p2.Body;
-  layer: LayerName;
+  layer: LayerName = "world";
   pausable: boolean = true;
   persistent: boolean = false;
   springs?: Spring[];
@@ -52,12 +52,14 @@ export default abstract class BaseEntity implements Entity {
   destroy() {
     if (this.game) {
       this.game.removeEntity(this);
-      for (const child of this.children) {
-        child.destroy();
+      if (this.children) {
+        for (const child of this.children) {
+          child.destroy();
+        }
       }
       if (this.parent) {
         // TODO: maybe don't use array splice
-        this.parent.children.splice(this.parent.children.indexOf(this));
+        this.parent.children!.splice(this.parent.children!.indexOf(this));
       }
     }
   }

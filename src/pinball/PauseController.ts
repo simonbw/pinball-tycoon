@@ -8,13 +8,14 @@ import { LayerName } from "../core/Layers";
 /** Pauses and unpauses the game when visibility is lost. */
 export default class PauseController extends BaseEntity implements Entity {
   layer: LayerName = "hud";
+  sprite: Text;
   pausable = false;
   persistent = true;
 
   constructor() {
     super();
 
-    const text = new Text("Paused", {
+    this.sprite = new Text("Paused", {
       dropShadow: true,
       dropShadowAlpha: 0.6,
       dropShadowBlur: 20,
@@ -25,25 +26,24 @@ export default class PauseController extends BaseEntity implements Entity {
       fontSize: 120,
       anchor: [0.5, 0.5],
     });
-    text.anchor.set(0.5, 0.5);
-    this.sprite = text;
+    this.sprite.anchor.set(0.5, 0.5);
   }
 
   onRender() {
-    this.sprite.visible = this.game.paused;
-    this.sprite.x = this.game.renderer.pixiRenderer.width / 4;
-    this.sprite.y = this.game.renderer.pixiRenderer.height / 4;
+    this.sprite.visible = this.game!.paused;
+    this.sprite.x = this.game!.renderer.pixiRenderer.width / 4;
+    this.sprite.y = this.game!.renderer.pixiRenderer.height / 4;
   }
 
   onButtonDown(button: number) {
     if (button === ControllerButton.START) {
-      this.game.togglePause();
+      this.game!.togglePause();
     }
   }
 
   onKeyDown(key: number) {
     if (key === Keys.P) {
-      this.game.togglePause();
+      this.game!.togglePause();
     }
   }
 }

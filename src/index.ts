@@ -8,12 +8,12 @@ import { loadAllSounds } from "./core/resources/sounds";
 import FPSMeter from "./core/util/FPSMeter";
 import { ContactMaterials } from "./pinball/Materials";
 import { setupTable } from "./pinball/Table";
+import BallMagic from "./pinball/BallMagic";
+import PauseController from "./pinball/PauseController";
 
 // TODO: Font loading somewhere else
 // @ts-ignore
 import dsDigitalUrl from "../resources/fonts/ds-digi.ttf";
-import BallMagic from "./pinball/BallMagic";
-import PauseController from "./pinball/PauseController";
 
 declare global {
   interface Window {
@@ -39,6 +39,7 @@ window.addEventListener("load", async () => {
   const game = new Game(audioContext, ContactMaterials, 20);
   window.DEBUG = { game: null };
   game.renderer.showCursor();
+  game.world.frictionGravity = 10;
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new BallMagic());

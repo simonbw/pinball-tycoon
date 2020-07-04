@@ -63,8 +63,8 @@ export default class Camera extends BaseEntity implements Entity {
   }
 
   onRender() {
-    this.x += this.vx * this.game.renderTimestep;
-    this.y += this.vy * this.game.renderTimestep;
+    this.x += this.vx * this.game!.renderTimestep;
+    this.y += this.vy * this.game!.renderTimestep;
   }
 
   // Center the camera on a position
@@ -79,8 +79,8 @@ export default class Camera extends BaseEntity implements Entity {
     [vx, vy]: Vector = V([0, 0]),
     smooth: number = 0.9
   ) {
-    const dx = (x - this.x) * this.game.framerate;
-    const dy = (y - this.y) * this.game.framerate;
+    const dx = (x - this.x) * this.game!.framerate;
+    const dy = (y - this.y) * this.game!.framerate;
     this.smoothSetVelocity(V([vx + dx, vy + dy]), smooth);
   }
 

@@ -1,13 +1,14 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
 import Entity from "../entity/Entity";
+import Game from "../Game";
 
 export default class FPSMeter extends BaseEntity implements Entity {
   layer: "hud" = "hud";
   persistent = true;
 
   lastUpdate: number;
-  averageDuration: number;
+  averageDuration: number = 0;
   sprite: Pixi.Text;
   slowFrameCount: number = 0;
 
@@ -22,8 +23,8 @@ export default class FPSMeter extends BaseEntity implements Entity {
     this.lastUpdate = performance.now();
   }
 
-  onAdd() {
-    this.averageDuration = this.game.renderTimestep;
+  onAdd(game: Game) {
+    this.averageDuration = game.renderTimestep;
   }
 
   onRender() {

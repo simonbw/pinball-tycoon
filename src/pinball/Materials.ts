@@ -5,7 +5,9 @@ export const Materials = {
   boundary: new Material(),
   bumper: new Material(),
   flipper: new Material(),
+  gate: new Material(),
   plunger: new Material(),
+  post: new Material(),
   slingshot: new Material(),
   wall: new Material(),
 };
@@ -24,9 +26,17 @@ export const ContactMaterials = [
     friction: 10,
     stiffness: 10000000,
   }),
+  new ContactMaterial(Materials.ball, Materials.gate, {
+    restitution: 0,
+    friction: 10,
+  }),
   new ContactMaterial(Materials.ball, Materials.plunger, {
     restitution: 0.2,
     friction: 10,
+  }),
+  new ContactMaterial(Materials.ball, Materials.plunger, {
+    restitution: 0.3,
+    friction: 5,
   }),
   new ContactMaterial(Materials.ball, Materials.slingshot, {
     restitution: 0.05, // because the slingshot applies extra power

@@ -1,6 +1,7 @@
 import FilterList from "./util/FilterList";
 import Entity from "./entity/Entity";
 import ListMap from "./util/ListMap";
+import { CustomHandlersMap } from "./entity/GameEventHandler";
 
 /**
  * Keeps track of entities. Has lots of useful indexes.

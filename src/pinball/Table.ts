@@ -16,18 +16,22 @@ import Wall from "./playfield/Wall";
 import ControlDisplay from "../ControlDisplay";
 import Gate from "./playfield/Gate";
 import { degToRad } from "../core/util/MathUtil";
+import Post from "./playfield/Post";
+import LogicBoard from "./LogicBoard";
 
 export function setupTable(game: Game) {
   game.camera.center(V([0, 50]));
   game.camera.z = 7;
+
+  game.addEntity(new LogicBoard());
 
   // Misc
   game.addEntity(new Scoreboard());
   game.addEntity(new Speedometer());
   game.addEntity(new ControlDisplay());
   game.addEntity(new Boundary(0, 100, -24, 28));
-  game.addEntity(new Ball(V([26, 93])));
   game.addEntity(new Plunger(V([26, 97.5])));
+  game.addEntity(new Gate(V([28, 26]), V([24.5, 29.5]), -degToRad(180)));
 
   // Bumpers
   game.addEntity(new Bumper(V([-10, 35])));
@@ -36,12 +40,22 @@ export function setupTable(game: Game) {
   game.addEntity(new Bumper(V([5, 30])));
   game.addEntity(new Bumper(V([10, 35])));
 
+  // Posts
+  game.addEntity(new Post(V([-12, 10])));
+  game.addEntity(new Post(V([-8, 10])));
+  game.addEntity(new Post(V([-4, 10])));
+  game.addEntity(new Post(V([0, 10])));
+  game.addEntity(new Post(V([4, 10])));
+  game.addEntity(new Post(V([8, 10])));
+  game.addEntity(new Post(V([12, 10])));
+
   // outer walls
   game.addEntity(new Wall(V([-24, 0]), V([-24, 100])));
   game.addEntity(new Wall(V([24, 30]), V([24, 100])));
   game.addEntity(new Wall(V([28, 24]), V([28, 100])));
 
   // triangles
+  game.addEntity(new Flipper(V([19.5, 50.5]), "right", 4));
   game.addEntity(
     new MultiWall([V([-24, 44]), V([-20, 50]), V([-20, 53]), V([-24, 56])])
   );
@@ -73,6 +87,4 @@ export function setupTable(game: Game) {
       new Bezier({ x: 0, y: 0 }, { x: -24, y: 0 }, { x: -24, y: 24 })
     )
   );
-
-  game.addEntity(new Gate(V([28, 26]), V([24.5, 29.5]), -degToRad(180)));
 }

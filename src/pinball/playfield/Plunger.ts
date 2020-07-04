@@ -18,9 +18,10 @@ const PULL_SPEED = 32; // arbitrary units
 const MAX_PULL_DISTANCE = 3.2; // inches
 
 export default class Plunger extends BaseEntity implements Entity {
-  private spring: Spring;
-  private pullSpring: Spring;
+  body: Body;
+  sprite: Graphics;
   neutralPosition: Vector;
+  private pullSpring?: Spring;
 
   constructor(position: Vector) {
     super();
@@ -42,32 +43,32 @@ export default class Plunger extends BaseEntity implements Entity {
   }
 
   onAdd() {
-    this.spring = new LinearSpring(this.body, this.game.ground, {
+    const spring = new LinearSpring(this.body, this.game!.ground, {
       damping: DAMPING,
       stiffness: STIFFNESS,
     });
-    this.pullSpring = new LinearSpring(this.body, this.game.ground, {
+    this.pullSpring = new LinearSpring(this.body, this.game!.ground, {
       stiffness: 0,
       worldAnchorB: this.neutralPosition.add(V([0, MAX_PULL_DISTANCE * 1.5])),
       restLength: 0.1,
     });
 
-    this.springs = [this.spring, this.pullSpring];
+    this.springs = [spring, this.pullSpring];
   }
 
   onTick() {
-    if (this.game.io.keys[13]) {
+    if (this.game!.io.keys[13]) {
       if (this.body.position[1] - this.neutralPosition[1] < MAX_PULL_DISTANCE) {
-        this.pullSpring.stiffness += PULL_SPEED;
+        this.pullSpring!.stiffness += PULL_SPEED;
       }
     } else {
-      this.pullSpring.stiffness = 0;
+      this.pullSpring!.stiffness = 0;
     }
   }
 
   onRender() {
     const [x, y] = this.body.position;
-    const graphics = this.sprite as Graphics;
+    const graphics = this.sprite;
     graphics.clear();
     graphics.beginFill(0x666666);
     graphics.drawRect(x - 0.4, y, 0.8, LENGTH);

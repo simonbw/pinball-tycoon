@@ -23,6 +23,10 @@ Layers:
 
 Switch away from using key codes (they're deprecated)
 
+Extended Collisions:
+  [ ] Entity.onColliding Handler
+  [ ] Keep track of currently happening collisions
+
 # Features
 
 Misc

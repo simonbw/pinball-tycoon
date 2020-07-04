@@ -10,6 +10,8 @@ import { CollisionGroups } from "./Collision";
 import { degToRad, radToDeg } from "../../core/util/MathUtil";
 
 export default class Gate extends BaseEntity implements Entity {
+  body: Body;
+  sprite: Graphics;
   pivot: Vector;
   swingAmount: number;
 
@@ -17,26 +19,24 @@ export default class Gate extends BaseEntity implements Entity {
     pivot: Vector,
     end: Vector,
     swingAmount: number = Math.PI,
-    width: number = 1.0,
-    color: number = 0xeeeeee
+    width: number = 0.5,
+    color: number = 0xaaaaaa
   ) {
     super();
     this.pivot = pivot;
     this.swingAmount = swingAmount;
-    const graphics = new Graphics();
 
     const delta = end.sub(pivot);
 
-    graphics.moveTo(0, 0);
-    graphics.lineStyle(width, color);
-    graphics.lineTo(delta.x, delta.y);
-    graphics.lineStyle();
-    graphics.beginFill(color);
-    graphics.drawCircle(0, 0, width / 2);
-    graphics.drawCircle(delta.x, delta.y, width / 2);
-    graphics.endFill();
-
-    this.sprite = graphics;
+    this.sprite = new Graphics();
+    this.sprite.moveTo(0, 0);
+    this.sprite.lineStyle(width, color);
+    this.sprite.lineTo(delta.x, delta.y);
+    this.sprite.lineStyle();
+    this.sprite.beginFill(color);
+    this.sprite.drawCircle(0, 0, width / 2);
+    this.sprite.drawCircle(delta.x, delta.y, width / 2);
+    this.sprite.endFill();
     this.sprite.pivot.set(...delta.mul(0.5));
 
     this.body = new Body({

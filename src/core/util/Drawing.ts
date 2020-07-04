@@ -3,6 +3,7 @@ import BaseEntity from "../entity/BaseEntity";
 import { Vector } from "../Vector";
 import { LayerName } from "../Layers";
 import Entity from "../entity/Entity";
+import Game from "../Game";
 
 // Class used to make drawing primitives easy
 export default class Drawing extends BaseEntity implements Entity {
@@ -44,7 +45,7 @@ export default class Drawing extends BaseEntity implements Entity {
     if (!this.sprites.has(layerName)) {
       const sprite = new Pixi.Graphics();
       this.sprites.set(layerName, sprite);
-      this.game.renderer.add(sprite, layerName);
+      this.game!.renderer.add(sprite, layerName);
     }
     return this.sprites.get(layerName)!;
   }
@@ -55,9 +56,9 @@ export default class Drawing extends BaseEntity implements Entity {
     }
   }
 
-  onDestroy() {
+  onDestroy(game: Game) {
     for (const [layerName, sprite] of this.sprites.entries()) {
-      this.game.renderer.remove(sprite, layerName);
+      game.renderer.remove(sprite, layerName);
     }
   }
 }
