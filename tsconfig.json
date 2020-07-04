@@ -6,6 +6,5 @@
     "target": "es5",
     "downlevelIteration": true,
     "strict": true
-  },
-  "exclude": ["node_modules"]
+  }
 }

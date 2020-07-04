@@ -5,6 +5,7 @@ import { IOManager } from "./IO";
 import Entity, { WithOwner } from "./entity/Entity";
 import Camera from "./Camera";
 import EntityList from "./EntityList";
+import ContactList, { ContactInfo } from "./ContactList";
 
 /**
  * Top Level control structure
@@ -30,6 +31,8 @@ export default class Game {
   io: IOManager;
   /** The top level container for physics. */
   world: p2.World;
+  /** Keep track of currently occuring collisions */
+  contactList: ContactList;
   /** A static physics body positioned at [0,0] with no shapes. Useful for constraints/springs */
   ground: p2.Body;
   /** The audio context that is connected to the output */
@@ -75,6 +78,7 @@ export default class Game {
     this.world.on("impact", this.impact, null);
     this.ground = new p2.Body({ mass: 0 });
     this.world.addBody(this.ground);
+    this.contactList = new ContactList();
 
     this.audio = audio;
     this.masterGain = this.audio.createGain();
@@ -225,6 +229,7 @@ export default class Game {
       if (!this.paused) {
         this.world.step(this.tickTimestep);
       }
+      this.contacts();
     }
     this.afterPhysics();
 
@@ -279,6 +284,20 @@ export default class Game {
     }
   }
 
+  private contacts() {
+    for (const contactInfo of this.contactList.getContacts()) {
+      const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
+      const ownerA = shapeA.owner || bodyA.owner;
+      const ownerB = shapeB.owner || bodyB.owner;
+      if (ownerA?.onContacting) {
+        ownerA.onContacting(ownerB, shapeA, shapeB);
+      }
+      if (ownerB?.onContacting) {
+        ownerB.onContacting(ownerA, shapeB, shapeA);
+      }
+    }
+  }
+
   /** Called after physics. */
   private afterPhysics() {
     this.cleanupEntities();
@@ -300,37 +319,31 @@ export default class Game {
 
   // Handle beginning of collision between things.
   // Fired during narrowphase.
-  private beginContact = (e: {
-    bodyA: p2.Body & WithOwner;
-    bodyB: p2.Body & WithOwner;
-    shapeA: p2.Shape & WithOwner;
-    shapeB: p2.Shape & WithOwner;
-  }) => {
-    const ownerA = e.shapeA.owner || e.bodyA.owner;
-    const ownerB = e.shapeB.owner || e.bodyB.owner;
-    if (ownerA && ownerA.onBeginContact) {
-      ownerA.onBeginContact(ownerB, e.shapeA, e.shapeB);
+  private beginContact = (contactInfo: ContactInfo) => {
+    this.contactList.beginContact(contactInfo);
+    const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
+    const ownerA = shapeA.owner || bodyA.owner;
+    const ownerB = shapeB.owner || bodyB.owner;
+    if (ownerA?.onBeginContact) {
+      ownerA.onBeginContact(ownerB, shapeA, shapeB);
     }
-    if (ownerB && ownerB.onBeginContact) {
-      ownerB.onBeginContact(ownerA, e.shapeB, e.shapeA);
+    if (ownerB?.onBeginContact) {
+      ownerB.onBeginContact(ownerA, shapeB, shapeA);
     }
   };
 
   // Handle end of collision between things.
   // Fired during narrowphase.
-  private endContact = (e: {
-    bodyA: p2.Body & WithOwner;
-    bodyB: p2.Body & WithOwner;
-    shapeA: p2.Shape & WithOwner;
-    shapeB: p2.Shape & WithOwner;
-  }) => {
-    const ownerA = e.shapeA.owner || e.bodyA.owner;
-    const ownerB = e.shapeB.owner || e.bodyB.owner;
-    if (ownerA && ownerA.onEndContact) {
-      ownerA.onEndContact(ownerB);
+  private endContact = (contactInfo: ContactInfo) => {
+    this.contactList.endContact(contactInfo);
+    const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
+    const ownerA = shapeA.owner || bodyA.owner;
+    const ownerB = shapeB.owner || bodyB.owner;
+    if (ownerA?.onEndContact) {
+      ownerA.onEndContact(ownerB, shapeA, shapeB);
     }
-    if (ownerB && ownerB.onEndContact) {
-      ownerB.onEndContact(ownerA);
+    if (ownerB?.onEndContact) {
+      ownerB.onEndContact(ownerA, shapeB, shapeA);
     }
   };
 
@@ -342,10 +355,10 @@ export default class Game {
   }) => {
     const ownerA = e.bodyA.owner;
     const ownerB = e.bodyB.owner;
-    if (ownerA && ownerA.onImpact) {
+    if (ownerA?.onImpact) {
       ownerA.onImpact(ownerB);
     }
-    if (ownerB && ownerB.onImpact) {
+    if (ownerB?.onImpact) {
       ownerB.onImpact(ownerA);
     }
   };
