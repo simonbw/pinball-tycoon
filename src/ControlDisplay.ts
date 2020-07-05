@@ -11,6 +11,7 @@ interface ScoreEvent {
 const LINES = [
   "CONTROLS",
   "— — — — — — —",
+  "Start Game: S",
   "Left Flipper: X",
   "Right Flipper: >",
   "Plunger: Enter",

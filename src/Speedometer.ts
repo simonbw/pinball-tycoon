@@ -5,6 +5,8 @@ import Ball, { isBall } from "./pinball/playfield/Ball";
 import { V } from "./core/Vector";
 import Entity from "./core/entity/Entity";
 
+const IPS_TO_MPH = 1 / 17.6;
+
 interface ScoreEvent {
   type: "score";
   points: number;
@@ -32,14 +34,14 @@ export default class Speedometer extends BaseEntity implements Entity {
   }
 
   onRender() {
+    this.sprite.x = this.game!.renderer.pixiRenderer.width / 2 - 5;
+    this.sprite.y = 45;
+
     const ball = this.game!.entities.getTagged("ball")[0];
     if (isBall(ball)) {
-      const speed = V(ball.body!.velocity).magnitude;
-      this.sprite.x = this.game!.renderer.pixiRenderer.width / 2 - 5;
-      this.sprite.y = 45;
-
+      const speed = V(ball.body!.velocity).magnitude * IPS_TO_MPH;
       if (this.game!.framenumber % 5 == 0) {
-        this.sprite.text = `${(speed / 17.6).toFixed(1)} mph`;
+        this.sprite.text = `${speed.toFixed(1)} mph`;
       }
     } else {
       this.sprite.text = `${(0).toFixed(1)} mph`;
