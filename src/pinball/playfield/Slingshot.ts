@@ -17,6 +17,7 @@ const WIDTH = 0.8;
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
   sprite: Graphics;
+  body: Body;
   middlePercent: number;
   color: number;
   start: Vector;
@@ -41,13 +42,13 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
 
     this.sprite = new Graphics();
-    this.makeBody();
+    this.body = this.makeBody();
   }
 
   makeBody() {
     const delta = this.end.sub(this.start);
     const center = this.start.add(delta.mul(0.5));
-    this.body = new Body({
+    const body = new Body({
       position: center,
       angle: delta.angle,
       mass: 0,
@@ -60,7 +61,9 @@ export default class Slingshot extends BaseEntity implements Entity {
     shape.material = Materials.slingshot;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
-    this.body.addShape(shape);
+    body.addShape(shape);
+
+    return body;
   }
 
   getNormal(): Vector {
@@ -113,6 +116,11 @@ export default class Slingshot extends BaseEntity implements Entity {
       ball.body.applyImpulse(impulse);
 
       this.game!.dispatch({ type: "score", points: 10 });
+      this.game!.dispatch({
+        type: "playSound",
+        sound: "boing1",
+        pan: clamp(this.body!.position[0] / 40, -0.5, 0.5),
+      });
 
       this.lastHit = this.game!.elapsedTime;
     }

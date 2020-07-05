@@ -1,13 +1,13 @@
-import BaseEntity from "../../core/entity/BaseEntity";
-import { Graphics } from "pixi.js";
 import { Body, Circle } from "p2";
+import { Graphics } from "pixi.js";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
 import { Materials } from "../Materials";
+import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
-import Ball, { isBall } from "./Ball";
-import { clamp } from "../../core/util/MathUtil";
-import Entity from "../../core/entity/Entity";
-import { sounds } from "../../core/resources/sounds";
+import { playSoundEvent } from "../Soundboard";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -67,12 +67,10 @@ export default class Bumper extends BaseEntity implements Entity {
 
       this.game!.dispatch({ type: "score", points: 70 });
 
-      this.lastHit = this.game!.elapsedTime;
+      const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
+      this.game!.dispatch(playSoundEvent("pop1", { pan }));
 
-      const bufferSource = this.game!.audio.createBufferSource();
-      bufferSource.buffer = sounds.get("pop1")!;
-      bufferSource.connect(this.game!.masterGain);
-      bufferSource.start();
+      this.lastHit = this.game!.elapsedTime;
     }
   }
 }

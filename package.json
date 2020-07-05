@@ -9,7 +9,8 @@
     "now": "now",
     "now-prod": "now --prod",
     "tsc": "tsc --noEmit",
-    "tsc-watch": "tsc --noEmit --watch"
+    "tsc-watch": "tsc --noEmit --watch",
+    "generate-asset-types": "./generate-asset-types.js -d ./resources"
   },
   "author": "",
   "license": "MIT",

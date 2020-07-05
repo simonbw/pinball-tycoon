@@ -3,9 +3,12 @@ import Entity from "../core/entity/Entity";
 import Timer from "../core/Timer";
 import { V } from "../core/Vector";
 import Ball from "./playfield/Ball";
+import { playSoundEvent } from "./Soundboard";
 
 const NEW_BALL_LOCATION = V([26, 95]);
 const START_GAME_KEY = 83; // S
+const LEFT_FLIPPER_KEY = 88; // x
+const RIGHT_FLIPPER_KEY = 190; // .
 
 export interface DrainEvent {
   type: "drain";
@@ -67,10 +70,43 @@ export default class LogicBoard extends BaseEntity implements Entity {
   };
 
   onKeyDown(key: number) {
-    switch (key) {
-      case START_GAME_KEY:
-        this.game!.dispatch({ type: "gameStart" });
-        break;
+    if (!this.game?.paused) {
+      switch (key) {
+        case START_GAME_KEY:
+          this.game!.dispatch({ type: "gameStart" });
+          break;
+        case LEFT_FLIPPER_KEY:
+          this.game!.dispatch({ type: "leftFlipperUp" });
+          this.game!.dispatch(
+            playSoundEvent("flipperUp", { gain: 0.3, pan: -0.4 })
+          );
+          break;
+        case RIGHT_FLIPPER_KEY:
+          this.game!.dispatch({ type: "rightFlipperUp" });
+          this.game!.dispatch(
+            playSoundEvent("flipperUp", { gain: 0.3, pan: 0.4 })
+          );
+          break;
+      }
+    }
+  }
+
+  onKeyUp(key: number) {
+    if (!this.game?.paused) {
+      switch (key) {
+        case LEFT_FLIPPER_KEY:
+          this.game!.dispatch({ type: "leftFlipperDown" });
+          this.game!.dispatch(
+            playSoundEvent("flipperDown", { gain: 0.3, pan: -0.4 })
+          );
+          break;
+        case RIGHT_FLIPPER_KEY:
+          this.game!.dispatch({ type: "rightFlipperDown" });
+          this.game!.dispatch(
+            playSoundEvent("flipperDown", { gain: 0.3, pan: 0.4 })
+          );
+          break;
+      }
     }
   }
 }

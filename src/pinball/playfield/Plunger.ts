@@ -1,13 +1,13 @@
-import BaseEntity from "../../core/entity/BaseEntity";
+import { Body, Box, ContactEquation, LinearSpring, Shape, Spring } from "p2";
 import { Graphics } from "pixi.js";
-import { Body, Capsule, Box, Spring, LinearSpring } from "p2";
-import { Vector, V } from "../../core/Vector";
-import { Materials } from "../Materials";
-import { CollisionGroups } from "./Collision";
-import Ball from "./Ball";
-import { clamp } from "../../core/util/MathUtil";
-import Game from "../../core/Game";
+import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { V, Vector } from "../../core/Vector";
+import { Materials } from "../Materials";
+import Ball, { isBall } from "./Ball";
+import { CollisionGroups } from "./Collision";
+import { clamp } from "../../core/util/MathUtil";
+import { playSoundEvent } from "../Soundboard";
 
 const WIDTH = 2;
 const HEIGHT = 1.5;
@@ -78,5 +78,18 @@ export default class Plunger extends BaseEntity implements Entity {
     graphics.endFill();
   }
 
-  onImpact(ball: Ball) {}
+  onBeginContact(
+    ball: Entity,
+    _: Shape,
+    __: Shape,
+    contactEquations: ContactEquation[]
+  ) {
+    if (isBall(ball)) {
+      const eq = contactEquations[0];
+      const impact = Math.abs(eq.getVelocityAlongNormal());
+      const pan = clamp(ball.getPosition()[0] / 40, -0.5, 0.5);
+      const gain = clamp(impact / 50) ** 1.2;
+      this.game!.dispatch(playSoundEvent("plungerHit", { pan, gain }));
+    }
+  }
 }

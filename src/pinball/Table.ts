@@ -1,29 +1,30 @@
 import Bezier from "bezier-js";
 import Game from "../core/Game";
+import { degToRad } from "../core/util/MathUtil";
 import { V } from "../core/Vector";
-import Scoreboard from "./Scoreboard";
-import Speedometer from "./Speedometer";
-import Ball from "./playfield/Ball";
+import ControlDisplay from "./ControlDisplay";
+import LogicBoard from "./LogicBoard";
 import Boundary from "./playfield/Boundary";
 import Bumper from "./playfield/Bumper";
 import CurveWall from "./playfield/CurveWall";
 import Drain from "./playfield/Drain";
 import Flipper from "./playfield/Flipper";
+import Gate from "./playfield/Gate";
 import MultiWall from "./playfield/MultiWall";
 import Plunger from "./playfield/Plunger";
+import Post from "./playfield/Post";
 import Slingshot from "./playfield/Slingshot";
 import Wall from "./playfield/Wall";
-import ControlDisplay from "./ControlDisplay";
-import Gate from "./playfield/Gate";
-import { degToRad } from "../core/util/MathUtil";
-import Post from "./playfield/Post";
-import LogicBoard from "./LogicBoard";
+import Scoreboard from "./Scoreboard";
+import Soundboard from "./Soundboard";
+import Speedometer from "./Speedometer";
 
 export function setupTable(game: Game) {
   game.camera.center(V([0, 50]));
   game.camera.z = 7;
 
   game.addEntity(new LogicBoard());
+  game.addEntity(new Soundboard());
 
   // Misc
   game.addEntity(new Scoreboard());

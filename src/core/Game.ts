@@ -1,6 +1,6 @@
 import Drawing from "./graphics/Drawing";
 import GameRenderer from "./graphics/GameRenderer";
-import p2, { ContactMaterial } from "p2";
+import p2, { ContactMaterial, ContactEquation } from "p2";
 import { IOManager } from "./io/IO";
 import Entity, { WithOwner } from "./entity/Entity";
 import Camera from "./graphics/Camera";
@@ -319,16 +319,18 @@ export default class Game {
 
   // Handle beginning of collision between things.
   // Fired during narrowphase.
-  private beginContact = (contactInfo: ContactInfo) => {
+  private beginContact = (
+    contactInfo: ContactInfo & { contactEquations: ContactEquation[] }
+  ) => {
     this.contactList.beginContact(contactInfo);
-    const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
+    const { shapeA, shapeB, bodyA, bodyB, contactEquations } = contactInfo;
     const ownerA = shapeA.owner || bodyA.owner;
     const ownerB = shapeB.owner || bodyB.owner;
     if (ownerA?.onBeginContact) {
-      ownerA.onBeginContact(ownerB, shapeA, shapeB);
+      ownerA.onBeginContact(ownerB, shapeA, shapeB, contactEquations);
     }
     if (ownerB?.onBeginContact) {
-      ownerB.onBeginContact(ownerA, shapeB, shapeA);
+      ownerB.onBeginContact(ownerA, shapeB, shapeA, contactEquations);
     }
   };
 

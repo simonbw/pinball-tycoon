@@ -59,6 +59,10 @@ export default class Ball extends BaseEntity implements Entity {
     return body;
   }
 
+  getVelocity(): Vector {
+    return V(this.body.velocity);
+  }
+
   onTick() {
     // Gravity
     this.body.applyForce([0, GRAVITY * MASS]);

@@ -1,4 +1,4 @@
-import { Body, Capsule, RevoluteConstraint } from "p2";
+import { Body, Capsule, RevoluteConstraint, Shape, ContactEquation } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
@@ -7,7 +7,9 @@ import { Vector } from "../../core/Vector";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { Materials } from "../Materials";
 import { CollisionGroups } from "./Collision";
-import { degToRad, radToDeg } from "../../core/util/MathUtil";
+import { degToRad, radToDeg, clamp } from "../../core/util/MathUtil";
+import { isBall } from "./Ball";
+import { playSoundEvent } from "../Soundboard";
 
 export default class Gate extends BaseEntity implements Entity {
   body: Body;
@@ -77,5 +79,20 @@ export default class Gate extends BaseEntity implements Entity {
   onRender() {
     this.sprite.angle = radToDeg(this.body.angle);
     this.sprite.position.set(...this.body.position);
+  }
+
+  onBeginContact(
+    ball: Entity,
+    _: Shape,
+    __: Shape,
+    contactEquations: ContactEquation[]
+  ) {
+    if (isBall(ball)) {
+      const eq = contactEquations[0];
+      const impact = Math.abs(eq.getVelocityAlongNormal());
+      const pan = clamp(ball.getPosition()[0] / 40, -0.5, 0.5);
+      const gain = clamp(impact / 50) ** 2;
+      this.game!.dispatch(playSoundEvent("gateHit", { pan, gain }));
+    }
   }
 }
