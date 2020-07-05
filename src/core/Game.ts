@@ -1,9 +1,9 @@
-import Drawing from "./util/Drawing";
-import GameRenderer from "./GameRenderer";
+import Drawing from "./graphics/Drawing";
+import GameRenderer from "./graphics/GameRenderer";
 import p2, { ContactMaterial } from "p2";
-import { IOManager } from "./IO";
+import { IOManager } from "./io/IO";
 import Entity, { WithOwner } from "./entity/Entity";
-import Camera from "./Camera";
+import Camera from "./graphics/Camera";
 import EntityList from "./EntityList";
 import ContactList, { ContactInfo } from "./ContactList";
 

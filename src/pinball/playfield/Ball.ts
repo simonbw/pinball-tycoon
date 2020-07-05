@@ -4,7 +4,7 @@ import { Body, Circle } from "p2";
 import { Vector, V } from "../../core/Vector";
 import { Materials } from "../Materials";
 import { CollisionGroups } from "./Collision";
-import CCDBody from "../../physics/CCDBody";
+import CCDBody from "../../core/physics/CCDBody";
 import { degToRad } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
 

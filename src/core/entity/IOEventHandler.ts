@@ -1,4 +1,4 @@
-import { ControllerButton } from "../constants/Gamepad";
+import { ControllerButton } from "../io/Gamepad";
 
 export default interface IOEventHandler {
   // Called when the mouse is left clicked anywhere

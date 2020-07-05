@@ -4,7 +4,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import { Vector } from "../../core/Vector";
-import DampedRotationalSpring from "../../physics/DampedRotationalSpring";
+import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { Materials } from "../Materials";
 import { CollisionGroups } from "./Collision";
 import { degToRad, radToDeg } from "../../core/util/MathUtil";

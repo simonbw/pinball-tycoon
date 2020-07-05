@@ -4,9 +4,14 @@ Custom events:
   [√] Handler
   [ ] Better typing
 
+IO Improvements:
+  [ ] Use `KeyboardEvent.key` instead of `.which`
+  [ ] Keep track of *when* a key was pressed/released for more precise timings
+
 Improve Resources:
   [ ] Move resource loading to be on the Game class
   [ ] Create api to load resources that can be used outside of `core`
+  [ ] Create a way to easily play sounds
 
 Create a preloader:
   [ ] Something that displays while resources are loading

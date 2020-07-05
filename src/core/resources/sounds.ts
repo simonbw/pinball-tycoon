@@ -1,8 +1,9 @@
-import * as Pixi from "pixi.js";
+// @ts-ignore
+import popUrl from "../../../resources/audio/pop1.flac";
 
-const soundUrls = {};
+const soundUrls = { pop1: popUrl };
 
-export type SoundName = string;
+export type SoundName = keyof typeof soundUrls;
 
 export const sounds: Map<SoundName, AudioBuffer> = new Map();
 

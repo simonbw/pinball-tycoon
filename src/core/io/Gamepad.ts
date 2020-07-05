@@ -2,7 +2,7 @@ export const enum ControllerAxis {
   LEFT_X = 0,
   LEFT_Y = 1,
   RIGHT_X = 2,
-  RIGHT_Y = 3
+  RIGHT_Y = 3,
 }
 
 export const enum ControllerButton {
@@ -22,5 +22,5 @@ export const enum ControllerButton {
   D_DOWN = 13,
   D_LEFT = 14,
   D_RIGHT = 15,
-  SPECIAL = 16
+  SPECIAL = 16,
 }

@@ -7,6 +7,7 @@ import { CollisionGroups } from "./Collision";
 import Ball, { isBall } from "./Ball";
 import { clamp } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
+import { sounds } from "../../core/resources/sounds";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -67,6 +68,11 @@ export default class Bumper extends BaseEntity implements Entity {
       this.game!.dispatch({ type: "score", points: 70 });
 
       this.lastHit = this.game!.elapsedTime;
+
+      const bufferSource = this.game!.audio.createBufferSource();
+      bufferSource.buffer = sounds.get("pop1")!;
+      bufferSource.connect(this.game!.masterGain);
+      bufferSource.start();
     }
   }
 }

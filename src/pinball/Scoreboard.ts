@@ -1,8 +1,8 @@
-import BaseEntity from "./core/entity/BaseEntity";
+import BaseEntity from "../core/entity/BaseEntity";
 import * as Pixi from "pixi.js";
-import { LayerName } from "./core/Layers";
-import Entity from "./core/entity/Entity";
-import { isLogicBoard } from "./pinball/LogicBoard";
+import { LayerName } from "../core/graphics/Layers";
+import Entity from "../core/entity/Entity";
+import { isLogicBoard } from "./LogicBoard";
 
 interface ScoreEvent {
   type: "score";

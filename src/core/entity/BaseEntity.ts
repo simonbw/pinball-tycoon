@@ -3,7 +3,7 @@ import p2, { Spring, Constraint } from "p2";
 import Entity from "./Entity";
 import Pixi from "pixi.js";
 import { Vector, V } from "../Vector";
-import { LayerName } from "../Layers";
+import { LayerName } from "../graphics/Layers";
 
 /**
  * Base class for lots of stuff in the game.

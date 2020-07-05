@@ -3,7 +3,7 @@ import { Graphics, DEG_TO_RAD } from "pixi.js";
 import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
 import { Vector } from "../../core/Vector";
 import Game from "../../core/Game";
-import DampedRotationalSpring from "../../physics/DampedRotationalSpring";
+import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { degToRad } from "../../core/util/MathUtil";
 import { Materials } from "../Materials";
 import { CollisionGroups } from "./Collision";

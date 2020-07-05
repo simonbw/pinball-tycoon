@@ -1,5 +1,5 @@
-import FilterList from "./util/FilterList";
-import IOEventHandler from "./entity/IOEventHandler";
+import FilterList from "../util/FilterList";
+import IOEventHandler from "../entity/IOEventHandler";
 
 export default class IOHandlerList implements Iterable<IOEventHandler> {
   all = new Set<IOEventHandler>();

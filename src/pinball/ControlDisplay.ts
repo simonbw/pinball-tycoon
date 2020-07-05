@@ -1,7 +1,7 @@
 import * as Pixi from "pixi.js";
-import BaseEntity from "./core/entity/BaseEntity";
-import Entity from "./core/entity/Entity";
-import { LayerName } from "./core/Layers";
+import BaseEntity from "../core/entity/BaseEntity";
+import Entity from "../core/entity/Entity";
+import { LayerName } from "../core/graphics/Layers";
 
 interface ScoreEvent {
   type: "score";

@@ -1,9 +1,9 @@
-import * as Keys from "./constants/Keys";
-import * as MouseButtons from "./constants/MouseButtons";
-import { Vector, V } from "./Vector";
-import IOEventHandler from "./entity/IOEventHandler";
+import * as Keys from "./Keys";
+import * as MouseButtons from "./MouseButtons";
+import { Vector, V } from "../Vector";
+import IOEventHandler from "../entity/IOEventHandler";
 import IOHandlerList from "./IOHandlerList";
-import { ControllerAxis, ControllerButton } from "./constants/Gamepad";
+import { ControllerAxis, ControllerButton } from "./Gamepad";
 
 // TODO: allow user configuration/calibration
 const GAMEPAD_MINIMUM = 0.2;
@@ -14,7 +14,9 @@ export class IOManager {
   handlers = new IOHandlerList();
 
   keys: boolean[];
-  lastButtons: boolean[];
+  keys2: { [key: string]: boolean } = {};
+  // buttons pressed last frame. Used for checking differences in state.
+  lastButtons: boolean[] = [];
   mouseButtons = [false, false, false, false, false, false];
   mousePosition = V([0, 0]);
   usingGamepad: boolean = false; // True if the gamepad is the main input device
@@ -43,10 +45,8 @@ export class IOManager {
       this.keys.push(false);
     }
 
-    this.lastButtons = []; // buttons pressed last frame. Used for checking differences in state.
-
     // Because this is a polling not pushing interface
-    window.setInterval(() => this.handleGamepads(), 1);
+    window.setInterval(() => this.handleGamepads(), 1); // TODO: Is 1 ms too frequent?
   }
 
   // True if the left mouse button is down.

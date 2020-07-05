@@ -1,10 +1,10 @@
 import { Matrix, Point } from "pixi.js";
-import BaseEntity from "./entity/BaseEntity";
+import BaseEntity from "../entity/BaseEntity";
 import GameRenderer from "./GameRenderer";
-import { Vector, V } from "./Vector";
+import { Vector, V } from "../Vector";
 import { LayerInfo } from "./Layers";
-import { lerp, lerpOrSnap } from "./util/MathUtil";
-import Entity from "./entity/Entity";
+import { lerp, lerpOrSnap } from "../util/MathUtil";
+import Entity from "../entity/Entity";
 
 //  Controls the viewport.
 export default class Camera extends BaseEntity implements Entity {

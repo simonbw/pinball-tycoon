@@ -1,7 +1,7 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
 import { Vector } from "../Vector";
-import { LayerName } from "../Layers";
+import { LayerName } from "./Layers";
 import Entity from "../entity/Entity";
 import Game from "../Game";
 

@@ -4,7 +4,7 @@ import p2 from "p2";
 import PhysicsHandler from "./PhysicsHandler";
 import GameEventHandler from "./GameEventHandler";
 import IOEventHandler from "./IOEventHandler";
-import { LayerName } from "../Layers";
+import { LayerName } from "../graphics/Layers";
 
 export interface WithOwner {
   owner?: Entity;
