@@ -1,8 +1,11 @@
 import boing1 from "../../../resources/audio/boing1.flac";
+import drain from "../../../resources/audio/drain.flac";
 import flipperDown from "../../../resources/audio/flipperDown1.wav";
 import flipperHit from "../../../resources/audio/flipperHit1.flac";
 import flipperUp from "../../../resources/audio/flipperUp1.wav";
 import gateHit from "../../../resources/audio/gateHit.flac";
+import gameOver from "../../../resources/audio/gameOver.flac";
+import gameStart from "../../../resources/audio/gameStart.flac";
 import plungerHit from "../../../resources/audio/plungerHit.flac";
 import pop1 from "../../../resources/audio/pop1.flac";
 import postHit from "../../../resources/audio/postHit.flac";
@@ -10,10 +13,13 @@ import wallHit1 from "../../../resources/audio/wallHit1.flac";
 
 const soundUrls = {
   boing1,
+  drain,
   flipperDown,
   flipperHit,
   flipperUp,
   gateHit,
+  gameOver,
+  gameStart,
   plungerHit,
   pop1,
   postHit,

@@ -39,6 +39,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.score = 0;
       this.gameStarted = true;
 
+      this.game!.dispatch(playSoundEvent("gameStart"));
       this.game!.dispatch({ type: "newBall" });
     },
     newBall: () => {
@@ -51,8 +52,10 @@ export default class LogicBoard extends BaseEntity implements Entity {
     drain: async ({ ball }: DrainEvent) => {
       ball.destroy();
 
+      await this.wait(0.5);
       if (this.ballsRemaining > 0) {
-        await this.wait(1);
+        this.game!.dispatch(playSoundEvent("drain"));
+        await this.wait(0.5);
         this.game!.dispatch({ type: "newBall" });
       } else {
         this.game!.dispatch({ type: "gameOver" });
@@ -60,6 +63,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
     gameOver: () => {
       this.gameStarted = false;
+      this.game!.dispatch(playSoundEvent("gameOver"));
       console.log("Game Over");
     },
   };
