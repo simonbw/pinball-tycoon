@@ -32,7 +32,6 @@ export function setupTable(game: Game) {
   game.addEntity(new ControlDisplay());
   game.addEntity(new Boundary(0, 100, -24, 28));
   game.addEntity(new Plunger(V([26, 97.5])));
-  game.addEntity(new Gate(V([28, 26]), V([24.5, 29.5]), -degToRad(180)));
 
   // Bumpers
   game.addEntity(new Bumper(V([-10, 35])));
@@ -50,9 +49,13 @@ export function setupTable(game: Game) {
   game.addEntity(new Post(V([8, 10])));
   game.addEntity(new Post(V([12, 10])));
 
+  game.addEntity(new Gate(V([28, 26.5]), V([24.5, 29.5]), -degToRad(180)));
+  game.addEntity(new Gate(V([28, 43.5]), V([24.5, 46.5]), -degToRad(180)));
+
   // outer walls
   game.addEntity(new Wall(V([-24, 0]), V([-24, 100])));
-  game.addEntity(new Wall(V([24, 30]), V([24, 100])));
+  game.addEntity(new Wall(V([24, 30]), V([24, 42])));
+  game.addEntity(new Wall(V([24, 47]), V([24, 100])));
   game.addEntity(new Wall(V([28, 24]), V([28, 100])));
 
   // triangles
