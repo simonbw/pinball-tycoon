@@ -21,8 +21,8 @@ export default class Game {
   get camera(): Camera {
     return this.renderer.camera;
   }
-  set camera(c: Camera) {
-    this.renderer.camera = c;
+  set camera(camera: Camera) {
+    this.renderer.camera = camera;
   }
 
   /** Provides an imperative API for drawing primatives. */
@@ -58,7 +58,7 @@ export default class Game {
   constructor(
     audio: AudioContext,
     contactMaterials: ReadonlyArray<ContactMaterial>,
-    tickIterations: number = 20
+    tickIterations: number = 5
   ) {
     this.entities = new EntityList();
     this.entitiesToRemove = new Set();

@@ -39,7 +39,9 @@ Misc
   [ ] More accurate flipper timing by using sub-frame timing
 
 Other Features
-  [ ] Tilt
+  [√] Nudging
+  [ ] Tilt sensor
+  [ ] Slowmo bar
 
 Table Features
   [√] Flipper
@@ -73,6 +75,7 @@ Sounds
     [ ] Menu
     [ ] In Game
   [ ] Rolling?
+  [ ] Nudge
 
 Upgrades
   [ ] Bumpers
@@ -83,7 +86,8 @@ Upgrades
   [ ] Flippers
     [ ] Upper Flippers
   [ ] Slow-Mo
-  [ ] 
+    [ ] Slow amount
+    [ ] Bar fill rate
 
 Game Flow
   [ ] Main Menu

@@ -16,6 +16,10 @@ const LINES = [
   "Right Flipper: >",
   "Plunger: Enter",
   "Pause: P",
+  "Nudge →: z",
+  "Nudge ↗: c",
+  "Nudge ↖: ,",
+  "Nudge ←: /",
 ];
 
 export default class ControlDisplay extends BaseEntity implements Entity {

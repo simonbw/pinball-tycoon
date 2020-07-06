@@ -1,6 +1,5 @@
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
-import Timer from "../core/Timer";
 import { V } from "../core/Vector";
 import Ball from "./playfield/Ball";
 import { playSoundEvent } from "./Soundboard";
@@ -49,16 +48,12 @@ export default class LogicBoard extends BaseEntity implements Entity {
     score: ({ points }: ScoreEvent) => {
       this.score += points;
     },
-    drain: ({ ball }: DrainEvent) => {
-      console.log("drain");
+    drain: async ({ ball }: DrainEvent) => {
       ball.destroy();
 
       if (this.ballsRemaining > 0) {
-        this.addChild(
-          new Timer(1.0, () => {
-            this.game!.dispatch({ type: "newBall" });
-          })
-        );
+        await this.wait(1);
+        this.game!.dispatch({ type: "newBall" });
       } else {
         this.game!.dispatch({ type: "gameOver" });
       }

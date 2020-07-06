@@ -77,4 +77,35 @@ export default abstract class BaseEntity implements Entity {
     }
     return child;
   }
+
+  wait(delay: number): Promise<void> {
+    return new Promise((resolve) => {
+      const timer = new Timer(delay, () => resolve());
+      try {
+        this.addChild(timer);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+  }
+}
+
+// TODO: Implement this some other way?
+class Timer extends BaseEntity implements Entity {
+  timeRemaining: number = 0;
+  effect: () => void;
+
+  constructor(delay: number, effect: () => void) {
+    super();
+    this.timeRemaining = delay;
+    this.effect = effect;
+  }
+
+  onTick() {
+    this.timeRemaining -= this.game!.tickTimestep;
+    if (this.timeRemaining <= 0) {
+      this.effect();
+      this.destroy();
+    }
+  }
 }

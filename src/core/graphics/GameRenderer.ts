@@ -81,6 +81,5 @@ export default class GameRenderer {
   addFilter(filter: Pixi.Filter, layerName: LayerName): void {
     const layer = this.getLayerInfo(layerName).layer;
     layer.filters = [...layer.filters!, filter];
-    console.log(`filter added to ${layerName}`, filter);
   }
 }

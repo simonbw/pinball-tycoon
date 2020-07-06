@@ -7,6 +7,7 @@ import { CollisionGroups } from "./Collision";
 import CCDBody from "../../core/physics/CCDBody";
 import { degToRad } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
+import { NudgeEvent } from "../NudgeController";
 
 const RADIUS = 1.0625; // Radius in inches
 const MASS = 2.8; // In ounces
@@ -84,6 +85,16 @@ export default class Ball extends BaseEntity implements Entity {
     this.sprite.y = this.body.position[1];
     this.sprite.angle = this.body.angle / DEG_TO_RAD;
   }
+
+  handlers = {
+    nudge: async (e: NudgeEvent) => {
+      this.body.applyImpulse(e.impulse);
+      await this.wait(e.duration / 2);
+      this.body.applyImpulse(e.impulse.mul(-2));
+      await this.wait(e.duration / 2);
+      this.body.applyImpulse(e.impulse);
+    },
+  };
 }
 
 /** Type guard for ball entity */

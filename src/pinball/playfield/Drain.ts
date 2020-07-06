@@ -1,11 +1,10 @@
-import Entity from "../../core/entity/Entity";
-import BaseEntity from "../../core/entity/BaseEntity";
-import { Graphics } from "pixi.js";
-import { Vector, V } from "../../core/Vector";
 import { Body, Box } from "p2";
-import { CollisionGroups } from "./Collision";
+import { Graphics } from "pixi.js";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { Vector } from "../../core/Vector";
 import { isBall } from "./Ball";
-import Timer from "../../core/Timer";
+import { CollisionGroups } from "./Collision";
 
 export default class Drain extends BaseEntity implements Entity {
   constructor(left: Vector, right: Vector) {

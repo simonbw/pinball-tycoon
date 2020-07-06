@@ -24,7 +24,6 @@ export default class PauseController extends BaseEntity implements Entity {
       fill: 0xffffff,
       fontFamily: ["DS Digital"],
       fontSize: 120,
-      anchor: [0.5, 0.5],
     });
     this.sprite.anchor.set(0.5, 0.5);
   }

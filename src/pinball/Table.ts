@@ -2,8 +2,10 @@ import Bezier from "bezier-js";
 import Game from "../core/Game";
 import { degToRad } from "../core/util/MathUtil";
 import { V } from "../core/Vector";
+import CameraController from "./CameraController";
 import ControlDisplay from "./ControlDisplay";
 import LogicBoard from "./LogicBoard";
+import NudgeController from "./NudgeController";
 import Boundary from "./playfield/Boundary";
 import Bumper from "./playfield/Bumper";
 import CurveWall from "./playfield/CurveWall";
@@ -25,6 +27,8 @@ export function setupTable(game: Game) {
 
   game.addEntity(new LogicBoard());
   game.addEntity(new Soundboard());
+  game.addEntity(new NudgeController());
+  game.addEntity(new CameraController());
 
   // Misc
   game.addEntity(new Scoreboard());

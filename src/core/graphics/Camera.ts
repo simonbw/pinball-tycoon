@@ -62,9 +62,9 @@ export default class Camera extends BaseEntity implements Entity {
     this.velocity[1] = value;
   }
 
-  onRender() {
-    this.x += this.vx * this.game!.renderTimestep;
-    this.y += this.vy * this.game!.renderTimestep;
+  onTick() {
+    this.x += this.vx * this.game!.tickTimestep;
+    this.y += this.vy * this.game!.tickTimestep;
   }
 
   // Center the camera on a position
