@@ -1,7 +1,7 @@
-import BaseEntity from "../core/entity/BaseEntity";
-import Ball, { isBall } from "./playfield/Ball";
-import { V } from "../core/Vector";
-import Entity from "../core/entity/Entity";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Ball, { isBall } from "../playfield/Ball";
+import { V } from "../../core/Vector";
+import Entity from "../../core/entity/Entity";
 
 const FORCE = 50;
 const GRAVITY_COMP = 132;
@@ -16,7 +16,7 @@ const KEY_DOWN = 40;
 const RESET_POSITION = V([26, 90]);
 
 /** Magically control the ball to put it where we want it */
-export default class BallMagic extends BaseEntity implements Entity {
+export default class MagicBallController extends BaseEntity implements Entity {
   onTick() {
     const ball = this.getBall();
     if (ball) {

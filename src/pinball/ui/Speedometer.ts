@@ -1,9 +1,9 @@
-import BaseEntity from "../core/entity/BaseEntity";
+import BaseEntity from "../../core/entity/BaseEntity";
 import * as Pixi from "pixi.js";
-import { LayerName } from "../core/graphics/Layers";
-import Ball, { isBall } from "./playfield/Ball";
-import { V } from "../core/Vector";
-import Entity from "../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
+import Ball, { isBall } from "../playfield/Ball";
+import { V } from "../../core/Vector";
+import Entity from "../../core/entity/Entity";
 
 const IPS_TO_MPH = 1 / 17.6;
 

@@ -2,10 +2,10 @@ import Bezier from "bezier-js";
 import Game from "../core/Game";
 import { degToRad } from "../core/util/MathUtil";
 import { V } from "../core/Vector";
-import CameraController from "./CameraController";
-import ControlDisplay from "./ControlDisplay";
+import CameraController from "./controllers/CameraController";
+import ControlDisplay from "./ui/ControlDisplay";
 import LogicBoard from "./LogicBoard";
-import NudgeController from "./NudgeController";
+import NudgeController from "./controllers/NudgeController";
 import Boundary from "./playfield/Boundary";
 import Bumper from "./playfield/Bumper";
 import CurveWall from "./playfield/CurveWall";
@@ -17,9 +17,11 @@ import Plunger from "./playfield/Plunger";
 import Post from "./playfield/Post";
 import Slingshot from "./playfield/Slingshot";
 import Wall from "./playfield/Wall";
-import Scoreboard from "./Scoreboard";
+import Scoreboard from "./ui/Scoreboard";
 import Soundboard from "./Soundboard";
-import Speedometer from "./Speedometer";
+import Speedometer from "./ui/Speedometer";
+import SlowMoController from "./controllers/SlowMoController";
+import MagicBallController from "./controllers/MagicBallController";
 
 export function setupTable(game: Game) {
   game.camera.center(V([0, 50]));
@@ -29,6 +31,8 @@ export function setupTable(game: Game) {
   game.addEntity(new Soundboard());
   game.addEntity(new NudgeController());
   game.addEntity(new CameraController());
+  game.addEntity(new SlowMoController());
+  game.addEntity(new MagicBallController());
 
   // Misc
   game.addEntity(new Scoreboard());

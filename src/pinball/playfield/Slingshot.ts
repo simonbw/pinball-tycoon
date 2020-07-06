@@ -2,7 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import { Graphics } from "pixi.js";
 import { Body, Capsule } from "p2";
 import { Vector } from "../../core/Vector";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import { CollisionGroups } from "./Collision";
 import Ball from "./Ball";
 import { clamp } from "../../core/util/MathUtil";

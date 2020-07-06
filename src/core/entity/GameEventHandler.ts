@@ -18,7 +18,7 @@ export default interface GameEventHandler {
   // Called before rendering
   onRender?(): void;
   // Called during the update tick
-  onTick?(): void;
+  onTick?(dt: number): void;
   // Called when the game is paused
   onPause?(): void;
   // Called when the game is unpaused

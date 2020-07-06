@@ -1,7 +1,7 @@
 import { Body, Plane } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import { CollisionGroups } from "./Collision";
 import Entity from "../../core/entity/Entity";
 

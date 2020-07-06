@@ -62,9 +62,9 @@ export default class Camera extends BaseEntity implements Entity {
     this.velocity[1] = value;
   }
 
-  onTick() {
-    this.x += this.vx * this.game!.tickTimestep;
-    this.y += this.vy * this.game!.tickTimestep;
+  onTick(dt: number) {
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
   }
 
   // Center the camera on a position
@@ -74,6 +74,7 @@ export default class Camera extends BaseEntity implements Entity {
   }
 
   // Move the camera toward being centered on a position, with a target velocity
+  // TODO: Should this be called onRender or onTick?
   smoothCenter(
     [x, y]: Vector,
     [vx, vy]: Vector = V([0, 0]),

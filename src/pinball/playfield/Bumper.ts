@@ -4,7 +4,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
 import { playSoundEvent } from "../Soundboard";

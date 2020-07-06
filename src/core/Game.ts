@@ -17,14 +17,6 @@ export default class Game {
   entitiesToRemove: Set<Entity>;
   /** Controls rendering */
   renderer: GameRenderer;
-  /** The active camera. Controls where stuff is rendered */
-  get camera(): Camera {
-    return this.renderer.camera;
-  }
-  set camera(camera: Camera) {
-    this.renderer.camera = camera;
-  }
-
   /** Provides an imperative API for drawing primatives. */
   draw: Drawing;
   /** Manages keyboard/mouse/gamepad state and events. */
@@ -41,6 +33,8 @@ export default class Game {
   masterGain: GainNode;
   /** Readonly. Whether or not the game is paused */
   paused: boolean = false;
+  /** Multiplier of time that passes during tick */
+  slowMo: number = 1;
   /** Target number of frames per second */
   framerate: number = 60;
   /** Readonly. Number of frames that have gone by */
@@ -87,17 +81,25 @@ export default class Game {
 
   /** The intended time between renders in seconds */
   get renderTimestep(): number {
-    return 1 / this.framerate;
+    return (1 / this.framerate) * this.slowMo;
   }
 
   /** The intended time between ticks in seconds */
   get tickTimestep(): number {
-    return this.renderTimestep / this.tickIterations;
+    return (this.slowMo * this.renderTimestep) / this.tickIterations;
   }
 
   /** Total amount of game time elapsed since starting */
   get elapsedTime(): number {
     return this.ticknumber / (this.framerate * this.tickIterations);
+  }
+
+  /** The active camera. Controls where stuff is rendered */
+  get camera(): Camera {
+    return this.renderer.camera;
+  }
+  set camera(camera: Camera) {
+    this.renderer.camera = camera;
   }
 
   /** Start the event loop for the game. */
@@ -223,11 +225,11 @@ export default class Game {
     this.framenumber += 1;
     this.lastFrameTime = time;
 
-    const ticks = this.io.keys[32] ? 1 : this.tickIterations;
-    for (let i = 0; i < ticks; i++) {
-      this.tick();
+    const dt = this.tickTimestep;
+    for (let i = 0; i < this.tickIterations; i++) {
+      this.tick(dt);
       if (!this.paused) {
-        this.world.step(this.tickTimestep);
+        this.world.step(dt);
       }
       this.contacts();
     }
@@ -268,7 +270,7 @@ export default class Game {
   }
 
   /** Called before physics. */
-  private tick() {
+  private tick(dt: number) {
     this.ticknumber += 1;
     this.cleanupEntities();
     for (const entity of this.entities.filtered.beforeTick) {
@@ -279,9 +281,10 @@ export default class Game {
     this.cleanupEntities();
     for (const entity of this.entities.filtered.onTick) {
       if (!(this.paused && entity.pausable)) {
-        entity.onTick!();
+        entity.onTick!(dt);
       }
     }
+    this.cleanupEntities();
   }
 
   private contacts() {

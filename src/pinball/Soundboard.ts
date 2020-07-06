@@ -17,10 +17,6 @@ export default class Soundboard extends BaseEntity implements Entity {
   output!: AudioNode;
   nowPlaying = new Set<AudioBufferSourceNode>();
 
-  constructor() {
-    super();
-  }
-
   onAdd(game: Game) {
     this.output = game.audio.createGain();
     this.output.connect(game.masterGain);
@@ -35,6 +31,12 @@ export default class Soundboard extends BaseEntity implements Entity {
   onUnpause() {
     for (const source of this.nowPlaying) {
       source.start();
+    }
+  }
+
+  onTick() {
+    for (const source of this.nowPlaying) {
+      source.playbackRate.value = this.game!.slowMo;
     }
   }
 

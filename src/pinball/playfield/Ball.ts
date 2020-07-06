@@ -2,12 +2,12 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import { Graphics, DEG_TO_RAD } from "pixi.js";
 import { Body, Circle } from "p2";
 import { Vector, V } from "../../core/Vector";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import { CollisionGroups } from "./Collision";
 import CCDBody from "../../core/physics/CCDBody";
 import { degToRad } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
-import { NudgeEvent } from "../NudgeController";
+import { NudgeEvent } from "../controllers/NudgeController";
 
 const RADIUS = 1.0625; // Radius in inches
 const MASS = 2.8; // In ounces

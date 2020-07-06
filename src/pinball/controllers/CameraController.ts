@@ -1,5 +1,5 @@
-import BaseEntity from "../core/entity/BaseEntity";
-import Entity from "../core/entity/Entity";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
 import { NudgeEvent } from "./NudgeController";
 
 const NUDGE_SCALE = 1 / 2.8;

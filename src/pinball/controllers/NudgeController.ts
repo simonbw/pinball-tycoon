@@ -1,6 +1,6 @@
-import BaseEntity from "../core/entity/BaseEntity";
-import Entity from "../core/entity/Entity";
-import { Vector, V } from "../core/Vector";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { Vector, V } from "../../core/Vector";
 
 const NUDGE_RIGHT_KEY = 191; // /
 const NUDGE_LEFT_KEY = 90; // z

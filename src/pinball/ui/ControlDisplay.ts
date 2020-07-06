@@ -1,7 +1,7 @@
 import * as Pixi from "pixi.js";
-import BaseEntity from "../core/entity/BaseEntity";
-import Entity from "../core/entity/Entity";
-import { LayerName } from "../core/graphics/Layers";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
 
 interface ScoreEvent {
   type: "score";
@@ -20,6 +20,7 @@ const LINES = [
   "Nudge ↗: c",
   "Nudge ↖: ,",
   "Nudge ←: /",
+  "Slowmo: SHIFT",
 ];
 
 export default class ControlDisplay extends BaseEntity implements Entity {

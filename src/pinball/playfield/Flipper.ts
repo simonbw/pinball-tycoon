@@ -12,7 +12,7 @@ import { Vector, V } from "../../core/Vector";
 import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { degToRad, clamp } from "../../core/util/MathUtil";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import { CollisionGroups } from "./Collision";
 import Entity from "../../core/entity/Entity";
 import { isBall } from "./Ball";

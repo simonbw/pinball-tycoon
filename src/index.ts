@@ -6,10 +6,10 @@ import { waitForFontsLoaded } from "./core/resources/fonts";
 import { loadPixiAssets } from "./core/resources/images";
 import { loadAllSounds } from "./core/resources/sounds";
 import FPSMeter from "./core/util/FPSMeter";
-import { ContactMaterials } from "./pinball/Materials";
+import { ContactMaterials } from "./pinball/playfield/Materials";
 import { setupTable } from "./pinball/Table";
-import BallMagic from "./pinball/BallMagic";
-import PauseController from "./pinball/PauseController";
+import MagicBallController from "./pinball/controllers/MagicBallController";
+import PauseController from "./pinball/controllers/PauseController";
 
 // TODO: Font loading somewhere else
 // @ts-ignore
@@ -42,7 +42,6 @@ window.addEventListener("load", async () => {
   game.world.frictionGravity = 10;
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
-  game.addEntity(new BallMagic());
   game.addEntity(new FPSMeter());
   setupTable(game);
   game.start();

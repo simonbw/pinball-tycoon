@@ -1,9 +1,9 @@
 import { Text } from "pixi.js";
-import { ControllerButton } from "../core/io/Gamepad";
-import * as Keys from "../core/io/Keys";
-import BaseEntity from "../core/entity/BaseEntity";
-import Entity from "../core/entity/Entity";
-import { LayerName } from "../core/graphics/Layers";
+import { ControllerButton } from "../../core/io/Gamepad";
+import * as Keys from "../../core/io/Keys";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
 
 /** Pauses and unpauses the game when visibility is lost. */
 export default class PauseController extends BaseEntity implements Entity {

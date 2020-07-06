@@ -3,7 +3,7 @@ import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V, Vector } from "../../core/Vector";
-import { Materials } from "../Materials";
+import { Materials } from "./Materials";
 import Ball, { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
 import { clamp } from "../../core/util/MathUtil";
