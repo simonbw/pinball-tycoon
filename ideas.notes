@@ -71,6 +71,11 @@ Sounds
     [ ] Slingshot
     [ ] Wall
     [ ] Flipper
+  [ ] Events
+    [ ] New Game
+    [ ] New Ball
+    [ ] Drain
+    [ ] Game Over
   [ ] Score Thresholds
   [ ] Music
     [ ] Menu

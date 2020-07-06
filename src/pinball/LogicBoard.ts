@@ -40,9 +40,12 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.gameStarted = true;
 
       this.game!.dispatch(playSoundEvent("gameStart"));
-      this.game!.dispatch({ type: "newBall" });
+      this.game!.dispatch({ type: "newBall", noSound: true });
     },
-    newBall: () => {
+    newBall: (e: NewBallEvent) => {
+      if (!e.noSound) {
+        this.game!.dispatch(playSoundEvent("newBall"));
+      }
       this.ballsRemaining -= 1;
       this.game!.addEntity(new Ball(NEW_BALL_LOCATION.clone()));
     },
@@ -52,10 +55,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
     drain: async ({ ball }: DrainEvent) => {
       ball.destroy();
 
-      await this.wait(0.5);
       if (this.ballsRemaining > 0) {
         this.game!.dispatch(playSoundEvent("drain"));
-        await this.wait(0.5);
+        await this.wait(1.0);
         this.game!.dispatch({ type: "newBall" });
       } else {
         this.game!.dispatch({ type: "gameOver" });
@@ -113,4 +115,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
 /** Type guard for ball entity */
 export function isLogicBoard(e?: Entity): e is LogicBoard {
   return Boolean(e && e.tags && e.tags.indexOf("logic_board") >= 0);
+}
+
+interface NewBallEvent {
+  type: "newBall";
+  noSound?: boolean;
 }
