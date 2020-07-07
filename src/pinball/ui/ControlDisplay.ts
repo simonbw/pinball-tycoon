@@ -43,12 +43,12 @@ export default class ControlDisplay extends BaseEntity implements Entity {
         dropShadowAlpha: 0.1,
         dropShadowDistance: 0,
       });
-      text.x = 20;
-      text.y = 20 + 24 * i;
+      text.x = 0;
+      text.y = 24 * i;
       text.anchor.set(0, 0);
       container.addChild(text);
     }
-    this.sprite.x = 20;
-    this.sprite.y = 20;
+    this.sprite.x = 5;
+    this.sprite.y = 5;
   }
 }

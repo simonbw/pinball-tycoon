@@ -8,6 +8,8 @@ import { Materials } from "./Materials";
 import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
 import { playSoundEvent } from "../Soundboard";
+import { LayerName } from "../../core/graphics/Layers";
+import Light from "../lighting/Light";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -17,20 +19,24 @@ const ANIMATION_DURATION = 0.1;
 const RESAMPLE = 4.0;
 
 export default class Bumper extends BaseEntity implements Entity {
+  layer: LayerName = "world_front";
   lastHit: number = -Infinity;
 
   constructor(position: Vector, size: number = 1.7) {
     super();
     const graphics = new Graphics();
 
+    const color1 = 0xffbb00;
+    const color2 = 0xdd2200;
+
     const gSize = size * RESAMPLE;
-    graphics.beginFill(0xffbb00);
+    graphics.beginFill(color1);
     graphics.drawCircle(0, 0, gSize);
     graphics.endFill();
-    graphics.beginFill(0xdd2200);
+    graphics.beginFill(color2);
     graphics.drawCircle(0, 0, gSize * 0.8);
     graphics.endFill();
-    graphics.beginFill(0xffbb00);
+    graphics.beginFill(color1);
     graphics.drawCircle(0, 0, gSize * 0.6);
     graphics.endFill();
 
@@ -47,6 +53,17 @@ export default class Bumper extends BaseEntity implements Entity {
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
+
+    this.children = [
+      new Light({
+        position: [position.x, position.y, 1.0],
+        power: 1.0,
+        linearFade: 0.01,
+        quadraticFade: 0.05,
+        color: color1,
+        radius: size * 0.0,
+      }),
+    ];
   }
 
   onRender() {
@@ -59,6 +76,10 @@ export default class Bumper extends BaseEntity implements Entity {
 
   onImpact(ball: Entity) {
     if (isBall(ball)) {
+      this.game!.dispatch({ type: "score", points: 70 });
+      const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
+      this.game!.dispatch(playSoundEvent("pop1", { pan }));
+
       ball.body.velocity[0] *= VELOCITY_MULTIPLIER;
       ball.body.velocity[1] *= VELOCITY_MULTIPLIER;
       const impulse = this.getPosition()
@@ -66,11 +87,6 @@ export default class Bumper extends BaseEntity implements Entity {
         .inormalize()
         .mul(-STRENGTH);
       ball.body.applyImpulse(impulse);
-
-      this.game!.dispatch({ type: "score", points: 70 });
-
-      const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
-      this.game!.dispatch(playSoundEvent("pop1", { pan }));
 
       this.lastHit = this.game!.elapsedTime;
     }

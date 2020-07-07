@@ -11,13 +11,17 @@ import BallShadow from "../effects/BallShadow";
 import { makeShaderFilter } from "../effects/ShaderFilter";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
+import {
+  getLightUniformsForPoint,
+  LightUniforms,
+} from "../lighting/LightUniforms";
 
 const RADIUS = 1.0625; // Radius in inches
 const MASS = 2.8; // In ounces
 const FRICTION = 0.005; // rolling friction
 const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
-const RESAMPLE = 3.0;
+const RESAMPLE = 1.0;
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
@@ -40,10 +44,10 @@ export default class Ball extends BaseEntity implements Entity {
     const r = this.radius * RESAMPLE;
     const graphics = new Graphics();
     graphics.beginFill(0xffffff);
-    graphics.drawCircle(0, 0, r);
+    graphics.drawRect(-r, -r, 2 * r, 2 * r);
     graphics.endFill();
     graphics.filters = [this.ballShader];
-    graphics.scale.set(1 / RESAMPLE);
+    graphics.scale.set(1.0 / RESAMPLE);
     return graphics;
   }
 
@@ -83,10 +87,19 @@ export default class Ball extends BaseEntity implements Entity {
   }
 
   onRender() {
-    this.sprite.x = this.body.position[0];
-    this.sprite.y = this.body.position[1];
+    const [x, y] = this.body.position;
+    this.sprite.position.set(x, y);
     const vLightDirection = V([0, 20]).sub(this.getPosition());
     this.ballShader.uniforms.vLightDirection = [...vLightDirection, 30];
+
+    const r = this.radius;
+    const lightUniforms = getLightUniformsForPoint(this.game!, [x, y, r], r, r);
+    const ballUniforms = this.ballShader.uniforms as BallShaderUniforms;
+    ballUniforms.vLightPosition = lightUniforms.vLightPosition;
+    ballUniforms.vLightColor = lightUniforms.vLightColor;
+    ballUniforms.fLightPower = lightUniforms.fLightPower;
+    ballUniforms.fLightLinearFade = lightUniforms.fLightLinearFade;
+    ballUniforms.fLightQuadraticFade = lightUniforms.fLightQuadraticFade;
   }
 
   handlers = {
@@ -102,5 +115,8 @@ export default class Ball extends BaseEntity implements Entity {
 
 /** Type guard for ball entity */
 export function isBall(e?: Entity): e is Ball {
-  return Boolean(e && e.tags && e.tags.indexOf("ball") >= 0);
+  return e instanceof Ball;
+  // return Boolean(e && e.tags && e.tags.indexOf("ball") >= 0);
 }
+
+interface BallShaderUniforms extends LightUniforms {}

@@ -22,10 +22,25 @@ import Soundboard from "./Soundboard";
 import Speedometer from "./ui/Speedometer";
 import SlowMoController from "./controllers/SlowMoController";
 import MagicBallController from "./controllers/MagicBallController";
+import Light from "./lighting/Light";
 
 export function setupTable(game: Game) {
   game.camera.center(V([0, 50]));
-  game.camera.z = 7;
+  game.camera.z = 7; // TODO: WHY DOES THIS HAVE TO BE 7?!?!
+
+  // Overhead Lights
+  game.addEntities([
+    new Light({
+      position: [-12 * 6, -12 * 3, 12 * 6],
+      power: 1.0,
+      quadraticFade: 0.00001,
+    }),
+    new Light({
+      position: [12 * 6, 100 + 12 * 3, 12 * 4],
+      power: 0.2,
+      quadraticFade: 0.00001,
+    }),
+  ]);
 
   // Controls
   game.addEntity(new LogicBoard());
