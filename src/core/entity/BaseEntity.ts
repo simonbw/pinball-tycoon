@@ -88,6 +88,16 @@ export default abstract class BaseEntity implements Entity {
       }
     });
   }
+
+  clearTimers(): void {
+    if (this.children) {
+      for (const child of this.children) {
+        if (child instanceof Timer) {
+          child.destroy();
+        }
+      }
+    }
+  }
 }
 
 // TODO: Implement this some other way?

@@ -27,6 +27,7 @@ export function setupTable(game: Game) {
   game.camera.center(V([0, 50]));
   game.camera.z = 7;
 
+  // Controls
   game.addEntity(new LogicBoard());
   game.addEntity(new Soundboard());
   game.addEntity(new NudgeController());
@@ -76,10 +77,12 @@ export function setupTable(game: Game) {
   );
 
   // Slingshots/inlanes
-  game.addEntity(new Slingshot(V([16, 68]), V([9, 84]), 0.7));
-  game.addEntity(new Slingshot(V([-16, 68]), V([-9, 84]), 0.7, true));
-  game.addEntity(new MultiWall([V([16, 68]), V([16, 79]), V([9, 84])]));
-  game.addEntity(new MultiWall([V([-16, 68]), V([-16, 79]), V([-9, 84])]));
+  game.addEntity(new Wall(V([16.5, 68]), V([16.5, 79]), 0.4));
+  game.addEntity(new Wall(V([-16.5, 68]), V([-16.5, 79]), 0.4));
+  game.addEntity(new Slingshot(V([13, 68]), V([9, 84]), 0.7));
+  game.addEntity(new Slingshot(V([-13, 68]), V([-9, 84]), 0.7, true));
+  game.addEntity(new MultiWall([V([13, 68]), V([13, 79]), V([9, 84])], 0.6));
+  game.addEntity(new MultiWall([V([-13, 68]), V([-13, 79]), V([-9, 84])], 0.6));
 
   // Outlanes
   game.addEntity(new MultiWall([V([-20, 60]), V([-20, 82]), V([-8, 90])]));

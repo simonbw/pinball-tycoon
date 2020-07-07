@@ -14,7 +14,7 @@ export default class Wall extends BaseEntity implements Entity {
     start: Vector,
     end: Vector,
     width: number = 1.0,
-    color: number = 0x0000ff
+    color: number = 0x3355ff
   ) {
     super();
     const graphics = new Graphics();

@@ -39,7 +39,8 @@ window.addEventListener("load", async () => {
   const game = new Game(audioContext, ContactMaterials, 20);
   window.DEBUG = { game: null };
   game.renderer.showCursor();
-  game.world.frictionGravity = 10;
+  game.renderer.pixiRenderer.backgroundColor = 0x262631;
+  game.world.frictionGravity = 10; // TODO: Tune this
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new FPSMeter());

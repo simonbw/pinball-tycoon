@@ -8,11 +8,11 @@ import Ball from "./Ball";
 import { clamp } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
 
-const DEAD_SPACE = 0.05;
+const DEAD_SPACE = 0.03;
 const STRENGTH = 400;
 const EXPAND_AMOUNT = 0.8;
 const ANIMATION_DURATION = 0.07;
-const WIDTH = 0.8;
+const WIDTH = 0.5;
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;

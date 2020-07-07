@@ -21,7 +21,6 @@ export default class GameRenderer {
       autoDensity: true,
       resolution: Pixi.settings.RESOLUTION,
     });
-    this.pixiRenderer.backgroundColor = 0x333344;
     document.body.appendChild(this.pixiRenderer.view);
     this.hideCursor();
 

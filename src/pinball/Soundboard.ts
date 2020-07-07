@@ -2,7 +2,7 @@ import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
 import { SoundName, sounds } from "../core/resources/sounds";
 import Game from "../core/Game";
-import SoundChain from "./SoundChain";
+import SoundChain from "./util/SoundChain";
 
 /**
  * Plays sounds from the table.

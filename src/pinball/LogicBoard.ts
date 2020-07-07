@@ -3,11 +3,12 @@ import Entity from "../core/entity/Entity";
 import { V } from "../core/Vector";
 import Ball from "./playfield/Ball";
 import { playSoundEvent } from "./Soundboard";
+import { KeyCode } from "../core/io/Keys";
 
 const NEW_BALL_LOCATION = V([26, 95]);
-const START_GAME_KEY = 83; // S
-const LEFT_FLIPPER_KEY = 88; // x
-const RIGHT_FLIPPER_KEY = 190; // .
+const START_GAME_KEY = "KeyS";
+const LEFT_FLIPPER_KEY = "KeyX";
+const RIGHT_FLIPPER_KEY = "Period";
 
 export interface DrainEvent {
   type: "drain";
@@ -31,6 +32,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
   handlers = {
     gameStart: () => {
       // Clear the table
+      this.clearTimers();
       for (const ball of this.game!.entities.getTagged("ball")) {
         ball.destroy();
       }
@@ -70,7 +72,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
   };
 
-  onKeyDown(key: number) {
+  onKeyDown(key: KeyCode) {
     if (!this.game?.paused) {
       switch (key) {
         case START_GAME_KEY:
@@ -92,7 +94,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     }
   }
 
-  onKeyUp(key: number) {
+  onKeyUp(key: KeyCode) {
     if (!this.game?.paused) {
       switch (key) {
         case LEFT_FLIPPER_KEY:

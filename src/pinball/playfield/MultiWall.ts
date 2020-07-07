@@ -8,11 +8,7 @@ import Wall from "./Wall";
 import Entity from "../../core/entity/Entity";
 
 export default class MultiWall extends BaseEntity implements Entity {
-  constructor(
-    points: readonly Vector[],
-    width: number = 1.0,
-    color: number = 0x0000ff
-  ) {
+  constructor(points: readonly Vector[], width?: number, color?: number) {
     super();
     if (points.length < 2) {
       throw new Error("Need at least 2 points for a multiwall.");

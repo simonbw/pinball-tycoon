@@ -16,6 +16,7 @@ const STIFFNESS = 40000;
 const DAMPING = 30;
 const PULL_SPEED = 32; // arbitrary units
 const MAX_PULL_DISTANCE = 3.2; // inches
+const PULL_KEY = "Enter";
 
 export default class Plunger extends BaseEntity implements Entity {
   body: Body;
@@ -57,7 +58,7 @@ export default class Plunger extends BaseEntity implements Entity {
   }
 
   onTick() {
-    if (this.game!.io.keys[13]) {
+    if (this.game!.io.keyIsDown(PULL_KEY)) {
       if (this.body.position[1] - this.neutralPosition[1] < MAX_PULL_DISTANCE) {
         this.pullSpring!.stiffness += PULL_SPEED;
       }

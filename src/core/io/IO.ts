@@ -1,9 +1,9 @@
-import * as Keys from "./Keys";
-import * as MouseButtons from "./MouseButtons";
-import { Vector, V } from "../Vector";
 import IOEventHandler from "../entity/IOEventHandler";
-import IOHandlerList from "./IOHandlerList";
+import { V } from "../Vector";
 import { ControllerAxis, ControllerButton } from "./Gamepad";
+import IOHandlerList from "./IOHandlerList";
+import * as MouseButtons from "./MouseButtons";
+import { KeyCode } from "./Keys";
 
 // TODO: allow user configuration/calibration
 const GAMEPAD_MINIMUM = 0.2;
@@ -12,11 +12,10 @@ const GAMEPAD_MAXIMUM = 0.95;
 // Manages IO
 export class IOManager {
   handlers = new IOHandlerList();
-
-  keys: boolean[];
-  keys2: { [key: string]: boolean } = {};
+  // TODO: Key down times
+  private keys: Map<KeyCode, boolean> = new Map();
   // buttons pressed last frame. Used for checking differences in state.
-  lastButtons: boolean[] = [];
+  private lastButtons: boolean[] = [];
   mouseButtons = [false, false, false, false, false, false];
   mousePosition = V([0, 0]);
   usingGamepad: boolean = false; // True if the gamepad is the main input device
@@ -40,11 +39,6 @@ export class IOManager {
     };
     document.onkeyup = (e) => this.onKeyUp(e);
 
-    this.keys = [];
-    for (let i = 0; i <= 256; i++) {
-      this.keys.push(false);
-    }
-
     // Because this is a polling not pushing interface
     window.setInterval(() => this.handleGamepads(), 1); // TODO: Is 1 ms too frequent?
   }
@@ -62,6 +56,11 @@ export class IOManager {
   // True if the right mouse button is down.
   get rmb(): boolean {
     return this.mouseButtons[MouseButtons.RIGHT];
+  }
+
+  // True if the given key is currently pressed down
+  keyIsDown(key: KeyCode): boolean {
+    return Boolean(this.keys.get(key));
   }
 
   // Fire events for gamepad button presses.
@@ -159,11 +158,11 @@ export class IOManager {
   }
 
   // Determine whether or not to prevent the default action of a key press.
-  shouldPreventDefault(key: number): boolean {
-    if (key === Keys.TAB) {
+  shouldPreventDefault(event: KeyboardEvent): boolean {
+    if (event.key === "Tab") {
       return true;
     }
-    if (key === 83) {
+    if (event.key.toLowerCase() === "s") {
       // s for save
       return true;
     }
@@ -172,15 +171,15 @@ export class IOManager {
 
   // Fire all key down handlers.
   onKeyDown(event: KeyboardEvent) {
-    const key = event.which;
-    const wasPressed = this.keys[key]; // for filtering out auto-repeat stuff
-    this.keys[key] = true;
+    const code = event.code as KeyCode;
+    const wasPressed = this.keys.get(code); // for filtering out auto-repeat stuff
+    this.keys.set(code, true);
     if (!wasPressed) {
       for (const handler of this.handlers.filtered.onKeyDown) {
-        handler.onKeyDown!(key);
+        handler.onKeyDown!(code, event);
       }
     }
-    if (this.shouldPreventDefault(key)) {
+    if (this.shouldPreventDefault(event)) {
       event.preventDefault();
       return false;
     }
@@ -188,12 +187,12 @@ export class IOManager {
 
   // Fire all key up handlers.
   onKeyUp(event: KeyboardEvent) {
-    const key = event.which;
-    this.keys[key] = false;
+    const code = event.code as KeyCode;
+    this.keys.set(code, false);
     for (const handler of this.handlers.filtered.onKeyUp) {
-      handler.onKeyUp!(key);
+      handler.onKeyUp!(code, event);
     }
-    if (this.shouldPreventDefault(key)) {
+    if (this.shouldPreventDefault(event)) {
       event.preventDefault();
       return false;
     }

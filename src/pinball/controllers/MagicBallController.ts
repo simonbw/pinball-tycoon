@@ -2,16 +2,17 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Ball, { isBall } from "../playfield/Ball";
 import { V } from "../../core/Vector";
 import Entity from "../../core/entity/Entity";
+import { KeyCode } from "../../core/io/Keys";
 
-const FORCE = 50;
+const FORCE = 150;
 const GRAVITY_COMP = 132;
 
-const MULTIBALL_KEY = 66; // B
-const RESET_KEY = 82; // R
-const KEY_LEFT = 37;
-const KEY_UP = 38;
-const KEY_RIGHT = 39;
-const KEY_DOWN = 40;
+const KEY_MULTIBALL: KeyCode = "KeyB";
+const KEY_RESET: KeyCode = "KeyR";
+const KEY_LEFT: KeyCode = "ArrowLeft";
+const KEY_UP: KeyCode = "ArrowUp";
+const KEY_RIGHT: KeyCode = "ArrowRight";
+const KEY_DOWN: KeyCode = "ArrowDown";
 
 const RESET_POSITION = V([26, 90]);
 
@@ -21,16 +22,16 @@ export default class MagicBallController extends BaseEntity implements Entity {
     const ball = this.getBall();
     if (ball) {
       // Keyboard control
-      if (this.game!.io.keys[KEY_LEFT]) {
+      if (this.game!.io.keyIsDown(KEY_LEFT)) {
         ball.body.applyForce([-FORCE, 0]);
       }
-      if (this.game!.io.keys[KEY_UP]) {
+      if (this.game!.io.keyIsDown(KEY_UP)) {
         ball.body.applyForce([0, -FORCE - GRAVITY_COMP]);
       }
-      if (this.game!.io.keys[KEY_RIGHT]) {
+      if (this.game!.io.keyIsDown(KEY_RIGHT)) {
         ball.body.applyForce([FORCE, 0]);
       }
-      if (this.game!.io.keys[KEY_DOWN]) {
+      if (this.game!.io.keyIsDown(KEY_DOWN)) {
         ball.body.applyForce([0, FORCE]);
       }
 
@@ -51,16 +52,16 @@ export default class MagicBallController extends BaseEntity implements Entity {
     return null;
   }
 
-  onKeyDown(key: number) {
+  onKeyDown(key: KeyCode) {
     const ball = this.getBall();
     if (ball) {
       switch (key) {
-        case RESET_KEY:
+        case KEY_RESET:
           ball.body.position = RESET_POSITION.clone();
           ball.body.velocity = [0, 0];
           ball.body.angularVelocity = 0;
           break;
-        case MULTIBALL_KEY:
+        case KEY_MULTIBALL:
           this.game!.addEntity(new Ball(RESET_POSITION));
           break;
       }

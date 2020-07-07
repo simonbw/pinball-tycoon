@@ -14,6 +14,8 @@ const VELOCITY_MULTIPLIER = 0.2;
 const EXPAND_AMOUNT = 0.15;
 const ANIMATION_DURATION = 0.1;
 
+const RESAMPLE = 4.0;
+
 export default class Bumper extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
 
@@ -21,15 +23,15 @@ export default class Bumper extends BaseEntity implements Entity {
     super();
     const graphics = new Graphics();
 
+    const gSize = size * RESAMPLE;
     graphics.beginFill(0xffbb00);
-    graphics.drawCircle(0, 0, size);
+    graphics.drawCircle(0, 0, gSize);
     graphics.endFill();
     graphics.beginFill(0xdd2200);
-    graphics.drawCircle(0, 0, size * 0.8);
+    graphics.drawCircle(0, 0, gSize * 0.8);
     graphics.endFill();
     graphics.beginFill(0xffbb00);
-    // graphics.beginFill(0xdd2200);
-    graphics.drawCircle(0, 0, size * 0.6);
+    graphics.drawCircle(0, 0, gSize * 0.6);
     graphics.endFill();
 
     graphics.position.set(...position);
@@ -52,7 +54,7 @@ export default class Bumper extends BaseEntity implements Entity {
       clamp(this.game!.elapsedTime - this.lastHit, 0, ANIMATION_DURATION) /
       ANIMATION_DURATION;
     const scale = (1 - animationPercent) * EXPAND_AMOUNT + 1;
-    this.sprite!.scale.set(scale, scale);
+    this.sprite!.scale.set(scale / RESAMPLE);
   }
 
   onImpact(ball: Entity) {

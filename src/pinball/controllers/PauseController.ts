@@ -40,8 +40,8 @@ export default class PauseController extends BaseEntity implements Entity {
     }
   }
 
-  onKeyDown(key: number) {
-    if (key === Keys.P) {
+  onKeyDown(key: Keys.KeyCode) {
+    if (key === "KeyP") {
       this.game!.togglePause();
     }
   }

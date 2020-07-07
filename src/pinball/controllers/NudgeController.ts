@@ -1,11 +1,12 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { Vector, V } from "../../core/Vector";
+import { KeyCode } from "../../core/io/Keys";
 
-const NUDGE_RIGHT_KEY = 191; // /
-const NUDGE_LEFT_KEY = 90; // z
-const NUDGE_UP_LEFT_KEY = 67; // c
-const NUDGE_UP_RIGHT_KEY = 188; // ,
+const NUDGE_RIGHT_KEY: KeyCode = "Slash";
+const NUDGE_LEFT_KEY: KeyCode = "KeyZ";
+const NUDGE_UP_LEFT_KEY: KeyCode = "KeyC";
+const NUDGE_UP_RIGHT_KEY: KeyCode = "Comma";
 
 type NudgeDirection = "left" | "right" | "up";
 
@@ -28,7 +29,7 @@ export default class NudgeController extends BaseEntity implements Entity {
     super();
   }
 
-  async onKeyDown(key: number) {
+  async onKeyDown(key: KeyCode) {
     const power = 40;
     switch (key) {
       case NUDGE_LEFT_KEY:

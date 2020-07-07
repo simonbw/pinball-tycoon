@@ -17,11 +17,13 @@ import { CollisionGroups } from "./Collision";
 import Entity from "../../core/entity/Entity";
 import { isBall } from "./Ball";
 import { playSoundEvent } from "../Soundboard";
+import { KeyCode } from "../../core/io/Keys";
 
 const DOWN_ANGLE = degToRad(-30);
 const UP_ANGLE = degToRad(40);
-const LEFT_KEY = 88; // x
-const RIGHT_KEY = 190; // .
+const LEFT_KEY = "KeyX";
+const RIGHT_KEY = "Period";
+const UP_LOCK_STIFFNESS = 800000;
 const UP_STIFFNESS = 80000;
 const DOWN_STIFFNESS = 30000;
 const DAMPING = 1250;
@@ -37,7 +39,7 @@ export default class Flipper extends BaseEntity implements Entity {
   spring?: RotationalSpring;
   downAngle: number;
   upAngle: number;
-  key: number;
+  key: KeyCode;
   side: Side;
 
   constructor(
@@ -65,7 +67,7 @@ export default class Flipper extends BaseEntity implements Entity {
 
     this.body = new Body({
       position: position,
-      mass: 1.2,
+      mass: 2.2,
       angle: this.downAngle + Math.PI / 2,
     });
 
@@ -102,6 +104,10 @@ export default class Flipper extends BaseEntity implements Entity {
     } else {
       this.joint.setLimits(this.upAngle - OVEREXTENSION_AMOUNT, this.downAngle);
     }
+    this.joint.setStiffness(10 ** 32);
+    this.joint.setRelaxation(0);
+    this.joint.upperLimitEnabled = true;
+    this.joint.lowerLimitEnabled = true;
     this.constraints = [this.joint];
 
     this.spring = new DampedRotationalSpring(this.body, game.ground, {
@@ -119,7 +125,7 @@ export default class Flipper extends BaseEntity implements Entity {
   }
 
   onTick() {
-    if (this.game!.io.keys[this.key]) {
+    if (this.game!.io.keyIsDown(this.key)) {
       this.spring!.restAngle = this.upAngle;
       this.spring!.stiffness = UP_STIFFNESS;
     } else {

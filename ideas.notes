@@ -11,7 +11,7 @@ IO Improvements:
 Improve Resources:
   [ ] Move resource loading to be on the Game class
   [ ] Create api to load resources that can be used outside of `core`
-  [ ] Create a way to easily play sounds
+  [√] Create a way to easily play sounds
 
 Create a preloader:
   [ ] Something that displays while resources are loading
@@ -36,7 +36,13 @@ Extended Collisions:
 
 Misc
   [√] Display controls
+  [ ] Better flipper shape
+
+Controls
   [ ] More accurate flipper timing by using sub-frame timing
+  [ ] Keyboard control configuration
+  [ ] Gamepad Control
+  [ ] Up flipper should have more resistance to ball hitting it
 
 Other Features
   [√] Nudging
@@ -47,12 +53,12 @@ Other Features
 Table Features
   [√] Flipper
   [√] Bumper
-  [√] SLingshot
+  [√] Slingshot
   [√] Plunger
   [√] Multiwall
   [√] Curved Wall
   [√] Drain
-  [ ] One way gate
+  [√] Gate
   [ ] Simple sensor
   [ ] Rollover
   [ ] Drop Targets

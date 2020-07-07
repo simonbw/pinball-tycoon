@@ -19,31 +19,31 @@ export const ContactMaterials = [
   }),
   new ContactMaterial(Materials.ball, Materials.bumper, {
     restitution: 0.05, // because the bumper applies extra power
-    friction: 10,
+    friction: 1,
   }),
   new ContactMaterial(Materials.ball, Materials.flipper, {
     restitution: 0.8,
-    friction: 10,
-    stiffness: 10000000,
+    friction: 4,
+    stiffness: 10 ** 8,
   }),
   new ContactMaterial(Materials.ball, Materials.gate, {
     restitution: 0,
-    friction: 10,
+    friction: 0.5,
   }),
   new ContactMaterial(Materials.ball, Materials.plunger, {
     restitution: 0.2,
-    friction: 10,
+    friction: 1,
   }),
-  new ContactMaterial(Materials.ball, Materials.plunger, {
+  new ContactMaterial(Materials.ball, Materials.post, {
     restitution: 0.3,
-    friction: 5,
+    friction: 0.5,
   }),
   new ContactMaterial(Materials.ball, Materials.slingshot, {
     restitution: 0.05, // because the slingshot applies extra power
-    friction: 10,
+    friction: 1,
   }),
   new ContactMaterial(Materials.ball, Materials.wall, {
     restitution: 0.5,
-    friction: 1,
+    friction: 0.7,
   }),
 ];

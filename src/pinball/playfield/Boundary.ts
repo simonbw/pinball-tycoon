@@ -13,7 +13,7 @@ export default class Boundary extends BaseEntity implements Entity {
     super();
 
     const graphics = new Graphics();
-    graphics.beginFill(0xffffff, 0.1);
+    graphics.beginFill(0x444455, 1);
     graphics.drawRect(left, top, right - left, bottom - top);
     graphics.endFill();
     this.sprite = graphics;

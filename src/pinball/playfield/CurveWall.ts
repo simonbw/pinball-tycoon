@@ -8,8 +8,8 @@ export default class CurveWall extends BaseEntity implements Entity {
   constructor(
     curve: Bezier,
     segments: number = 20,
-    width: number = 1.0,
-    color: number = 0x0000ff
+    width?: number,
+    color?: number
   ) {
     super();
 
