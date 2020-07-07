@@ -14,6 +14,7 @@ export class LayerInfo {
 
 // CAUTION: Order matters in this object
 export const Layers = {
+  world_way_back: new LayerInfo(1),
   world_back: new LayerInfo(1),
   world: new LayerInfo(1),
   world_front: new LayerInfo(1),

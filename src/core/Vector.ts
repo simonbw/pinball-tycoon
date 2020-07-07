@@ -59,21 +59,21 @@ export interface Vector extends ArrayNumLength2 {
 }
 
 export function polyfillArrayAsVector(Array: any) {
-  Array.prototype.add = function (other: Vector) {
+  Array.prototype.add = function (other: ArrayNumLength2) {
     return [this[0] + other[0], this[1] + other[1]];
   };
 
-  Array.prototype.iadd = function (other: Vector) {
+  Array.prototype.iadd = function (other: ArrayNumLength2) {
     this[0] += other[0];
     this[1] += other[1];
     return this;
   };
 
-  Array.prototype.sub = function (other: Vector) {
+  Array.prototype.sub = function (other: ArrayNumLength2) {
     return [this[0] - other[0], this[1] - other[1]];
   };
 
-  Array.prototype.isub = function (other: Vector): Vector {
+  Array.prototype.isub = function (other: ArrayNumLength2): Vector {
     this[0] -= other[0];
     this[1] -= other[1];
     return this;
@@ -125,11 +125,11 @@ export function polyfillArrayAsVector(Array: any) {
     return this;
   };
 
-  Array.prototype.dot = function (other: Vector) {
+  Array.prototype.dot = function (other: ArrayNumLength2) {
     return this[0] * other[0] + this[1] * other[1];
   };
 
-  Array.prototype.set = function (x: number | Vector, y: number) {
+  Array.prototype.set = function (x: number | ArrayNumLength2, y: number) {
     if (typeof x === "number") {
       this[0] = x;
       this[1] = y;

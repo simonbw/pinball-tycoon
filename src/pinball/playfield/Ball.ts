@@ -1,12 +1,14 @@
 import { Body, Circle } from "p2";
-import { Graphics, Filter } from "pixi.js";
+import { Filter, Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { degToRad } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
 import { NudgeEvent } from "../controllers/NudgeController";
-import { makeBallShader } from "../shaders/BallFilter";
+import BallShader from "../effects/BallShader.frag";
+import BallShadow from "../effects/BallShadow";
+import { makeShaderFilter } from "../effects/ShaderFilter";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
@@ -21,7 +23,8 @@ export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
   body: Body;
   sprite: Graphics;
-  ballShader: Filter = makeBallShader();
+  ballShader: Filter = makeShaderFilter(BallShader);
+  radius: number = RADIUS;
 
   constructor(position: Vector, velocity: Vector = V([0, 0])) {
     super();
@@ -30,10 +33,11 @@ export default class Ball extends BaseEntity implements Entity {
     this.body = this.makeBody();
     this.body.position = position;
     this.body.velocity = velocity;
+    // this.addChild(new BallShadow(this));
   }
 
   makeSprite() {
-    const r = RADIUS * RESAMPLE;
+    const r = this.radius * RESAMPLE;
     const graphics = new Graphics();
     graphics.beginFill(0xffffff);
     graphics.drawCircle(0, 0, r);
@@ -50,7 +54,7 @@ export default class Ball extends BaseEntity implements Entity {
       ccdIterations: 15,
     });
 
-    const shape = new Circle({ radius: RADIUS });
+    const shape = new Circle({ radius: this.radius });
     shape.material = Materials.ball;
     shape.collisionGroup = CollisionGroups.Ball;
     shape.collisionMask = CollisionGroups.Ball | CollisionGroups.Table;
@@ -81,6 +85,8 @@ export default class Ball extends BaseEntity implements Entity {
   onRender() {
     this.sprite.x = this.body.position[0];
     this.sprite.y = this.body.position[1];
+    const vLightDirection = V([0, 20]).sub(this.getPosition());
+    this.ballShader.uniforms.vLightDirection = [...vLightDirection, 30];
   }
 
   handlers = {

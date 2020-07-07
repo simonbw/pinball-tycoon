@@ -1,11 +1,14 @@
-# Core
+#------#
+# Core #
+#------#
+
 Custom events:
   [√] Dispatch
   [√] Handler
   [ ] Better typing
 
 IO Improvements:
-  [ ] Use `KeyboardEvent.key` instead of `.which`
+  [√] Use `KeyboardEvent.key` instead of `.which`
   [ ] Keep track of *when* a key was pressed/released for more precise timings
 
 Improve Resources:
@@ -32,9 +35,11 @@ Extended Collisions:
   [ ] Entity.onColliding Handler
   [ ] Keep track of currently happening collisions
 
-# Features
+#---------#
+# Pinball #
+#---------#
 
-Misc
+Misc:
   [√] Display controls
   [ ] Better flipper shape
 

@@ -4,11 +4,14 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import { Materials } from "./Materials";
 import { CollisionGroups } from "./Collision";
 import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
 
 /**
  * The main boundary of the game, makes sure the ball can't possibly be in weird places.
  */
 export default class Boundary extends BaseEntity implements Entity {
+  layer: LayerName = "world_way_back";
+
   constructor(top: number, bottom: number, left: number, right: number) {
     super();
 
