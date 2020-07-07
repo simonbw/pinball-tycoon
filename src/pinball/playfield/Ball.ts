@@ -3,18 +3,18 @@ import { Filter, Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
+import { hexToVec3 } from "../../core/util/ColorUtils";
 import { degToRad } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
 import { NudgeEvent } from "../controllers/NudgeController";
 import BallShader from "../effects/BallShader.frag";
-import BallShadow from "../effects/BallShadow";
 import { makeShaderFilter } from "../effects/ShaderFilter";
-import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
 import {
   getLightUniformsForPoint,
   LightUniforms,
 } from "../lighting/LightUniforms";
+import { CollisionGroups } from "./Collision";
+import { Materials } from "./Materials";
 
 const RADIUS = 1.0625; // Radius in inches
 const MASS = 2.8; // In ounces
@@ -22,6 +22,11 @@ const FRICTION = 0.005; // rolling friction
 const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
 const RESAMPLE = 1.0;
+
+const DIFFUSE_COLOR = 0xbbbbbb;
+const SPECULAR_COLOR = 0x999999;
+const AMBIENT_COLOR = 0x333333;
+const SHININESS = 14.0;
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
@@ -37,10 +42,15 @@ export default class Ball extends BaseEntity implements Entity {
     this.body = this.makeBody();
     this.body.position = position;
     this.body.velocity = velocity;
-    // this.addChild(new BallShadow(this));
   }
 
   makeSprite() {
+    const ballUniforms = this.ballShader.uniforms as BallShaderUniforms;
+    ballUniforms.fMaterialShininess = SHININESS;
+    ballUniforms.vMaterialDiffuseColor = hexToVec3(DIFFUSE_COLOR);
+    ballUniforms.vMaterialSpecularColor = hexToVec3(SPECULAR_COLOR);
+    ballUniforms.vAmbientLightColor = hexToVec3(AMBIENT_COLOR);
+
     const r = this.radius * RESAMPLE;
     const graphics = new Graphics();
     graphics.beginFill(0xffffff);
@@ -48,6 +58,7 @@ export default class Ball extends BaseEntity implements Entity {
     graphics.endFill();
     graphics.filters = [this.ballShader];
     graphics.scale.set(1.0 / RESAMPLE);
+
     return graphics;
   }
 
@@ -119,4 +130,9 @@ export function isBall(e?: Entity): e is Ball {
   // return Boolean(e && e.tags && e.tags.indexOf("ball") >= 0);
 }
 
-interface BallShaderUniforms extends LightUniforms {}
+interface BallShaderUniforms extends LightUniforms {
+  vAmbientLightColor: [number, number, number];
+  vMaterialDiffuseColor: [number, number, number];
+  vMaterialSpecularColor: [number, number, number];
+  fMaterialShininess: number;
+}

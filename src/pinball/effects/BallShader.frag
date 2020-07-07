@@ -7,10 +7,10 @@ uniform float fLightLinearFade[8];
 uniform float fLightQuadraticFade[8];
 uniform float fLightRadius[8];
 
-uniform vec3 fAmbientLightColor;
-uniform vec3 fMaterialDiffuseColor;
-uniform vec3 fMaterialSpecularColor;
-uniform vec3 fMaterialShininess;
+uniform vec3 vAmbientLightColor;
+uniform vec3 vMaterialDiffuseColor;
+uniform vec3 vMaterialSpecularColor;
+uniform float fMaterialShininess;
 
 struct SphereLight {
   vec3 direction;
@@ -52,10 +52,10 @@ void main() {
   vec3 n = normalize(pos);
 
   Material material = Material(
-    vec3(0.25, 0.25, 0.25),
-    vec3(0.5, 0.5, 0.5),
-    vec3(1.0, 1.0, 1.0) * 0.3,
-    12.0
+    vAmbientLightColor,
+    vMaterialDiffuseColor,
+    vMaterialSpecularColor,
+    fMaterialShininess
   );
 
   gl_FragColor.xyz = material.ambientColor;
