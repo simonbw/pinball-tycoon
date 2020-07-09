@@ -1,15 +1,14 @@
 import * as Pixi from "pixi.js";
+import { GameSprite } from "../entity/Entity";
 import { Vector } from "../Vector";
 import Camera from "./Camera";
-import { LayerInfo, LayerName, Layers } from "./Layers";
-import { GameSprite } from "../entity/Entity";
-
-const DEFAULT_LAYER = "world";
+import { LayerInfo } from "./LayerInfo";
 
 // The thing that renders stuff to the screen. Mostly for handling layers.
 export default class GameRenderer {
-  private layerInfos: Map<LayerName, LayerInfo> = new Map();
+  private layerInfos: Map<string, LayerInfo> = new Map();
   private cursor: string = "none";
+  defaultLayer: string = "_default";
 
   pixiRenderer: Pixi.Renderer;
   stage: Pixi.Container;
@@ -33,18 +32,20 @@ export default class GameRenderer {
 
     window.addEventListener("resize", () => this.handleResize());
 
-    for (const [layerName, layerInfo] of Object.entries(Layers)) {
-      this.stage.addChildAt(layerInfo.layer, this.layerInfos.size);
-      this.layerInfos.set(layerName as LayerName, layerInfo);
-    }
+    this.createLayer(this.defaultLayer, new LayerInfo());
   }
 
-  private getLayerInfo(layerName: LayerName) {
+  private getLayerInfo(layerName: string) {
     const layerInfo = this.layerInfos.get(layerName);
     if (!layerInfo) {
-      throw new Error(`Cannot find layer: ${layerInfo}`);
+      throw new Error(`Cannot find layer: ${layerName}`);
     }
     return layerInfo;
+  }
+
+  createLayer(name: string, layerInfo: LayerInfo) {
+    this.layerInfos.set(name, layerInfo);
+    this.stage.addChild(layerInfo.container);
   }
 
   getHeight(): number {
@@ -80,20 +81,20 @@ export default class GameRenderer {
     this.pixiRenderer.view.style.cursor = this.cursor;
   }
 
-  add(sprite: GameSprite): Pixi.DisplayObject {
-    const layerName = sprite.layerName ?? DEFAULT_LAYER;
-    this.getLayerInfo(layerName).layer.addChild(sprite);
+  addSprite(sprite: GameSprite): GameSprite {
+    const layerName = sprite.layerName ?? this.defaultLayer;
+    this.getLayerInfo(layerName).container.addChild(sprite);
     return sprite;
   }
 
   // Remove a child from a specific layer.
   remove(sprite: GameSprite): void {
-    const layerName = sprite.layerName ?? DEFAULT_LAYER;
-    this.getLayerInfo(layerName).layer.removeChild(sprite);
+    const layerName = sprite.layerName ?? this.defaultLayer;
+    this.getLayerInfo(layerName).container.removeChild(sprite);
   }
 
-  addFilter(filter: Pixi.Filter, layerName: LayerName): void {
-    const layer = this.getLayerInfo(layerName).layer;
+  addFilter(filter: Pixi.Filter, layerName: string): void {
+    const layer = this.getLayerInfo(layerName).container;
     layer.filters = [...layer.filters!, filter];
   }
 }

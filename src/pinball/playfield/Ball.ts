@@ -1,8 +1,7 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import { Graphics, Filter } from "pixi.js";
+import { Filter, Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { GameSprite } from "../../core/entity/Entity";
-import { LayerName } from "../../core/graphics/Layers";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp, degToRad } from "../../core/util/MathUtil";
@@ -12,6 +11,7 @@ import { NudgeEvent } from "../controllers/NudgeController";
 import BallShaderFilter from "../effects/BallShader";
 import ParticleSystem from "../effects/ParticleSystem";
 import { makeSparkParams } from "../effects/Sparks";
+import { LAYERS } from "../layers";
 import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
@@ -48,7 +48,7 @@ export default class Ball extends BaseEntity implements Entity {
     this.sprite.endFill();
     this.sprite.filters = [this.ballShaderFilter];
     this.sprite.scale.set(1.0 / RESAMPLE);
-    this.sprite.layerName = "ball";
+    this.sprite.layerName = LAYERS.mainfield_middle;
   }
 
   makeBody() {

@@ -1,7 +1,7 @@
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { GameSprite } from "../../core/entity/Entity";
-import { LayerName } from "../../core/graphics/Layers";
+import { LAYERS } from "../layers";
 import { getBindings } from "../ui/KeyboardBindings";
 
 const SLOW_SPEED = 0.3;
@@ -22,7 +22,7 @@ export default class SlowMoController extends BaseEntity implements Entity {
   constructor() {
     super();
     this.sprite = new Graphics();
-    this.sprite.layerName = "hud";
+    this.sprite.layerName = LAYERS.hud;
   }
 
   onTick(dt: number) {

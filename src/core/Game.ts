@@ -162,12 +162,12 @@ export default class Game {
     this.io.addHandler(entity);
 
     if (entity.sprite) {
-      this.renderer.add(entity.sprite);
+      this.renderer.addSprite(entity.sprite);
       entity.sprite.owner = entity;
     }
     if (entity.sprites) {
       for (const sprite of entity.sprites) {
-        this.renderer.add(sprite);
+        this.renderer.addSprite(sprite);
         sprite.owner = entity;
       }
     }

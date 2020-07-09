@@ -1,6 +1,7 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { GameSprite } from "../../core/entity/Entity";
+import { LAYERS } from "../layers";
 
 interface ScoreEvent {
   type: "score";
@@ -45,7 +46,7 @@ export default class ControlDisplay extends BaseEntity implements Entity {
       text.anchor.set(0, 0);
       this.sprite.addChild(text);
     }
-    this.sprite.layerName = "hud";
+    this.sprite.layerName = LAYERS.hud;
     this.sprite.x = 5;
     this.sprite.y = 5;
   }

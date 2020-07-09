@@ -1,16 +1,19 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
-import { Vector } from "../Vector";
-import { LayerName } from "./Layers";
-import Entity from "../entity/Entity";
+import Entity, { GameSprite } from "../entity/Entity";
 import Game from "../Game";
+import { Vector } from "../Vector";
 
-// Class used to make drawing primitives easy
+/** Class used to make drawing primitives easy. I mostly use this for debugging stuff. */
 export default class Drawing extends BaseEntity implements Entity {
   persistent = true;
   pausable = false;
 
-  private spriteMap: Map<LayerName, Pixi.Graphics> = new Map();
+  private spriteMap: Map<string, Pixi.Graphics & GameSprite> = new Map();
+
+  private get defaultLayer() {
+    return this.game?.renderer.defaultLayer ?? "_default";
+  }
 
   line(
     [x1, y1]: Vector,
@@ -18,7 +21,7 @@ export default class Drawing extends BaseEntity implements Entity {
     width = 0.01,
     color = 0xffffff,
     alpha = 1.0,
-    layer: LayerName = "world"
+    layer: string = this.defaultLayer
   ) {
     const sprite = this.getLayerSprite(layer);
     sprite.lineStyle(width, color, alpha);
@@ -32,7 +35,7 @@ export default class Drawing extends BaseEntity implements Entity {
     three: Vector,
     color = 0xff0000,
     alpha = 1.0,
-    layer: LayerName = "world"
+    layer: string = this.defaultLayer
   ) {
     const sprite = this.getLayerSprite(layer);
     sprite.lineStyle();
@@ -41,11 +44,12 @@ export default class Drawing extends BaseEntity implements Entity {
     sprite.endFill();
   }
 
-  getLayerSprite(layerName: LayerName): Pixi.Graphics {
+  getLayerSprite(layerName: string): Pixi.Graphics {
     if (!this.spriteMap.has(layerName)) {
       const sprite = new Pixi.Graphics();
+      (sprite as GameSprite).layerName = layerName;
       this.spriteMap.set(layerName, sprite);
-      this.game!.renderer.add(sprite, layerName);
+      this.game!.renderer.addSprite(sprite);
     }
     return this.spriteMap.get(layerName)!;
   }
@@ -57,8 +61,8 @@ export default class Drawing extends BaseEntity implements Entity {
   }
 
   onDestroy(game: Game) {
-    for (const [layerName, sprite] of this.spriteMap.entries()) {
-      game.renderer.remove(sprite, layerName);
+    for (const sprite of this.spriteMap.values()) {
+      game.renderer.remove(sprite);
     }
   }
 }

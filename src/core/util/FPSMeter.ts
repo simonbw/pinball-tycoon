@@ -3,6 +3,7 @@ import BaseEntity from "../entity/BaseEntity";
 import Entity, { GameSprite } from "../entity/Entity";
 import Game from "../Game";
 import { Vector } from "../Vector";
+import { LAYERS } from "../../pinball/layers";
 
 export default class FPSMeter extends BaseEntity implements Entity {
   persistent = true;
@@ -19,7 +20,7 @@ export default class FPSMeter extends BaseEntity implements Entity {
       fill: color,
     });
     this.sprite.position.set(...position);
-    this.sprite.layerName = "hud";
+    this.sprite.layerName = LAYERS.hud;
     this.lastUpdate = performance.now();
   }
 

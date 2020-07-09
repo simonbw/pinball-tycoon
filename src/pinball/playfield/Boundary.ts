@@ -4,6 +4,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { GameSprite } from "../../core/entity/Entity";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
+import { LAYERS } from "../layers";
 
 /**
  * The main boundary of the game, makes sure the ball can't possibly be in weird places.
@@ -19,7 +20,7 @@ export default class Boundary extends BaseEntity implements Entity {
     graphics.drawRect(left, top, right - left, bottom - top);
     graphics.endFill();
     this.sprite = graphics;
-    this.sprite.layerName = "world_way_back";
+    this.sprite.layerName = LAYERS.mainfield_bottom;
 
     this.body = new Body({
       mass: 0,

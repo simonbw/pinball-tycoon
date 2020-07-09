@@ -2,7 +2,7 @@ import { Matrix, Point } from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
 import GameRenderer from "./GameRenderer";
 import { Vector } from "../Vector";
-import { LayerInfo } from "./Layers";
+import { LayerInfo } from "./LayerInfo";
 import { lerp, lerpOrSnap } from "../util/MathUtil";
 import Entity from "../entity/Entity";
 
@@ -15,6 +15,8 @@ export default class Camera extends BaseEntity implements Entity {
   z: number;
   angle: number;
   velocity: Vector;
+
+  paralaxScale = 0.1;
 
   constructor(
     renderer: GameRenderer,
@@ -118,24 +120,38 @@ export default class Camera extends BaseEntity implements Entity {
   }
 
   // Creates a transformation matrix to go from screen world space to screen space.
-  getMatrix(depth: number = 1.0): Matrix {
+  getMatrix(depth: number = 1.0, [ax, ay]: Vector = [0, 0]): Matrix {
     const [w, h] = this.getViewportSize();
-    const m = new Matrix();
-    m.translate(-this.x * depth, -this.y * depth);
-    m.scale(this.z * depth, this.z * depth);
-    m.rotate(this.angle);
-    m.translate(w / 2.0, h / 2.0);
-    return m;
+    const { x: cx, y: cy, z, angle } = this;
+    const scale = z * depth;
+
+    return (
+      new Matrix()
+        // align the anchor with the camera
+        .translate(ax * depth, ay * depth)
+        .translate(-cx * depth, -cy * depth)
+        // do all the scaling and rotating
+        .scale(scale, scale)
+        .rotate(angle)
+        // put it back
+        .translate(-ax * scale, -ay * scale)
+        // Put it on the center of the screen
+        .translate(w / 2.0, h / 2.0)
+    );
+  }
+
+  paralaxToDepth(paralax: number): number {
+    return (paralax - 1.0) * this.paralaxScale * this.z + 1.0;
   }
 
   // Update the properties of a renderer layer to match this camera
-  updateLayer(layerInfo: LayerInfo) {
-    if (layerInfo.scroll !== 0) {
-      // TODO: Actually scroll by different amounts
-      const layer = layerInfo.layer;
-      [layer.x, layer.y] = this.toScreen([0, 0]);
-      layer.rotation = this.angle;
-      layer.scale.set(this.z);
+  updateLayer(layer: LayerInfo) {
+    const container = layer.container;
+    if (layer.paralax !== 0) {
+      const depth = this.paralaxToDepth(layer.paralax);
+      if (depth !== 0) {
+        container.transform.setFromMatrix(this.getMatrix(depth, layer.anchor));
+      }
     }
   }
 }

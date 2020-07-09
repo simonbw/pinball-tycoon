@@ -1,7 +1,6 @@
 import p2, { Constraint, Spring } from "p2";
 import Pixi, { TilingSprite } from "pixi.js";
 import Game from "../Game";
-import { LayerName } from "../graphics/Layers";
 import { Vector } from "../Vector";
 import Entity from "./Entity";
 

@@ -22,10 +22,13 @@ import Speedometer from "./ui/Speedometer";
 import SlowMoController from "./controllers/SlowMoController";
 import MagicBallController from "./controllers/MagicBallController";
 import Light from "./lighting/Light";
+import { Vector } from "../core/Vector";
+
+export const TABLE_CENTER: Vector = [0, 50];
 
 export function setupTable(game: Game) {
-  game.camera.center([0, 50]);
-  game.camera.z = 7; // TODO: WHY DOES THIS HAVE TO BE 7?!?!
+  game.camera.center(TABLE_CENTER);
+  game.camera.z = 7;
 
   // Overhead Lights
   game.addEntities([
@@ -45,7 +48,7 @@ export function setupTable(game: Game) {
   game.addEntity(new LogicBoard());
   game.addEntity(new Soundboard());
   game.addEntity(new NudgeController());
-  game.addEntity(new CameraController());
+  game.addEntity(new CameraController(TABLE_CENTER));
   game.addEntity(new SlowMoController());
   game.addEntity(new MagicBallController());
 

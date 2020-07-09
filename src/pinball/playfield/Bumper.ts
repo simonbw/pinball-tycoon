@@ -2,11 +2,11 @@ import { Body, Circle } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { GameSprite } from "../../core/entity/Entity";
-import { LayerName } from "../../core/graphics/Layers";
 import { clamp } from "../../core/util/MathUtil";
-import { rNormal, rSign, rUniform, rBool } from "../../core/util/Random";
+import { rBool, rNormal, rSign, rUniform } from "../../core/util/Random";
 import { Vector } from "../../core/Vector";
 import ParticleSystem from "../effects/ParticleSystem";
+import { LAYERS } from "../layers";
 import Light from "../lighting/Light";
 import { playSoundEvent } from "../Soundboard";
 import { isBall } from "./Ball";
@@ -41,7 +41,7 @@ export default class Bumper extends BaseEntity implements Entity {
     this.sprite.drawCircle(0, 0, gSize * 0.6);
     this.sprite.endFill();
     this.sprite.position.set(...position);
-    this.sprite.layerName = "world_front";
+    this.sprite.layerName = LAYERS.mainfield_top;
 
     this.body = new Body({
       position: position,

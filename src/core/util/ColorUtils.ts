@@ -41,21 +41,17 @@ export function colorRange(from: number, to: number, steps: number): number[] {
   return out;
 }
 
-export function colorFade(
-  from: number,
-  to: number,
-  percentFrom: number
-): number {
+export function colorFade(from: number, to: number, percentTo: number): number {
   const rgbFrom = hexToRGB(from);
   const rgbTo = hexToRGB(to);
 
-  rgbFrom.r = Math.floor(rgbFrom.r * percentFrom);
-  rgbFrom.g = Math.floor(rgbFrom.g * percentFrom);
-  rgbFrom.b = Math.floor(rgbFrom.b * percentFrom);
+  rgbFrom.r = Math.floor(rgbFrom.r * (1.0 - percentTo));
+  rgbFrom.g = Math.floor(rgbFrom.g * (1.0 - percentTo));
+  rgbFrom.b = Math.floor(rgbFrom.b * (1.0 - percentTo));
 
-  rgbTo.r = Math.floor(rgbTo.r * (1 - percentFrom));
-  rgbTo.g = Math.floor(rgbTo.g * (1 - percentFrom));
-  rgbTo.b = Math.floor(rgbTo.b * (1 - percentFrom));
+  rgbTo.r = Math.floor(rgbTo.r * percentTo);
+  rgbTo.g = Math.floor(rgbTo.g * percentTo);
+  rgbTo.b = Math.floor(rgbTo.b * percentTo);
 
   return rgbObjToHex(rgbFrom) + rgbObjToHex(rgbTo);
 }

@@ -1,17 +1,18 @@
 import { Body, Capsule } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { Vector } from "../../core/Vector";
 import { WithBallCollisionInfo, BallCollisionInfo } from "../BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 import { colorFade } from "../../core/util/ColorUtils";
+import { LAYERS } from "../layers";
 
 export default class Wall extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   tags = ["wall"];
-  sprite = new Graphics();
+  sprites: GameSprite[];
   ballCollisionInfo: BallCollisionInfo;
 
   constructor(
@@ -25,15 +26,21 @@ export default class Wall extends BaseEntity
     const delta = end.sub(start);
     const center = start.add(delta.mul(0.5));
 
-    this.sprite.moveTo(0, 0);
-    this.sprite.lineStyle(width, color);
-    this.sprite.lineTo(delta.x, delta.y);
-    this.sprite.lineStyle();
-    this.sprite.beginFill(color);
-    this.sprite.drawCircle(0, 0, width / 2);
-    this.sprite.drawCircle(delta.x, delta.y, width / 2);
-    this.sprite.endFill();
-    this.sprite.position.set(...start);
+    const topSprite = this.makeSprite(delta, width, color);
+    topSprite.position.set(...start);
+    topSprite.layerName = LAYERS.mainfield_top;
+
+    const middleColor = colorFade(color, 0x000000, 0.2);
+    const middleSprite = this.makeSprite(delta, width, middleColor);
+    middleSprite.position.set(...start);
+    middleSprite.layerName = LAYERS.mainfield_middle;
+
+    const bottomColor = colorFade(color, 0x000000, 0.4);
+    const bottomSprite = this.makeSprite(delta, width, bottomColor);
+    bottomSprite.position.set(...start);
+    bottomSprite.layerName = LAYERS.mainfield_bottom;
+
+    this.sprites = [topSprite, middleSprite, bottomSprite];
 
     this.body = new Body({
       position: center,
@@ -62,8 +69,18 @@ export default class Wall extends BaseEntity
       },
     };
   }
-}
 
-export function isWall(e?: Entity): e is Wall {
-  return e instanceof Wall;
+  makeSprite(delta: Vector, width: number, color: number): GameSprite {
+    const graphics = new Graphics();
+    graphics.moveTo(0, 0);
+    graphics.lineStyle(width, color);
+    graphics.lineTo(delta.x, delta.y);
+    graphics.lineStyle();
+    graphics.beginFill(color);
+    graphics.drawCircle(0, 0, width / 2);
+    graphics.drawCircle(delta.x, delta.y, width / 2);
+    graphics.endFill();
+
+    return graphics;
+  }
 }

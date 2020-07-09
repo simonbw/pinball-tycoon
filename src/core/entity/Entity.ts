@@ -1,7 +1,6 @@
 import p2 from "p2";
 import * as Pixi from "pixi.js";
 import Game from "../Game";
-import { LayerName } from "../graphics/Layers";
 import GameEventHandler from "./GameEventHandler";
 import IOEventHandler from "./IOEventHandler";
 import PhysicsHandler from "./PhysicsHandler";
@@ -12,7 +11,7 @@ export interface WithOwner {
 
 export interface GameSprite extends Pixi.DisplayObject, WithOwner {
   /** Layer to draw the sprite on */
-  layerName?: LayerName;
+  layerName?: string;
 }
 
 /**
