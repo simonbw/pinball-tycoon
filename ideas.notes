@@ -42,17 +42,18 @@ Extended Collisions:
 Misc:
   [√] Display controls
   [ ] Better flipper shape
+  [ ] Use consistent real-world units i.e. inches
 
 Controls
   [ ] More accurate flipper timing by using sub-frame timing
   [ ] Keyboard control configuration
   [ ] Gamepad Control
-  [ ] Up flipper should have more resistance to ball hitting it
+  [√] Up flipper should have more resistance to ball hitting it
 
 Other Features
   [√] Nudging
   [ ] Tilt sensor
-  [ ] Slowmo bar
+  [√] Slowmo bar
   [ ] Multiple z-levels
 
 Table Features
@@ -70,7 +71,7 @@ Table Features
   [ ] Bowl
   [ ] Loop
   [ ] Rail
-  [ ] Catch and spit
+  [ ] Wormhole/tunnel/catch+spit
   [ ] Spinner
   [ ] Merry-go-round
   [ ] Lights

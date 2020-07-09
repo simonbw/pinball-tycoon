@@ -22,18 +22,18 @@ export default class CameraController extends BaseEntity implements Entity {
       camera.z *= 1.0 - ZOOM_SPEED;
     }
 
-    // if (io.keyIsDown("KeyI")) {
-    //   camera.y -= PAN_SPEED / camera.z;
-    // }
-    // if (io.keyIsDown("KeyK")) {
-    //   camera.y += PAN_SPEED / camera.z;
-    // }
-    // if (io.keyIsDown("KeyJ")) {
-    //   camera.x -= PAN_SPEED / camera.z;
-    // }
-    // if (io.keyIsDown("KeyL")) {
-    //   camera.x += PAN_SPEED / camera.z;
-    // }
+    if (io.keyIsDown("KeyI")) {
+      camera.y -= PAN_SPEED / camera.z;
+    }
+    if (io.keyIsDown("KeyK")) {
+      camera.y += PAN_SPEED / camera.z;
+    }
+    if (io.keyIsDown("KeyJ")) {
+      camera.x -= PAN_SPEED / camera.z;
+    }
+    if (io.keyIsDown("KeyL")) {
+      camera.x += PAN_SPEED / camera.z;
+    }
   }
 
   handlers = {

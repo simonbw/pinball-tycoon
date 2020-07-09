@@ -1,8 +1,10 @@
-varying vec2 vTextureCoord;
+#define NUM_LIGHTS 32
 
+varying vec2 vTextureCoord;
+varying vec2 vFilterCoord;
 uniform sampler2D uSampler;
 
-#define NUM_LIGHTS 32
+uniform vec2 ballCoords;
 
 uniform vec3 vLightPosition[NUM_LIGHTS];
 uniform vec3 vLightColor[NUM_LIGHTS];
@@ -52,7 +54,7 @@ vec3 applyPointLight(vec3 n, SphereLight light, Material material) {
 }
 
 void main() {
-  vec2 uv = (vTextureCoord - vec2(0.5, 0.5)) * 2.0;
+  vec2 uv = (vFilterCoord - 0.5) * 2.0;
   float h = sqrt(1.0 - uv.x * uv.x - uv.y * uv.y);
   vec3 pos = vec3(uv, h);
   vec3 n = normalize(pos);
@@ -81,7 +83,8 @@ void main() {
 
   float r = length(uv);
   float a = clamp(16.0 - 16.0 * r, 0.0, 1.0); // fuzz the edges a bit
-  
   gl_FragColor *= a;
+
+  // gl_FragColor = texture2D(uSampler, vTextureCoord);
 }
 

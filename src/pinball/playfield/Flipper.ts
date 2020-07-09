@@ -136,7 +136,7 @@ export default class Flipper extends BaseEntity
     this.sprite.x = this.body.position[0];
     this.sprite.y = this.body.position[1];
 
-    this.sprite.tint = this.locked ? 0x888888 : 0xffffff;
+    this.sprite.tint = this.locked ? 0xeeeeee : 0xffffff;
   }
 
   shouldLock() {

@@ -14,6 +14,7 @@ import PauseController from "./pinball/controllers/PauseController";
 // TODO: Font loading somewhere else
 // @ts-ignore
 import dsDigitalUrl from "../resources/fonts/ds-digi.ttf";
+import makePerspectiveFilter from "./pinball/effects/PerspectiveFilter";
 
 declare global {
   interface Window {
@@ -46,6 +47,7 @@ window.addEventListener("load", async () => {
   game.addEntity(
     new FPSMeter([5, game.renderer.pixiRenderer.height / 2 - 20], 0xffffff)
   );
+
   setupTable(game);
   game.start();
 });

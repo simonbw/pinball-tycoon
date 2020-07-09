@@ -74,7 +74,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
     if (!this.game?.paused) {
       switch (key) {
         case getBinding("START_GAME"):
-          this.game!.dispatch({ type: "gameStart" });
+          if (!this.gameStarted) {
+            this.game!.dispatch({ type: "gameStart" });
+          }
           break;
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperUp" });
@@ -114,7 +116,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
 
 /** Type guard for ball entity */
 export function isLogicBoard(e?: Entity): e is LogicBoard {
-  return Boolean(e && e.tags && e.tags.indexOf("logic_board") >= 0);
+  return e instanceof LogicBoard;
 }
 
 interface NewBallEvent {

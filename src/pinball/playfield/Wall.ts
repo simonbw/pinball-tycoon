@@ -63,3 +63,7 @@ export default class Wall extends BaseEntity
     };
   }
 }
+
+export function isWall(e?: Entity): e is Wall {
+  return e instanceof Wall;
+}
