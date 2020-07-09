@@ -36,6 +36,8 @@ export default class FPSMeter extends BaseEntity implements Entity {
 
     const fps = (1000 / this.averageDuration).toFixed(0);
     const bodies = this.game!.world.bodies.length;
-    this.sprite.text = `fps: ${fps} | bodies: ${bodies}`;
+
+    const sprites = this.game!.renderer.spriteCount;
+    this.sprite.text = `fps: ${fps} | bodies: ${bodies} | sprites: ${sprites}`;
   }
 }

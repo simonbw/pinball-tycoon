@@ -257,11 +257,11 @@ export default class Game {
       this.io.removeHandler(entity);
 
       if (entity.sprite) {
-        this.renderer.remove(entity.sprite);
+        this.renderer.removeSprite(entity.sprite);
       }
       if (entity.sprites) {
         for (const sprite of entity.sprites) {
-          this.renderer.remove(sprite);
+          this.renderer.removeSprite(sprite);
         }
       }
       if (entity.body) {

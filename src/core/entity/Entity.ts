@@ -39,9 +39,10 @@ export default interface Entity
   /** True if this entity will stop updating when the game is paused. */
   readonly pausable: boolean;
 
-  /** The object that gets added to */
+  /** The pixi sprite that gets added/removed from the stage automatically */
   readonly sprite?: GameSprite;
 
+  /** The pixi sprites that gets added/removed from the stage automatically */
   readonly sprites?: readonly GameSprite[];
 
   /** Physics body that gets automatically added/removed from the world */

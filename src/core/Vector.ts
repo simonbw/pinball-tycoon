@@ -1,3 +1,5 @@
+import { lerp } from "./util/MathUtil";
+
 export type Vector = [number, number];
 
 declare global {
@@ -47,6 +49,10 @@ declare global {
     inormalize(): Vector;
     /** Return a new vector with the same values as this one */
     clone(): Vector;
+    /** Return a vector that is between this and other */
+    lerp(other: Vector, amount: number): Vector;
+    /** (In place) Return a vector that is between this and other */
+    ilerp(other: Vector, amount: number): Vector;
   }
 }
 
@@ -157,6 +163,16 @@ export function polyfillArrayAsVector(Array: any) {
 
   Array.prototype.clone = function () {
     return [this[0], this[1]];
+  };
+
+  Array.prototype.lerp = function (other: Vector, t: 0) {
+    return [lerp(this[0], other[0], t), lerp(this[1], other[1], t)];
+  };
+
+  Array.prototype.ilerp = function (other: Vector, t: 0) {
+    this[0] = lerp(this[0], other[0], t);
+    this[1] = lerp(this[1], other[1], t);
+    return this;
   };
 
   /**

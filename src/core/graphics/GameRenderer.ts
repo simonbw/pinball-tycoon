@@ -9,6 +9,7 @@ export default class GameRenderer {
   private layerInfos: Map<string, LayerInfo> = new Map();
   private cursor: string = "none";
   defaultLayer: string = "_default";
+  spriteCount: number = 0;
 
   pixiRenderer: Pixi.Renderer;
   stage: Pixi.Container;
@@ -84,13 +85,15 @@ export default class GameRenderer {
   addSprite(sprite: GameSprite): GameSprite {
     const layerName = sprite.layerName ?? this.defaultLayer;
     this.getLayerInfo(layerName).container.addChild(sprite);
+    this.spriteCount += 1;
     return sprite;
   }
 
   // Remove a child from a specific layer.
-  remove(sprite: GameSprite): void {
+  removeSprite(sprite: GameSprite): void {
     const layerName = sprite.layerName ?? this.defaultLayer;
     this.getLayerInfo(layerName).container.removeChild(sprite);
+    this.spriteCount -= 1;
   }
 
   addFilter(filter: Pixi.Filter, layerName: string): void {

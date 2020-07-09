@@ -20,7 +20,7 @@ export default class Boundary extends BaseEntity implements Entity {
     graphics.drawRect(left, top, right - left, bottom - top);
     graphics.endFill();
     this.sprite = graphics;
-    this.sprite.layerName = LAYERS.mainfield_bottom;
+    this.sprite.layerName = LAYERS.mainfield_1;
 
     this.body = new Body({
       mass: 0,

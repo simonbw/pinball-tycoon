@@ -10,6 +10,7 @@ import Entity from "./Entity";
 export default abstract class BaseEntity implements Entity {
   game: Game | null = null;
   sprite?: Pixi.DisplayObject;
+  sprites?: Pixi.DisplayObject[];
   body?: p2.Body;
   pausable: boolean = true;
   persistent: boolean = false;
@@ -78,9 +79,9 @@ export default abstract class BaseEntity implements Entity {
     return child;
   }
 
-  wait(delay: number): Promise<void> {
+  wait(delay: number, onTick?: (dt: number) => void): Promise<void> {
     return new Promise((resolve) => {
-      const timer = new Timer(delay, () => resolve());
+      const timer = new Timer(delay, () => resolve(), onTick);
       try {
         this.addChild(timer);
       } catch (e) {
@@ -102,18 +103,25 @@ export default abstract class BaseEntity implements Entity {
 // TODO: Implement this some other way?
 class Timer extends BaseEntity implements Entity {
   timeRemaining: number = 0;
-  effect: () => void;
+  endEffect?: () => void;
+  duringEffect?: (dt: number) => void;
 
-  constructor(delay: number, effect: () => void) {
+  constructor(
+    delay: number,
+    endEffect?: () => void,
+    duringEffect?: (dt: number) => void
+  ) {
     super();
     this.timeRemaining = delay;
-    this.effect = effect;
+    this.endEffect = endEffect;
+    this.duringEffect = duringEffect;
   }
 
   onTick(dt: number) {
     this.timeRemaining -= dt;
+    this.duringEffect?.(dt);
     if (this.timeRemaining <= 0) {
-      this.effect();
+      this.endEffect?.();
       this.destroy();
     }
   }

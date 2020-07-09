@@ -26,21 +26,32 @@ export default class Wall extends BaseEntity
     const delta = end.sub(start);
     const center = start.add(delta.mul(0.5));
 
-    const topSprite = this.makeSprite(delta, width, color);
-    topSprite.position.set(...start);
-    topSprite.layerName = LAYERS.mainfield_top;
+    const topSprite = this.makeSprite(delta, width, color, start);
+    topSprite.layerName = LAYERS.mainfield_5;
 
-    const middleColor = colorFade(color, 0x000000, 0.2);
-    const middleSprite = this.makeSprite(delta, width, middleColor);
-    middleSprite.position.set(...start);
-    middleSprite.layerName = LAYERS.mainfield_middle;
+    const middleColor1 = colorFade(color, 0x000000, 0.1);
+    const middleSprite1 = this.makeSprite(delta, width, middleColor1, start);
+    middleSprite1.layerName = LAYERS.mainfield_4;
+
+    const middleColor2 = colorFade(color, 0x000000, 0.2);
+    const middleSprite2 = this.makeSprite(delta, width, middleColor2, start);
+    middleSprite2.layerName = LAYERS.mainfield_3;
+
+    const middleColor3 = colorFade(color, 0x000000, 0.3);
+    const middleSprite3 = this.makeSprite(delta, width, middleColor3, start);
+    middleSprite3.layerName = LAYERS.mainfield_2;
 
     const bottomColor = colorFade(color, 0x000000, 0.4);
-    const bottomSprite = this.makeSprite(delta, width, bottomColor);
-    bottomSprite.position.set(...start);
-    bottomSprite.layerName = LAYERS.mainfield_bottom;
+    const bottomSprite = this.makeSprite(delta, width, bottomColor, start);
+    bottomSprite.layerName = LAYERS.mainfield_1;
 
-    this.sprites = [topSprite, middleSprite, bottomSprite];
+    this.sprites = [
+      topSprite,
+      middleSprite1,
+      middleSprite2,
+      middleSprite3,
+      bottomSprite,
+    ];
 
     this.body = new Body({
       position: center,
@@ -70,7 +81,12 @@ export default class Wall extends BaseEntity
     };
   }
 
-  makeSprite(delta: Vector, width: number, color: number): GameSprite {
+  makeSprite(
+    delta: Vector,
+    width: number,
+    color: number,
+    position: Vector
+  ): GameSprite {
     const graphics = new Graphics();
     graphics.moveTo(0, 0);
     graphics.lineStyle(width, color);
@@ -80,7 +96,7 @@ export default class Wall extends BaseEntity
     graphics.drawCircle(0, 0, width / 2);
     graphics.drawCircle(delta.x, delta.y, width / 2);
     graphics.endFill();
-
+    graphics.position.set(...position);
     return graphics;
   }
 }

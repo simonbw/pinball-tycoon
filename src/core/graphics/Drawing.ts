@@ -62,7 +62,7 @@ export default class Drawing extends BaseEntity implements Entity {
 
   onDestroy(game: Game) {
     for (const sprite of this.spriteMap.values()) {
-      game.renderer.remove(sprite);
+      game.renderer.removeSprite(sprite);
     }
   }
 }

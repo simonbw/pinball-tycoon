@@ -48,7 +48,7 @@ export default class Ball extends BaseEntity implements Entity {
     this.sprite.endFill();
     this.sprite.filters = [this.ballShaderFilter];
     this.sprite.scale.set(1.0 / RESAMPLE);
-    this.sprite.layerName = LAYERS.mainfield_middle;
+    this.sprite.layerName = LAYERS.mainfield_3;
   }
 
   makeBody() {

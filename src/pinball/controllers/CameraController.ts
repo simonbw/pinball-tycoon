@@ -5,19 +5,21 @@ import { Vector } from "../../core/Vector";
 import { KeyCode } from "../../core/io/Keys";
 import { isBall } from "../playfield/Ball";
 import { updateHeadPosition } from "../layers";
+import { lerp, clamp } from "../../core/util/MathUtil";
 
 const NUDGE_SCALE = 1 / 2.8;
 const ZOOM_SPEED = 0.005;
 const PAN_SPEED = 2.0;
 
 export default class CameraController extends BaseEntity implements Entity {
-  tableCenter: Vector;
+  defaultPos: Vector;
   manual: boolean = false;
-  private nudgeVelocity: Vector = [0, 0];
+  private nudgeOffset: Vector = [0, 0];
 
   constructor(tableCenter: Vector) {
     super();
-    this.tableCenter = tableCenter;
+    this.defaultPos = tableCenter;
+    updateHeadPosition([0, 30]);
   }
 
   onRender() {
@@ -30,20 +32,25 @@ export default class CameraController extends BaseEntity implements Entity {
 
     const ball = this.game.entities.getTagged("ball")[0];
     if (isBall(ball)) {
-      updateHeadPosition([0, 30]);
+      const ballPos = ball.getPosition();
+      const center = this.defaultPos.add(this.nudgeOffset);
+      camera.center(center);
     } else {
-      updateHeadPosition([0, 30]);
+      const center = this.defaultPos.add(this.nudgeOffset);
+      camera.center(center);
     }
+    // TODO: NUDGE!
   }
 
   handlers = {
     nudge: async (e: NudgeEvent) => {
       const camera = this.game!.camera;
-      camera.velocity.set(e.impulse.mul(NUDGE_SCALE));
-      await this.wait(e.duration / 2);
-      camera.velocity.set(e.impulse.mul(-NUDGE_SCALE));
-      await this.wait(e.duration / 2);
-      camera.velocity.set(0, 0);
+      await this.wait(e.duration / 2, (dt) =>
+        this.nudgeOffset.iadd(e.impulse.mul(NUDGE_SCALE * dt))
+      );
+      await this.wait(e.duration / 2, (dt) =>
+        this.nudgeOffset.iadd(e.impulse.mul(-NUDGE_SCALE * dt))
+      );
     },
     onKeyDown: (keyCode: KeyCode) => {
       if (keyCode === "KeyU") {

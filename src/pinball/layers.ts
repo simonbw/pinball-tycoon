@@ -11,9 +11,11 @@ const layers = {
   // Draw the thing behind everything else
   table_base: new LayerInfo({ paralax: 0.95, anchor }),
   // The ones to actually use
-  mainfield_bottom: new LayerInfo({ paralax: 0.95, anchor }),
-  mainfield_middle: new LayerInfo({ paralax: 1.0, anchor }),
-  mainfield_top: new LayerInfo({ paralax: 1.05, anchor }),
+  mainfield_1: new LayerInfo({ paralax: 0.95, anchor }),
+  mainfield_2: new LayerInfo({ paralax: 0.975, anchor }),
+  mainfield_3: new LayerInfo({ paralax: 1.0, anchor }),
+  mainfield_4: new LayerInfo({ paralax: 1.025, anchor }),
+  mainfield_5: new LayerInfo({ paralax: 1.05, anchor }),
   // Upper
   upperfield_bottom: new LayerInfo({ paralax: 1.1, anchor }),
   upperfield_middle: new LayerInfo({ paralax: 1.1, anchor }),
@@ -29,7 +31,7 @@ export function initializeLayers(game: Game) {
   for (const [name, layerInfo] of Object.entries(layers)) {
     game.renderer.createLayer(name, layerInfo);
   }
-  game.renderer.defaultLayer = LAYERS.mainfield_middle;
+  game.renderer.defaultLayer = LAYERS.mainfield_3;
   game.camera.paralaxScale = 0.035;
 }
 
