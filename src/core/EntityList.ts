@@ -61,8 +61,31 @@ export default class EntityList implements Iterable<Entity> {
     }
   }
 
-  getTagged(key: string): ReadonlyArray<Entity> {
-    return this.tagged.get(key);
+  /** Returns all entities with the given tag. */
+  getTagged(tag: string): readonly Entity[] {
+    return this.tagged.get(tag);
+  }
+
+  /** Returns all entities that have all the given tags */
+  getTaggedAll(...tags: string[]): Entity[] {
+    if (tags.length === 0) {
+      return [];
+    }
+    // TODO: this can be improved both for memory and speed
+    return this.getTagged(tags[0]).filter((e) =>
+      tags.every((t) => e.tags!.includes(t))
+    );
+  }
+
+  /** Returns all entities that have at least one of the given tags */
+  getTaggedAny(...tags: string[]): Entity[] {
+    const result = new Set<Entity>();
+    for (const tag of tags) {
+      for (const e of this.getTagged(tag)) {
+        result.add(e);
+      }
+    }
+    return Array.from(result);
   }
 
   getHandlers(eventType: string): ReadonlyArray<Entity> {

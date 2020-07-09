@@ -2,41 +2,43 @@ import { Body, Circle } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
 import { clamp } from "../../core/util/MathUtil";
+import { rNormal, rSign, rUniform, rBool } from "../../core/util/Random";
 import { Vector } from "../../core/Vector";
-import { Materials } from "./Materials";
+import ParticleSystem from "../effects/ParticleSystem";
+import Light from "../lighting/Light";
+import { playSoundEvent } from "../Soundboard";
 import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
-import { playSoundEvent } from "../Soundboard";
-import { LayerName } from "../../core/graphics/Layers";
-import Light from "../lighting/Light";
+import { Materials } from "./Materials";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
 const EXPAND_AMOUNT = 0.15;
-const ANIMATION_DURATION = 0.1;
+const ANIMATION_DURATION = 0.2;
+const COLOR_1 = 0xffbb00;
+const COLOR_2 = 0xdd2200;
 
 const RESAMPLE = 4.0;
 
 export default class Bumper extends BaseEntity implements Entity {
   layer: LayerName = "world_front";
   lastHit: number = -Infinity;
+  body: Body;
 
   constructor(position: Vector, size: number = 1.7) {
     super();
     const graphics = new Graphics();
 
-    const color1 = 0xffbb00;
-    const color2 = 0xdd2200;
-
     const gSize = size * RESAMPLE;
-    graphics.beginFill(color1);
+    graphics.beginFill(COLOR_1);
     graphics.drawCircle(0, 0, gSize);
     graphics.endFill();
-    graphics.beginFill(color2);
+    graphics.beginFill(COLOR_2);
     graphics.drawCircle(0, 0, gSize * 0.8);
     graphics.endFill();
-    graphics.beginFill(color1);
+    graphics.beginFill(COLOR_1);
     graphics.drawCircle(0, 0, gSize * 0.6);
     graphics.endFill();
 
@@ -54,16 +56,16 @@ export default class Bumper extends BaseEntity implements Entity {
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
 
-    this.children = [
+    this.addChild(
       new Light({
         position: [position.x, position.y, 1.0],
         power: 1.0,
         linearFade: 0.01,
         quadraticFade: 0.05,
-        color: color1,
+        color: COLOR_1,
         radius: size * 0.0,
-      }),
-    ];
+      })
+    );
   }
 
   onRender() {
@@ -89,6 +91,24 @@ export default class Bumper extends BaseEntity implements Entity {
       ball.body.applyImpulse(impulse);
 
       this.lastHit = this.game!.elapsedTime;
+
+      const swirlDirection = rSign();
+      this.game!.addEntity(
+        new ParticleSystem({
+          position: this.body.position.clone(),
+          count: 50,
+          lifespan: 0.3,
+          getColor: () => (rBool(0.7) ? COLOR_1 : COLOR_2),
+          size: 0.5,
+          grow: 2,
+          swirlFriction: 4.0,
+          friction: 0.1,
+          getSpeed: () => rUniform(20, 50),
+          getSwirl: () => rNormal(30 * swirlDirection, 10.0),
+          getLife: () => rUniform(0.5, 1.0),
+          lifeToAlpha: (life) => life ** 2 / 2.0,
+        })
+      );
     }
   }
 }

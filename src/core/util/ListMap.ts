@@ -26,10 +26,10 @@ export default class ListMap<K, V> {
       const index = array.indexOf(value);
       if (index >= 0) {
         array.splice(index, 1);
+        if (array.length === 0) {
+          this.map.delete(key);
+        }
         return;
-      }
-      if (array.length === 0) {
-        this.map.delete(key);
       }
     }
     throw new Error(`<${key}:${value}> not found`);

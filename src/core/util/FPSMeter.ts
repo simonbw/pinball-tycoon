@@ -2,6 +2,7 @@ import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
 import Entity from "../entity/Entity";
 import Game from "../Game";
+import { Vector } from "../Vector";
 
 export default class FPSMeter extends BaseEntity implements Entity {
   layer: "hud" = "hud";
@@ -12,14 +13,13 @@ export default class FPSMeter extends BaseEntity implements Entity {
   sprite: Pixi.Text;
   slowFrameCount: number = 0;
 
-  constructor() {
+  constructor(position: Vector = [0, 0], color: number = 0x000000) {
     super();
-    this.sprite = new Pixi.Text("Super Pod Racer", {
+    this.sprite = new Pixi.Text("", {
       fontSize: "12px",
-      fill: 0x000000,
+      fill: color,
     });
-    this.sprite.x = 10;
-    this.sprite.y = 10;
+    this.sprite.position.set(...position);
     this.lastUpdate = performance.now();
   }
 
@@ -32,6 +32,9 @@ export default class FPSMeter extends BaseEntity implements Entity {
     const duration = now - this.lastUpdate;
     this.averageDuration = 0.9 * this.averageDuration + 0.1 * duration;
     this.lastUpdate = now;
-    this.sprite.text = String(Math.round(1000 / this.averageDuration));
+
+    const fps = (1000 / this.averageDuration).toFixed(0);
+    const bodies = this.game!.world.bodies.length;
+    this.sprite.text = `fps: ${fps} | bodies: ${bodies}`;
   }
 }

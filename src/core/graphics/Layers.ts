@@ -16,6 +16,7 @@ export class LayerInfo {
 export const Layers = {
   world_way_back: new LayerInfo(1),
   world_back: new LayerInfo(1),
+  ball: new LayerInfo(1),
   world: new LayerInfo(1),
   world_front: new LayerInfo(1),
   world_overlay: new LayerInfo(1),

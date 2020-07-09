@@ -5,7 +5,11 @@ import { IOManager } from "./io/IO";
 import Entity, { WithOwner } from "./entity/Entity";
 import Camera from "./graphics/Camera";
 import EntityList from "./EntityList";
-import ContactList, { ContactInfo } from "./ContactList";
+import ContactList, {
+  ContactInfo,
+  ContactInfoWithEquations,
+} from "./ContactList";
+import { rRound } from "./util/Random";
 
 /**
  * Top Level control structure
@@ -86,7 +90,7 @@ export default class Game {
 
   /** The intended time between ticks in seconds */
   get tickTimestep(): number {
-    return (this.slowMo * this.renderTimestep) / this.tickIterations;
+    return this.renderTimestep / this.tickIterations;
   }
 
   /** Total amount of game time elapsed since starting */
@@ -226,7 +230,9 @@ export default class Game {
     this.lastFrameTime = time;
 
     const dt = this.tickTimestep;
-    for (let i = 0; i < this.tickIterations; i++) {
+    // TODO: Make this deterministic
+    const iterations = rRound(this.tickIterations * this.slowMo);
+    for (let i = 0; i < iterations; i++) {
       this.tick(dt);
       if (!this.paused) {
         this.world.step(dt);
@@ -287,20 +293,6 @@ export default class Game {
     this.cleanupEntities();
   }
 
-  private contacts() {
-    for (const contactInfo of this.contactList.getContacts()) {
-      const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
-      const ownerA = shapeA.owner || bodyA.owner;
-      const ownerB = shapeB.owner || bodyB.owner;
-      if (ownerA?.onContacting) {
-        ownerA.onContacting(ownerB, shapeA, shapeB);
-      }
-      if (ownerB?.onContacting) {
-        ownerB.onContacting(ownerA, shapeB, shapeA);
-      }
-    }
-  }
-
   /** Called after physics. */
   private afterPhysics() {
     this.cleanupEntities();
@@ -322,9 +314,7 @@ export default class Game {
 
   // Handle beginning of collision between things.
   // Fired during narrowphase.
-  private beginContact = (
-    contactInfo: ContactInfo & { contactEquations: ContactEquation[] }
-  ) => {
+  private beginContact = (contactInfo: ContactInfoWithEquations) => {
     this.contactList.beginContact(contactInfo);
     const { shapeA, shapeB, bodyA, bodyB, contactEquations } = contactInfo;
     const ownerA = shapeA.owner || bodyA.owner;
@@ -351,6 +341,20 @@ export default class Game {
       ownerB.onEndContact(ownerA, shapeB, shapeA);
     }
   };
+
+  private contacts() {
+    for (const contactInfo of this.contactList.getContacts()) {
+      const { shapeA, shapeB, bodyA, bodyB, contactEquations } = contactInfo;
+      const ownerA = shapeA.owner || bodyA.owner;
+      const ownerB = shapeB.owner || bodyB.owner;
+      if (ownerA?.onContacting) {
+        ownerA.onContacting(ownerB, shapeA, shapeB, contactEquations);
+      }
+      if (ownerB?.onContacting) {
+        ownerB.onContacting(ownerA, shapeB, shapeA, contactEquations);
+      }
+    }
+  }
 
   // Handle collision between things.
   // Fired after physics step.

@@ -1,7 +1,7 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { Vector, V } from "../../core/Vector";
 import { KeyCode } from "../../core/io/Keys";
+import { Vector } from "../../core/Vector";
 
 const NUDGE_RIGHT_KEY: KeyCode = "Slash";
 const NUDGE_LEFT_KEY: KeyCode = "KeyZ";
@@ -33,16 +33,16 @@ export default class NudgeController extends BaseEntity implements Entity {
     const power = 40;
     switch (key) {
       case NUDGE_LEFT_KEY:
-        this.game!.dispatch(nudgeEvent(V([-power, 0])));
+        this.game!.dispatch(nudgeEvent([-power, 0]));
         break;
       case NUDGE_RIGHT_KEY:
-        this.game!.dispatch(nudgeEvent(V([power, 0])));
+        this.game!.dispatch(nudgeEvent([power, 0]));
         break;
       case NUDGE_UP_LEFT_KEY:
-        this.game!.dispatch(nudgeEvent(V([-power, power])));
+        this.game!.dispatch(nudgeEvent([-power, power]));
         break;
       case NUDGE_UP_RIGHT_KEY:
-        this.game!.dispatch(nudgeEvent(V([power, power])));
+        this.game!.dispatch(nudgeEvent([power, power]));
         break;
     }
   }

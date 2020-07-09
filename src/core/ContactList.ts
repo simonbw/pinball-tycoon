@@ -8,10 +8,14 @@ export interface ContactInfo {
   shapeB: p2.Shape & WithOwner;
 }
 
-export default class ContactList {
-  private contacts: ContactInfo[] = [];
+export interface ContactInfoWithEquations extends ContactInfo {
+  contactEquations: p2.ContactEquation[];
+}
 
-  beginContact(contactInfo: ContactInfo) {
+export default class ContactList {
+  private contacts: ContactInfoWithEquations[] = [];
+
+  beginContact(contactInfo: ContactInfoWithEquations) {
     if (shouldTrack(contactInfo)) {
       this.contacts.push(contactInfo);
     }
@@ -26,7 +30,7 @@ export default class ContactList {
     }
   }
 
-  getContacts(): ReadonlyArray<ContactInfo> {
+  getContacts(): ReadonlyArray<ContactInfoWithEquations> {
     return this.contacts;
   }
 }

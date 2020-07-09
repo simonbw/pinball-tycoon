@@ -1,26 +1,25 @@
+import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
+import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import { Graphics, DEG_TO_RAD } from "pixi.js";
-import {
-  Body,
-  Capsule,
-  RevoluteConstraint,
-  RotationalSpring,
-  Shape,
-  ContactEquation,
-} from "p2";
-import { Vector, V } from "../../core/Vector";
-import Game from "../../core/Game";
-import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
-import { degToRad, clamp } from "../../core/util/MathUtil";
-import { Materials } from "./Materials";
-import { CollisionGroups } from "./Collision";
 import Entity from "../../core/entity/Entity";
-import { isBall } from "./Ball";
-import { playSoundEvent } from "../Soundboard";
+import Game from "../../core/Game";
 import { KeyCode } from "../../core/io/Keys";
+import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
+import {
+  angleDelta,
+  degToRad,
+  polarToVec,
+  radToDeg,
+  reflectX,
+  reflectY,
+} from "../../core/util/MathUtil";
+import { Vector } from "../../core/Vector";
+import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import { CollisionGroups } from "./Collision";
+import { Materials } from "./Materials";
 
-const DOWN_ANGLE = degToRad(-30);
-const UP_ANGLE = degToRad(40);
+const DOWN_ANGLE = degToRad(27);
+const UP_ANGLE = degToRad(-38);
 const LEFT_KEY = "KeyX";
 const RIGHT_KEY = "Period";
 const UP_LOCK_STIFFNESS = 800000;
@@ -29,18 +28,25 @@ const DOWN_STIFFNESS = 30000;
 const DAMPING = 1250;
 const OVEREXTENSION_AMOUNT = degToRad(3);
 const WIDTH = 1.2;
+const MASS = 2.2;
 
 type Side = "left" | "right";
 
-export default class Flipper extends BaseEntity implements Entity {
+export default class Flipper extends BaseEntity
+  implements Entity, WithBallCollisionInfo {
   sprite: Graphics;
   body: Body;
   joint?: RevoluteConstraint;
-  spring?: RotationalSpring;
+  spring!: RotationalSpring;
   downAngle: number;
   upAngle: number;
   key: KeyCode;
   side: Side;
+  locked: boolean = false;
+
+  ballCollisionInfo: BallCollisionInfo = {
+    beginContactSound: "wallHit1",
+  };
 
   constructor(
     position: Vector,
@@ -59,16 +65,18 @@ export default class Flipper extends BaseEntity implements Entity {
         this.key = LEFT_KEY;
         break;
       case "right":
-        this.upAngle = -1 * Math.PI - upAngle;
-        this.downAngle = -1 * Math.PI - downAngle;
+        this.upAngle = reflectX(upAngle) + 2 * Math.PI;
+        this.downAngle = reflectX(downAngle);
         this.key = RIGHT_KEY;
         break;
     }
 
     this.body = new Body({
       position: position,
-      mass: 2.2,
+      mass: MASS,
       angle: this.downAngle + Math.PI / 2,
+      fixedX: true,
+      fixedY: true,
     });
 
     const shape = new Capsule({
@@ -96,21 +104,17 @@ export default class Flipper extends BaseEntity implements Entity {
   }
 
   onAdd(game: Game) {
-    this.joint = new RevoluteConstraint(this.body, game.ground, {
+    this.joint = new RevoluteConstraint(game.ground, this.body, {
       worldPivot: this.body.position,
     });
     if (this.side === "left") {
-      this.joint.setLimits(this.downAngle, this.upAngle + OVEREXTENSION_AMOUNT);
-    } else {
       this.joint.setLimits(this.upAngle - OVEREXTENSION_AMOUNT, this.downAngle);
+    } else {
+      this.joint.setLimits(this.downAngle, this.upAngle + OVEREXTENSION_AMOUNT);
     }
-    this.joint.setStiffness(10 ** 32);
-    this.joint.setRelaxation(0);
-    this.joint.upperLimitEnabled = true;
-    this.joint.lowerLimitEnabled = true;
     this.constraints = [this.joint];
 
-    this.spring = new DampedRotationalSpring(this.body, game.ground, {
+    this.spring = new DampedRotationalSpring(game.ground, this.body, {
       stiffness: DOWN_STIFFNESS,
       damping: DAMPING,
       restAngle: this.downAngle,
@@ -119,33 +123,50 @@ export default class Flipper extends BaseEntity implements Entity {
   }
 
   onRender() {
-    this.sprite.angle = this.body.angle / DEG_TO_RAD;
+    const p = this.body.position;
+    const up = polarToVec(this.upAngle, 6.0);
+    const down = polarToVec(this.downAngle, 6.0);
+
+    this.sprite.angle = radToDeg(this.body.angle);
     this.sprite.x = this.body.position[0];
     this.sprite.y = this.body.position[1];
+
+    this.sprite.tint = this.locked ? 0x888888 : 0xffffff;
+  }
+
+  shouldLock() {
+    const angle = this.body.angle;
+    const targetAngle = this.spring.restAngle;
+    const speed = Math.abs(this.body.angularVelocity);
+    const offset = Math.abs(angleDelta(angle, targetAngle));
+    return offset < 0.05 && speed < 0.5;
+  }
+
+  lock() {
+    this.locked = true;
+    this.body.type = Body.STATIC;
+    this.body.angularVelocity = 0;
+    this.body.updateMassProperties();
+  }
+
+  unlock() {
+    this.locked = false;
+    this.body.type = Body.DYNAMIC;
+    this.body.mass = MASS;
+    this.body.updateMassProperties();
   }
 
   onTick() {
-    if (this.game!.io.keyIsDown(this.key)) {
-      this.spring!.restAngle = this.upAngle;
-      this.spring!.stiffness = UP_STIFFNESS;
-    } else {
-      this.spring!.stiffness = DOWN_STIFFNESS;
-      this.spring!.restAngle = this.downAngle;
-    }
-  }
+    const engaged = this.game!.io.keyIsDown(this.key);
 
-  onBeginContact(
-    ball: Entity,
-    _: Shape,
-    __: Shape,
-    contactEquations: ContactEquation[]
-  ) {
-    if (isBall(ball)) {
-      const eq = contactEquations[0];
-      const impact = Math.abs(eq.getVelocityAlongNormal());
-      const pan = clamp(ball.getPosition()[0] / 40, -0.5, 0.5);
-      const gain = clamp(impact / 50) ** 2;
-      this.game!.dispatch(playSoundEvent("flipperHit", { pan, gain }));
+    this.spring.restAngle = engaged ? this.upAngle : this.downAngle;
+    this.spring.stiffness = engaged ? UP_STIFFNESS : DOWN_STIFFNESS;
+
+    const shouldLock = this.shouldLock();
+    if (!this.locked && shouldLock) {
+      this.lock();
+    } else if (this.locked && !shouldLock) {
+      this.unlock();
     }
   }
 }

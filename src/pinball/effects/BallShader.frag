@@ -1,11 +1,15 @@
 varying vec2 vTextureCoord;
 
-uniform vec3 vLightPosition[8];
-uniform vec3 vLightColor[8];
-uniform float fLightPower[8];
-uniform float fLightLinearFade[8];
-uniform float fLightQuadraticFade[8];
-uniform float fLightRadius[8];
+uniform sampler2D uSampler;
+
+#define NUM_LIGHTS 32
+
+uniform vec3 vLightPosition[NUM_LIGHTS];
+uniform vec3 vLightColor[NUM_LIGHTS];
+uniform float fLightPower[NUM_LIGHTS];
+uniform float fLightLinearFade[NUM_LIGHTS];
+uniform float fLightQuadraticFade[NUM_LIGHTS];
+uniform float fLightRadius[NUM_LIGHTS];
 
 uniform vec3 vAmbientLightColor;
 uniform vec3 vMaterialDiffuseColor;
@@ -42,6 +46,8 @@ vec3 applyPointLight(vec3 n, SphereLight light, Material material) {
   vec3 diffuse = material.diffuseColor * light.color * light.power * cosTheta / divisor;
   vec3 specular = material.specularColor * light.color * pow(cosAlpha, material.shininess) / divisor;
   
+  // TODO: Blinn-phong
+
   return diffuse + specular;
 }
 
@@ -61,7 +67,7 @@ void main() {
   gl_FragColor.xyz = material.ambientColor;
   gl_FragColor.a = 1.0;
 
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < NUM_LIGHTS; i++) {
     SphereLight light = SphereLight(
       vLightPosition[i],
       vLightColor[i],
@@ -74,7 +80,7 @@ void main() {
   }
 
   float r = length(uv);
-  float a = clamp(6.0 - 6.0 * r, 0.0, 1.0); // fuzz the edges a bit
+  float a = clamp(16.0 - 16.0 * r, 0.0, 1.0); // fuzz the edges a bit
   
   gl_FragColor *= a;
 }

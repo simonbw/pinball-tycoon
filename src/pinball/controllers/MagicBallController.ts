@@ -1,8 +1,8 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Ball, { isBall } from "../playfield/Ball";
-import { V } from "../../core/Vector";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
+import { Vector } from "../../core/Vector";
 
 const FORCE = 150;
 const GRAVITY_COMP = 132;
@@ -14,7 +14,7 @@ const KEY_UP: KeyCode = "ArrowUp";
 const KEY_RIGHT: KeyCode = "ArrowRight";
 const KEY_DOWN: KeyCode = "ArrowDown";
 
-const RESET_POSITION = V([26, 90]);
+const RESET_POSITION: Vector = [26, 90];
 
 /** Magically control the ball to put it where we want it */
 export default class MagicBallController extends BaseEntity implements Entity {

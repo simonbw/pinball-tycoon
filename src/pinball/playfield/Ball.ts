@@ -1,18 +1,24 @@
-import { Body, Circle } from "p2";
+import { Body, Circle, ContactEquation, Shape } from "p2";
 import { Filter, Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
 import CCDBody from "../../core/physics/CCDBody";
+import { SoundName } from "../../core/resources/sounds";
 import { hexToVec3 } from "../../core/util/ColorUtils";
-import { degToRad } from "../../core/util/MathUtil";
-import { V, Vector } from "../../core/Vector";
+import { clamp, degToRad } from "../../core/util/MathUtil";
+import { Vector } from "../../core/Vector";
+import { hasCollisionInfo, SparkInfo } from "../BallCollisionInfo";
 import { NudgeEvent } from "../controllers/NudgeController";
 import BallShader from "../effects/BallShader.frag";
+import ParticleSystem from "../effects/ParticleSystem";
 import { makeShaderFilter } from "../effects/ShaderFilter";
+import { makeSparkParams } from "../effects/Sparks";
 import {
   getLightUniformsForPoint,
   LightUniforms,
 } from "../lighting/LightUniforms";
+import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
@@ -23,19 +29,23 @@ const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
 const RESAMPLE = 1.0;
 
-const DIFFUSE_COLOR = 0xbbbbbb;
+const DIFFUSE_COLOR = 0x999999;
 const SPECULAR_COLOR = 0x999999;
 const AMBIENT_COLOR = 0x333333;
 const SHININESS = 14.0;
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
+  layer: LayerName = "ball";
   body: Body;
   sprite: Graphics;
   ballShader: Filter = makeShaderFilter(BallShader);
   radius: number = RADIUS;
 
-  constructor(position: Vector, velocity: Vector = V([0, 0])) {
+  rollingVelocity: Vector = [0, 0];
+  rollingPosition: Vector = [0, 0];
+
+  constructor(position: Vector, velocity: Vector = [0, 0]) {
     super();
 
     this.sprite = this.makeSprite();
@@ -78,7 +88,7 @@ export default class Ball extends BaseEntity implements Entity {
   }
 
   getVelocity(): Vector {
-    return V(this.body.velocity);
+    return this.body.velocity;
   }
 
   onTick() {
@@ -86,21 +96,24 @@ export default class Ball extends BaseEntity implements Entity {
     this.body.applyForce([0, GRAVITY * MASS]);
 
     // Spin
-    const spinForce = V(this.body.velocity)
+    const spinForce = this.body.velocity
       .normalize()
       .irotate90cw()
       .imul(this.body.angularVelocity * 0.05);
     this.body.applyForce(spinForce);
 
     // Friction
-    const frictionForce = V(this.body.velocity).mul(-FRICTION);
+    const frictionForce = this.body.velocity.mul(-FRICTION);
     this.body.applyForce(frictionForce);
+
+    this.rollingVelocity.set(this.body.velocity);
+    this.rollingPosition.iadd(this.rollingVelocity);
   }
 
   onRender() {
     const [x, y] = this.body.position;
     this.sprite.position.set(x, y);
-    const vLightDirection = V([0, 20]).sub(this.getPosition());
+    const vLightDirection = [0, 20].sub(this.getPosition());
     this.ballShader.uniforms.vLightDirection = [...vLightDirection, 30];
 
     const r = this.radius;
@@ -122,6 +135,91 @@ export default class Ball extends BaseEntity implements Entity {
       this.body.applyImpulse(e.impulse);
     },
   };
+
+  onBeginContact(
+    other: Entity,
+    _: Shape,
+    __: Shape,
+    equations: ContactEquation[]
+  ) {
+    if (hasCollisionInfo(other)) {
+      const { sparkInfo, beginContactSound } = other.ballCollisionInfo;
+      if (beginContactSound) {
+        const impact = Math.abs(equations[0].getVelocityAlongNormal());
+        const gain = clamp(impact / 50) ** 2;
+        this.emitSound(beginContactSound, gain);
+      }
+      if (sparkInfo && sparkInfo.maxBegin) {
+        this.spark(
+          equations[0],
+          sparkInfo.minBegin || 0,
+          sparkInfo.maxBegin,
+          sparkInfo
+        );
+      }
+    }
+  }
+
+  onContacting(
+    other: Entity,
+    _: Shape,
+    __: Shape,
+    equations: ContactEquation[]
+  ) {
+    if (hasCollisionInfo(other)) {
+      const { sparkInfo, duringContactSound } = other.ballCollisionInfo;
+      if (duringContactSound) {
+        const impact = Math.abs(equations[0].getVelocityAlongNormal());
+        const gain = clamp(impact / 50) ** 2;
+        this.emitSound(duringContactSound, gain);
+      }
+      if (sparkInfo && sparkInfo.maxDuring) {
+        this.spark(
+          equations[0],
+          sparkInfo.minDuring || 0,
+          sparkInfo.maxDuring,
+          sparkInfo
+        );
+      }
+    }
+  }
+
+  emitSound(soundName: SoundName, gain: number = 1.0) {
+    const pan = clamp(this.getPosition()[0] / 40, -0.5, 0.5);
+    this.game!.dispatch(playSoundEvent(soundName, { pan, gain }));
+  }
+
+  spark(
+    eq: ContactEquation,
+    min: number,
+    max: number,
+    { color, size, impactMultiplier = 1.0 }: SparkInfo
+  ) {
+    if (eq.bodyA && eq.bodyB) {
+      const impact =
+        impactMultiplier *
+        (Math.abs(eq.getVelocityAlongNormal()) +
+          Math.abs(eq.relativeVelocity) * 0.0);
+      const count = Math.floor(
+        (max - min) * clamp(impact ** 1.1 / 100.0, 0, 1.0) + min
+      );
+      if (count > 0) {
+        const isA = this.body === eq.bodyA;
+        const contactPos = isA ? eq.contactPointA : eq.contactPointB;
+        const position = this.getPosition().add(contactPos);
+        const direction = contactPos.angle + Math.PI;
+        const ballSpin = this.body.angularVelocity;
+        this.game!.addEntity(
+          new ParticleSystem({
+            ...makeSparkParams({ direction, impact, ballSpin, size }),
+            position,
+            count,
+            color,
+          })
+        );
+      }
+    }
+  }
 }
 
 /** Type guard for ball entity */

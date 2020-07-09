@@ -1,9 +1,9 @@
+import p2, { Constraint, Spring } from "p2";
+import Pixi, { TilingSprite } from "pixi.js";
 import Game from "../Game";
-import p2, { Spring, Constraint } from "p2";
-import Entity from "./Entity";
-import Pixi from "pixi.js";
-import { Vector, V } from "../Vector";
 import { LayerName } from "../graphics/Layers";
+import { Vector } from "../Vector";
+import Entity from "./Entity";
 
 /**
  * Base class for lots of stuff in the game.
@@ -23,9 +23,9 @@ export default abstract class BaseEntity implements Entity {
 
   // Convert local coordinates to world coordinates.
   // Requires either a body or a sprite.
-  localToWorld(worldPoint: Vector): Vector {
+  localToWorld(worldPoint: [number, number]): Vector {
     if (this.body) {
-      const result = V([0, 0]);
+      const result: Vector = [0, 0];
       this.body.toWorldFrame(result, worldPoint);
       return result;
     }
@@ -33,17 +33,17 @@ export default abstract class BaseEntity implements Entity {
       const result = this.sprite.toGlobal(
         new Pixi.Point(worldPoint[0], worldPoint[1])
       );
-      return V([result.x, result.y]);
+      return [result.x, result.y];
     }
-    return V([0, 0]);
+    return [0, 0];
   }
 
   getPosition(): Vector {
     if (this.body) {
-      return V(this.body.position);
+      return this.body.position;
     }
     if (this.sprite) {
-      return V([this.sprite.x, this.sprite.y]);
+      return [this.sprite.x, this.sprite.y];
     }
     throw new Error("Position is not implemented for this entity");
   }
@@ -52,14 +52,16 @@ export default abstract class BaseEntity implements Entity {
   destroy() {
     if (this.game) {
       this.game.removeEntity(this);
-      if (this.children) {
-        for (const child of this.children) {
-          child.destroy();
-        }
+      while (this.children?.length) {
+        this.children[this.children.length - 1].destroy();
       }
       if (this.parent) {
-        // TODO: maybe don't use array splice
-        this.parent.children!.splice(this.parent.children!.indexOf(this));
+        const pChildren = this.parent.children!;
+        const index = pChildren.lastIndexOf(this);
+        if (index < 0) {
+          throw new Error(`Parent doesn't have child`);
+        }
+        pChildren.splice(index, 1);
       }
     }
   }
@@ -91,10 +93,9 @@ export default abstract class BaseEntity implements Entity {
 
   clearTimers(): void {
     if (this.children) {
-      for (const child of this.children) {
-        if (child instanceof Timer) {
-          child.destroy();
-        }
+      const timers = this.children.filter((e) => e instanceof Timer);
+      for (const timer of timers) {
+        timer.destroy();
       }
     }
   }
@@ -111,8 +112,8 @@ class Timer extends BaseEntity implements Entity {
     this.effect = effect;
   }
 
-  onTick() {
-    this.timeRemaining -= this.game!.tickTimestep;
+  onTick(dt: number) {
+    this.timeRemaining -= dt;
     if (this.timeRemaining <= 0) {
       this.effect();
       this.destroy();

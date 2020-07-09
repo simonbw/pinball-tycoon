@@ -1,9 +1,9 @@
 import IOEventHandler from "../entity/IOEventHandler";
-import { V } from "../Vector";
 import { ControllerAxis, ControllerButton } from "./Gamepad";
 import IOHandlerList from "./IOHandlerList";
 import * as MouseButtons from "./MouseButtons";
 import { KeyCode } from "./Keys";
+import { Vector } from "../Vector";
 
 // TODO: allow user configuration/calibration
 const GAMEPAD_MINIMUM = 0.2;
@@ -17,7 +17,7 @@ export class IOManager {
   // buttons pressed last frame. Used for checking differences in state.
   private lastButtons: boolean[] = [];
   mouseButtons = [false, false, false, false, false, false];
-  mousePosition = V([0, 0]);
+  mousePosition: Vector = [0, 0];
   usingGamepad: boolean = false; // True if the gamepad is the main input device
   view: HTMLCanvasElement;
 
@@ -98,13 +98,13 @@ export class IOManager {
   // Update the position of the mouse.
   onMouseMove(event: MouseEvent) {
     this.usingGamepad = false;
-    this.mousePosition = V([event.clientX, event.clientY]);
+    this.mousePosition = [event.clientX, event.clientY];
   }
 
   // Fire all click handlers.
   onClick(event: MouseEvent) {
     this.usingGamepad = false;
-    this.mousePosition = V([event.clientX, event.clientY]);
+    this.mousePosition = [event.clientX, event.clientY];
     switch (event.button) {
       case MouseButtons.LEFT:
         for (const handler of this.handlers.filtered.onClick) {
@@ -122,7 +122,7 @@ export class IOManager {
   // Fire all mouse down handlers.
   onMouseDown(event: MouseEvent) {
     this.usingGamepad = false;
-    this.mousePosition = V([event.clientX, event.clientY]);
+    this.mousePosition = [event.clientX, event.clientY];
     this.mouseButtons[event.button] = true;
     switch (event.button) {
       case MouseButtons.LEFT:
@@ -141,7 +141,7 @@ export class IOManager {
   // Fire all mouse up handlers
   onMouseUp(event: MouseEvent) {
     this.usingGamepad = false;
-    this.mousePosition = V([event.clientX, event.clientY]);
+    this.mousePosition = [event.clientX, event.clientY];
     this.mouseButtons[event.button] = false;
     switch (event.button) {
       case MouseButtons.LEFT:
@@ -215,7 +215,7 @@ export class IOManager {
   }
 
   getStick(stick: "left" | "right") {
-    const axes = V([0, 0]);
+    const axes = [0, 0];
     const gamepad = navigator.getGamepads()[0];
     if (gamepad) {
       if (stick === "left") {

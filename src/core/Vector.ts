@@ -1,79 +1,77 @@
-type ArrayNumLength2 = [number, number];
+export type Vector = [number, number];
 
-export function V(a: ArrayNumLength2): Vector {
-  return a as Vector;
+declare global {
+  interface Array<T> {
+    /** Alias for v[0] */
+    x: number;
+    /** Alias for v[1] */
+    y: number;
+
+    magnitude: number;
+    /** The angle in radians ccw from east of this vector. */
+    angle: number;
+
+    /** Return the result of adding this vector to another. */
+    add(other: Vector): Vector;
+    /** (In Place) Return the result of adding this vector to another. */
+    iadd(other: Vector): Vector;
+    /** Return the result of subtracting a vector from this one. */
+    sub(other: Vector): Vector;
+    /** (In Place) Return the result of subtracting a vector from this one. */
+    isub(other: Vector): Vector;
+    /** Return the result of multiplying this vector by a scalar. */
+    mul(scalar: number): Vector;
+    /** (In Place) Return the result of multiplying this vector by a scalar. */
+    imul(scalar: number): Vector;
+    /** Returns the result of rotating this vector 90 decgrees clockwise */
+    rotate90cw(): Vector;
+    /** (In Place) Returns the result of rotating this vector 90 decgrees clockwise */
+    irotate90cw(): Vector;
+    /** Returns the result of rotating this vector 90 decgrees counter-clockwise */
+    rotate90ccw(): Vector;
+    /** (In Place) Returns the result of rotating this vector 90 decgrees counter-clockwise */
+    irotate90ccw(): Vector;
+    /** Return the result of rotating this angle by `angle` radians ccw. */
+    rotate(radians: number): Vector;
+    /** (In Place) Return the result of rotating this angle by `angle` radians ccw. */
+    irotate(radians: number): Vector;
+    /** Return the dot product of this and another vector */
+    dot(other: Vector): number;
+    /** Set the components of this vector */
+    set(x: number, y: number): Vector;
+    /** Set the components of this vector from another */
+    set(other: Vector): Vector;
+    /** Return a normalized version of this vector */
+    normalize(): Vector;
+    /** (In Place) Return a normalized version of this vector */
+    inormalize(): Vector;
+    /** Return a new vector with the same values as this one */
+    clone(): Vector;
+  }
 }
-
-let v: Vector;
 
 /**
- * A 2-dimensional vector with lots of utility methods.
+ * Adds methods to Array that are meant to be used on 2 dimensional arrays.
  * Methods that return a vector have in-place versions prefixed with "i".
+ *
+ * TODO: Make these work with more dimensions.
  */
-export interface Vector extends ArrayNumLength2 {
-  /** Alias for v[0] */
-  x: number;
-  /** Alias for v[1] */
-  y: number;
-
-  magnitude: number;
-  /** The angle in radians ccw from east of this vector. */
-  angle: number;
-
-  /** Return the result of adding this vector to another. */
-  add(other: Vector): Vector;
-  /** (In Place) Return the result of adding this vector to another. */
-  iadd(other: Vector): Vector;
-  /** Return the result of subtracting a vector from this one. */
-  sub(other: Vector): Vector;
-  /** (In Place) Return the result of subtracting a vector from this one. */
-  isub(other: Vector): Vector;
-  /** Return the result of multiplying this vector by a scalar. */
-  mul(scalar: number): Vector;
-  /** (In Place) Return the result of multiplying this vector by a scalar. */
-  imul(scalar: number): Vector;
-  /** Returns the result of rotating this vector 90 decgrees clockwise */
-  rotate90cw(): Vector;
-  /** (In Place) Returns the result of rotating this vector 90 decgrees clockwise */
-  irotate90cw(): Vector;
-  /** Returns the result of rotating this vector 90 decgrees counter-clockwise */
-  rotate90ccw(): Vector;
-  /** (In Place) Returns the result of rotating this vector 90 decgrees counter-clockwise */
-  irotate90ccw(): Vector;
-  /** Return the result of rotating this angle by `angle` radians ccw. */
-  rotate(radians: number): Vector;
-  /** (In Place) Return the result of rotating this angle by `angle` radians ccw. */
-  irotate(radians: number): Vector;
-  /** Return the dot product of this and another vector */
-  dot(other: Vector): number;
-  /** Set the components of this vector */
-  set(x: number, y: number): Vector;
-  /** Set the components of this vector from another */
-  set(other: Vector): Vector;
-  /** Return a normalized version of this vector */
-  normalize(): Vector;
-  /** (In Place) Return a normalized version of this vector */
-  inormalize(): Vector;
-  /** Return a new vector with the same values as this one */
-  clone(): Vector;
-}
-
 export function polyfillArrayAsVector(Array: any) {
-  Array.prototype.add = function (other: ArrayNumLength2) {
+  Array.prototype.add = function (other: Vector) {
     return [this[0] + other[0], this[1] + other[1]];
   };
 
-  Array.prototype.iadd = function (other: ArrayNumLength2) {
+  Array.prototype.iadd = function (other: Vector) {
     this[0] += other[0];
     this[1] += other[1];
     return this;
   };
 
-  Array.prototype.sub = function (other: ArrayNumLength2) {
+  Array.prototype.sub = function (other: Vector) {
     return [this[0] - other[0], this[1] - other[1]];
   };
 
-  Array.prototype.isub = function (other: ArrayNumLength2): Vector {
+  Array.prototype.isub = function (other: Vector): Vector {
     this[0] -= other[0];
     this[1] -= other[1];
     return this;
@@ -125,11 +123,11 @@ export function polyfillArrayAsVector(Array: any) {
     return this;
   };
 
-  Array.prototype.dot = function (other: ArrayNumLength2) {
+  Array.prototype.dot = function (other: Vector) {
     return this[0] * other[0] + this[1] * other[1];
   };
 
-  Array.prototype.set = function (x: number | ArrayNumLength2, y: number) {
+  Array.prototype.set = function (x: number | Vector, y: number) {
     if (typeof x === "number") {
       this[0] = x;
       this[1] = y;

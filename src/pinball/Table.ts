@@ -1,7 +1,6 @@
 import Bezier from "bezier-js";
 import Game from "../core/Game";
 import { degToRad } from "../core/util/MathUtil";
-import { V } from "../core/Vector";
 import CameraController from "./controllers/CameraController";
 import ControlDisplay from "./ui/ControlDisplay";
 import LogicBoard from "./LogicBoard";
@@ -25,7 +24,7 @@ import MagicBallController from "./controllers/MagicBallController";
 import Light from "./lighting/Light";
 
 export function setupTable(game: Game) {
-  game.camera.center(V([0, 50]));
+  game.camera.center([0, 50]);
   game.camera.z = 7; // TODO: WHY DOES THIS HAVE TO BE 7?!?!
 
   // Overhead Lights
@@ -55,66 +54,121 @@ export function setupTable(game: Game) {
   game.addEntity(new Speedometer());
   game.addEntity(new ControlDisplay());
   game.addEntity(new Boundary(0, 100, -24, 28));
-  game.addEntity(new Plunger(V([26, 97.5])));
+  game.addEntity(new Plunger([26, 97.5]));
 
   // Bumpers
-  game.addEntity(new Bumper(V([-10, 35])));
-  game.addEntity(new Bumper(V([-5, 30])));
-  game.addEntity(new Bumper(V([0, 35])));
-  game.addEntity(new Bumper(V([5, 30])));
-  game.addEntity(new Bumper(V([10, 35])));
+  game.addEntity(new Bumper([-10, 35]));
+  game.addEntity(new Bumper([-5, 30]));
+  game.addEntity(new Bumper([0, 35]));
+  game.addEntity(new Bumper([5, 30]));
+  game.addEntity(new Bumper([10, 35]));
 
   // Posts
-  game.addEntity(new Post(V([-12, 10])));
-  game.addEntity(new Post(V([-8, 10])));
-  game.addEntity(new Post(V([-4, 10])));
-  game.addEntity(new Post(V([0, 10])));
-  game.addEntity(new Post(V([4, 10])));
-  game.addEntity(new Post(V([8, 10])));
-  game.addEntity(new Post(V([12, 10])));
+  game.addEntity(new Post([-12, 10]));
+  game.addEntity(new Post([-8, 10]));
+  game.addEntity(new Post([-4, 10]));
+  game.addEntity(new Post([0, 10]));
+  game.addEntity(new Post([4, 10]));
+  game.addEntity(new Post([8, 10]));
+  game.addEntity(new Post([12, 10]));
 
-  game.addEntity(new Gate(V([28, 26.5]), V([24.5, 29.5]), -degToRad(180)));
-  game.addEntity(new Gate(V([28, 43.5]), V([24.5, 46.5]), -degToRad(180)));
+  game.addEntity(new Gate([28, 26.5], [24.5, 29.5], -degToRad(180)));
+  game.addEntity(new Gate([28, 43.5], [24.5, 46.5], -degToRad(180)));
 
   // outer walls
-  game.addEntity(new Wall(V([-24, 0]), V([-24, 100])));
-  game.addEntity(new Wall(V([24, 30]), V([24, 42])));
-  game.addEntity(new Wall(V([24, 47]), V([24, 100])));
-  game.addEntity(new Wall(V([28, 24]), V([28, 100])));
+  game.addEntity(new Wall([-24, 0], [-24, 100]));
+  game.addEntity(new Wall([24, 30], [24, 42]));
+  game.addEntity(new Wall([24, 47], [24, 100]));
+  game.addEntity(new Wall([28, 24], [28, 100]));
 
   // triangles
-  game.addEntity(new Flipper(V([19.5, 50.5]), "right", 4));
+  game.addEntity(new Flipper([19.5, 50.5], "right", 4));
   game.addEntity(
-    new MultiWall([V([-24, 44]), V([-20, 50]), V([-20, 53]), V([-24, 56])])
+    new MultiWall([
+      [-24, 44],
+      [-20, 50],
+      [-20, 53],
+      [-24, 56],
+    ])
   );
   game.addEntity(
-    new MultiWall([V([24, 47]), V([20, 50]), V([20, 53]), V([24, 56])])
+    new MultiWall([
+      [24, 47],
+      [20, 50],
+      [20, 53],
+      [24, 56],
+    ])
   );
 
+  const LO = 61;
   // Slingshots/inlanes
-  game.addEntity(new Wall(V([16.5, 68]), V([16.5, 79]), 0.4));
-  game.addEntity(new Wall(V([-16.5, 68]), V([-16.5, 79]), 0.4));
-  game.addEntity(new Slingshot(V([13, 68]), V([9, 84]), 0.7));
-  game.addEntity(new Slingshot(V([-13, 68]), V([-9, 84]), 0.7, true));
-  game.addEntity(new MultiWall([V([13, 68]), V([13, 79]), V([9, 84])], 0.6));
-  game.addEntity(new MultiWall([V([-13, 68]), V([-13, 79]), V([-9, 84])], 0.6));
+  game.addEntity(new Wall([16.5, 8 + LO], [16.5, 19 + LO], 0.4));
+  game.addEntity(new Wall([-16.5, 8 + LO], [-16.5, 19 + LO], 0.4));
+  game.addEntity(new Slingshot([13, 8 + LO], [9, 24 + LO], 0.7));
+  game.addEntity(new Slingshot([-13, 8 + LO], [-9, 24 + LO], 0.7, true));
+  game.addEntity(
+    new MultiWall(
+      [
+        [13, 8 + LO],
+        [13, 21 + LO],
+        [9, 24 + LO],
+      ],
+      0.6
+    )
+  );
+  game.addEntity(
+    new MultiWall(
+      [
+        [-13, 8 + LO],
+        [-13, 21 + LO],
+        [-9, 24 + LO],
+      ],
+      0.6
+    )
+  );
 
   // Outlanes
-  game.addEntity(new MultiWall([V([-20, 60]), V([-20, 82]), V([-8, 90])]));
-  game.addEntity(new MultiWall([V([20, 60]), V([20, 82]), V([8, 90])]));
-  game.addEntity(new MultiWall([V([-24, 88]), V([-4, 100])]));
-  game.addEntity(new MultiWall([V([24, 88]), V([4, 100])]));
-  game.addEntity(new Drain(V([-4, 100]), V([4, 100])));
+  game.addEntity(
+    new MultiWall([
+      [-20, 60],
+      [-20, 22 + LO],
+      [-8, 30 + LO],
+    ])
+  );
+  game.addEntity(
+    new MultiWall([
+      [20, 60],
+      [20, 22 + LO],
+      [8, 30 + LO],
+    ])
+  );
+  game.addEntity(
+    new MultiWall([
+      [-24, 88],
+      [-4, 100],
+    ])
+  );
+  game.addEntity(
+    new MultiWall([
+      [24, 88],
+      [4, 100],
+    ])
+  );
+  game.addEntity(new Drain([-4, 100], [4, 100]));
 
-  game.addEntity(new Flipper(V([-8, 90.25]), "left", 6.2));
-  game.addEntity(new Flipper(V([8, 90.25]), "right", 6.2));
+  game.addEntity(new Flipper([-8, 30.25 + LO], "left", 6.2));
+  game.addEntity(new Flipper([8, 30.25 + LO], "right", 6.2));
 
   game.addEntity(
-    new CurveWall(new Bezier({ x: 0, y: 0 }, { x: 28, y: 0 }, { x: 28, y: 24 }))
+    new CurveWall(
+      new Bezier({ x: 0, y: 0 }, { x: 28, y: 0 }, { x: 28, y: 24 }),
+      40
+    )
   );
   game.addEntity(
     new CurveWall(
-      new Bezier({ x: 0, y: 0 }, { x: -24, y: 0 }, { x: -24, y: 24 })
+      new Bezier({ x: 0, y: 0 }, { x: -24, y: 0 }, { x: -24, y: 24 }),
+      40
     )
   );
 }

@@ -1,9 +1,8 @@
-import BaseEntity from "../../core/entity/BaseEntity";
 import * as Pixi from "pixi.js";
-import { LayerName } from "../../core/graphics/Layers";
-import Ball, { isBall } from "../playfield/Ball";
-import { V } from "../../core/Vector";
+import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { LayerName } from "../../core/graphics/Layers";
+import { isBall } from "../playfield/Ball";
 
 const IPS_TO_MPH = 1 / 17.6;
 
@@ -39,7 +38,7 @@ export default class Speedometer extends BaseEntity implements Entity {
 
     const ball = this.game!.entities.getTagged("ball")[0];
     if (isBall(ball)) {
-      const speed = V(ball.body!.velocity).magnitude * IPS_TO_MPH;
+      const speed = ball.body!.velocity.magnitude * IPS_TO_MPH;
       if (this.game!.framenumber % 5 == 0) {
         this.sprite.text = `${speed.toFixed(1)} mph`;
       }

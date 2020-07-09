@@ -43,7 +43,9 @@ window.addEventListener("load", async () => {
   game.world.frictionGravity = 10; // TODO: Tune this
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
-  game.addEntity(new FPSMeter());
+  game.addEntity(
+    new FPSMeter([5, game.renderer.pixiRenderer.height / 2 - 20], 0xffffff)
+  );
   setupTable(game);
   game.start();
 });

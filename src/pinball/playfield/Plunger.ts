@@ -2,7 +2,7 @@ import { Body, Box, ContactEquation, LinearSpring, Shape, Spring } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { V, Vector } from "../../core/Vector";
+import { Vector } from "../../core/Vector";
 import { Materials } from "./Materials";
 import Ball, { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
@@ -50,7 +50,7 @@ export default class Plunger extends BaseEntity implements Entity {
     });
     this.pullSpring = new LinearSpring(this.body, this.game!.ground, {
       stiffness: 0,
-      worldAnchorB: this.neutralPosition.add(V([0, MAX_PULL_DISTANCE * 1.5])),
+      worldAnchorB: this.neutralPosition.add([0, MAX_PULL_DISTANCE * 1.5]),
       restLength: 0.1,
     });
 

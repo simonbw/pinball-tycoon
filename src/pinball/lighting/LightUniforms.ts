@@ -2,6 +2,7 @@ import Game from "../../core/Game";
 import { isLight, LightData } from "./Light";
 import { hexToRGB, hexToVec3 } from "../../core/util/ColorUtils";
 
+export const NUM_LIGHTS = 32;
 type vec3 = [number, number, number];
 
 export interface LightUniforms {
@@ -27,12 +28,13 @@ export function getLightUniformsForPoint(
   point: vec3,
   scale: number = 1.0,
   radius: number = 0.0,
-  numLights: number = 8
+  numLights: number = NUM_LIGHTS
 ): LightUniforms {
   // Find all the lights
   const datas = game.entities
     .getTagged("light")
     .filter(isLight)
+    .filter((light) => light.lightData.power > 0)
     .map((light) => light.lightData);
 
   // Sort by most important

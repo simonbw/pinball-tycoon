@@ -8,8 +8,13 @@ import Ball, { isBall } from "./Ball";
 import { clamp } from "../../core/util/MathUtil";
 import Entity from "../../core/entity/Entity";
 import { playSoundEvent } from "../Soundboard";
+import { WithBallCollisionInfo, BallCollisionInfo } from "../BallCollisionInfo";
+import { colorFade } from "../../core/util/ColorUtils";
 
-export default class Post extends BaseEntity implements Entity {
+export default class Post extends BaseEntity
+  implements Entity, WithBallCollisionInfo {
+  ballCollisionInfo: BallCollisionInfo;
+
   constructor(position: Vector, size: number = 0.5, color: number = 0xddddee) {
     super();
     const graphics = new Graphics();
@@ -31,6 +36,18 @@ export default class Post extends BaseEntity implements Entity {
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
+
+    this.ballCollisionInfo = {
+      beginContactSound: "postHit",
+      sparkInfo: {
+        color: colorFade(color, 0xffff66, 0.5),
+        maxBegin: 4,
+        minBegin: 0.5,
+        maxDuring: 0,
+        size: 0.13,
+        impactMultiplier: 1.2,
+      },
+    };
   }
 
   onBeginContact(

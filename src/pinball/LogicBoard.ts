@@ -1,11 +1,11 @@
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
-import { V } from "../core/Vector";
+import { KeyCode } from "../core/io/Keys";
+import { Vector } from "../core/Vector";
 import Ball from "./playfield/Ball";
 import { playSoundEvent } from "./Soundboard";
-import { KeyCode } from "../core/io/Keys";
 
-const NEW_BALL_LOCATION = V([26, 95]);
+const NEW_BALL_LOCATION: Vector = [26, 95];
 const START_GAME_KEY = "KeyS";
 const LEFT_FLIPPER_KEY = "KeyX";
 const RIGHT_FLIPPER_KEY = "Period";
@@ -33,7 +33,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     gameStart: () => {
       // Clear the table
       this.clearTimers();
-      for (const ball of this.game!.entities.getTagged("ball")) {
+      for (const ball of [...this.game!.entities.getTagged("ball")]) {
         ball.destroy();
       }
 
@@ -41,12 +41,12 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.score = 0;
       this.gameStarted = true;
 
-      this.game!.dispatch(playSoundEvent("gameStart"));
+      this.game!.dispatch(playSoundEvent("gameStart", { gain: 0.5 }));
       this.game!.dispatch({ type: "newBall", noSound: true });
     },
     newBall: (e: NewBallEvent) => {
       if (!e.noSound) {
-        this.game!.dispatch(playSoundEvent("newBall"));
+        this.game!.dispatch(playSoundEvent("newBall", { gain: 0.5 }));
       }
       this.ballsRemaining -= 1;
       this.game!.addEntity(new Ball(NEW_BALL_LOCATION.clone()));
@@ -58,7 +58,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
       ball.destroy();
 
       if (this.ballsRemaining > 0) {
-        this.game!.dispatch(playSoundEvent("drain"));
+        this.game!.dispatch(playSoundEvent("drain", { gain: 0.5 }));
         await this.wait(1.0);
         this.game!.dispatch({ type: "newBall" });
       } else {
@@ -67,7 +67,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
     gameOver: () => {
       this.gameStarted = false;
-      this.game!.dispatch(playSoundEvent("gameOver"));
+      this.game!.dispatch(playSoundEvent("gameOver", { gain: 0.5 }));
       console.log("Game Over");
     },
   };

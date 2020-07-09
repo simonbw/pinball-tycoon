@@ -1,3 +1,5 @@
+import { Vector } from "../Vector";
+
 // Modulo operator for modular arithmetic
 export function mod(a: number, b: number): number {
   return ((a % b) + b) % b;
@@ -31,7 +33,7 @@ export function lerpOrSnap(
 }
 
 /** Normalizes an angle in radians to be in the range [-pi, pi] */
-export function normalizeRad(angle: number) {
+export function normalizeAngle(angle: number) {
   return mod(angle + Math.PI, Math.PI * 2) - Math.PI;
 }
 
@@ -43,6 +45,25 @@ export function angleDelta(a: number, b: number): number {
 export function degToRad(degrees: number): number {
   return (degrees * Math.PI) / 180;
 }
+
 export function radToDeg(radians: number): number {
   return (radians * 180) / Math.PI;
+}
+
+/** Returns the result of reflecting an angle across the X axis. */
+export function reflectX(theta: number): number {
+  return normalizeAngle(Math.PI - theta);
+}
+
+/** Returns the result of reflecting an angle across the Y axis. */
+export function reflectY(theta: number): number {
+  return normalizeAngle(-theta);
+}
+
+export function reflectXY(theta: number): number {
+  return normalizeAngle(theta - Math.PI);
+}
+
+export function polarToVec(theta: number, r: number): Vector {
+  return [r * Math.cos(theta), r * Math.sin(theta)];
 }
