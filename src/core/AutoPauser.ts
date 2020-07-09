@@ -27,6 +27,7 @@ export default class AutoPauser extends BaseEntity implements Entity {
     } else {
       if (this.autoPaused && this.game!.paused) {
         this.game!.unpause();
+        this.autoPaused = false;
       }
     }
   };
