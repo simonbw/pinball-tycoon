@@ -2,38 +2,37 @@
 # Core #
 #------#
 
-Custom events:
-  [√] Dispatch
-  [√] Handler
-  [ ] Better typing
 
-IO Improvements:
-  [√] Use `KeyboardEvent.key` instead of `.which`
-  [ ] Keep track of *when* a key was pressed/released for more precise timings
 
 Improve Resources:
   [ ] Move resource loading to be on the Game class
   [ ] Create api to load resources that can be used outside of `core`
   [√] Create a way to easily play sounds
-
-Create a preloader:
-  [ ] Something that displays while resources are loading
-
-Child Entities:
-  [√] They get added when the parent gets added
-  [√] They get destroyed when the parent gets destroyed
-  [√] When children destroy, they remove themselves from their parents
+  [ ] Some sort of preloader
 
 Layers:
   [ ] Move defined layers out of the engine
   [ ] Allow custom defining layers
   [ ] Custom layer scaling
 
-Switch away from using key codes (they're deprecated)
+IO Improvements:
+  [√] Use `KeyboardEvent.code` instead of `.which`
+  [√] Switch away from using key codes (they're deprecated)
+  [ ] Keep track of *when* a key was pressed/released for more precise timings
 
 Extended Collisions:
-  [ ] Entity.onColliding Handler
-  [ ] Keep track of currently happening collisions
+  [√] Entity.onColliding Handler
+  [√] Keep track of currently happening collisions
+
+Custom events:
+  [√] Dispatch
+  [√] Handler
+  [ ] Better typing
+
+Child Entities:
+  [√] They get added when the parent gets added
+  [√] They get destroyed when the parent gets destroyed
+  [√] When children destroy, they remove themselves from their parents
 
 #---------#
 # Pinball #

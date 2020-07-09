@@ -1,7 +1,7 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
 import { Graphics, Filter } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { LayerName } from "../../core/graphics/Layers";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
@@ -25,9 +25,8 @@ const RESAMPLE = 1.0;
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
-  layer: LayerName = "ball";
   body: Body;
-  sprite: Graphics = new Graphics();
+  sprite: Graphics & GameSprite = new Graphics();
   ballShaderFilter: Filter;
   radius: number = RADIUS;
 
@@ -49,6 +48,7 @@ export default class Ball extends BaseEntity implements Entity {
     this.sprite.endFill();
     this.sprite.filters = [this.ballShaderFilter];
     this.sprite.scale.set(1.0 / RESAMPLE);
+    this.sprite.layerName = "ball";
   }
 
   makeBody() {

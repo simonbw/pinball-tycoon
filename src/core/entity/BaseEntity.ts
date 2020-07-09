@@ -12,7 +12,6 @@ export default abstract class BaseEntity implements Entity {
   game: Game | null = null;
   sprite?: Pixi.DisplayObject;
   body?: p2.Body;
-  layer: LayerName = "world";
   pausable: boolean = true;
   persistent: boolean = false;
   springs?: Spring[];

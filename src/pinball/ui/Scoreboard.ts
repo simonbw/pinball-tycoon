@@ -1,7 +1,7 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import * as Pixi from "pixi.js";
 import { LayerName } from "../../core/graphics/Layers";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { isLogicBoard } from "../LogicBoard";
 
 interface ScoreEvent {
@@ -10,8 +10,7 @@ interface ScoreEvent {
 }
 
 export default class Scoreboard extends BaseEntity implements Entity {
-  layer: LayerName = "hud";
-  sprite: Pixi.Text;
+  sprite: Pixi.Text & GameSprite;
 
   constructor() {
     super();
@@ -27,6 +26,7 @@ export default class Scoreboard extends BaseEntity implements Entity {
       dropShadowDistance: 0,
     });
     this.sprite.anchor.set(1, 0);
+    this.sprite.layerName = "hud";
     this.updateText();
   }
 

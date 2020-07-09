@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { LayerName } from "../../core/graphics/Layers";
 import { getBindings } from "../ui/KeyboardBindings";
 
@@ -15,10 +15,15 @@ const DRAIN_SPEED = 0.5;
 const FILL_SPEED = 0.2;
 
 export default class SlowMoController extends BaseEntity implements Entity {
-  layer: LayerName = "hud";
   remaining: number = 0.0;
   cooldown: boolean = true;
-  sprite = new Graphics();
+  sprite: Graphics & GameSprite;
+
+  constructor() {
+    super();
+    this.sprite = new Graphics();
+    this.sprite.layerName = "hud";
+  }
 
   onTick(dt: number) {
     const game = this.game!;

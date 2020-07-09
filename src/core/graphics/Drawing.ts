@@ -10,7 +10,7 @@ export default class Drawing extends BaseEntity implements Entity {
   persistent = true;
   pausable = false;
 
-  sprites: Map<LayerName, Pixi.Graphics> = new Map();
+  private spriteMap: Map<LayerName, Pixi.Graphics> = new Map();
 
   line(
     [x1, y1]: Vector,
@@ -42,22 +42,22 @@ export default class Drawing extends BaseEntity implements Entity {
   }
 
   getLayerSprite(layerName: LayerName): Pixi.Graphics {
-    if (!this.sprites.has(layerName)) {
+    if (!this.spriteMap.has(layerName)) {
       const sprite = new Pixi.Graphics();
-      this.sprites.set(layerName, sprite);
+      this.spriteMap.set(layerName, sprite);
       this.game!.renderer.add(sprite, layerName);
     }
-    return this.sprites.get(layerName)!;
+    return this.spriteMap.get(layerName)!;
   }
 
   beforeTick() {
-    for (const sprite of this.sprites.values()) {
+    for (const sprite of this.spriteMap.values()) {
       sprite.clear();
     }
   }
 
   onDestroy(game: Game) {
-    for (const [layerName, sprite] of this.sprites.entries()) {
+    for (const [layerName, sprite] of this.spriteMap.entries()) {
       game.renderer.remove(sprite, layerName);
     }
   }

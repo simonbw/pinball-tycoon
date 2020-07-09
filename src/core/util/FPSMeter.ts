@@ -1,16 +1,15 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
-import Entity from "../entity/Entity";
+import Entity, { GameSprite } from "../entity/Entity";
 import Game from "../Game";
 import { Vector } from "../Vector";
 
 export default class FPSMeter extends BaseEntity implements Entity {
-  layer: "hud" = "hud";
   persistent = true;
+  sprite: Pixi.Text & GameSprite;
 
   lastUpdate: number;
   averageDuration: number = 0;
-  sprite: Pixi.Text;
   slowFrameCount: number = 0;
 
   constructor(position: Vector = [0, 0], color: number = 0x000000) {
@@ -20,6 +19,7 @@ export default class FPSMeter extends BaseEntity implements Entity {
       fill: color,
     });
     this.sprite.position.set(...position);
+    this.sprite.layerName = "hud";
     this.lastUpdate = performance.now();
   }
 

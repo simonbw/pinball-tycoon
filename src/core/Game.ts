@@ -162,8 +162,14 @@ export default class Game {
     this.io.addHandler(entity);
 
     if (entity.sprite) {
-      this.renderer.add(entity.sprite, entity.layer);
+      this.renderer.add(entity.sprite);
       entity.sprite.owner = entity;
+    }
+    if (entity.sprites) {
+      for (const sprite of entity.sprites) {
+        this.renderer.add(sprite);
+        sprite.owner = entity;
+      }
     }
 
     if (entity.body) {
@@ -251,7 +257,12 @@ export default class Game {
       this.io.removeHandler(entity);
 
       if (entity.sprite) {
-        this.renderer.remove(entity.sprite, entity.layer);
+        this.renderer.remove(entity.sprite);
+      }
+      if (entity.sprites) {
+        for (const sprite of entity.sprites) {
+          this.renderer.remove(sprite);
+        }
       }
       if (entity.body) {
         this.world.removeBody(entity.body);

@@ -1,7 +1,6 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { LayerName } from "../../core/graphics/Layers";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { isBall } from "../playfield/Ball";
 
 const IPS_TO_MPH = 1 / 17.6;
@@ -13,8 +12,7 @@ interface ScoreEvent {
 
 export default class Speedometer extends BaseEntity implements Entity {
   score: number = 0;
-  layer: LayerName = "hud";
-  sprite: Pixi.Text;
+  sprite: Pixi.Text & GameSprite;
 
   constructor() {
     super();
@@ -29,6 +27,7 @@ export default class Speedometer extends BaseEntity implements Entity {
       dropShadowAlpha: 0.5,
       dropShadowDistance: 0,
     });
+    this.sprite.layerName = "hud";
     this.sprite.anchor.set(1, 0);
   }
 

@@ -1,7 +1,6 @@
 import * as Pixi from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { LayerName } from "../../core/graphics/Layers";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 
 interface ScoreEvent {
   type: "score";
@@ -25,12 +24,10 @@ const LINES = [
 
 export default class ControlDisplay extends BaseEntity implements Entity {
   score: number = 0;
-  layer: LayerName = "hud";
+  sprite: Pixi.Container & GameSprite = new Pixi.Container();
 
   constructor() {
     super();
-    const container = new Pixi.Container();
-    this.sprite = container;
     for (let i = 0; i < LINES.length; i++) {
       const color = 0xff3333;
       const text = new Pixi.Text(LINES[i], {
@@ -46,8 +43,9 @@ export default class ControlDisplay extends BaseEntity implements Entity {
       text.x = 0;
       text.y = 24 * i;
       text.anchor.set(0, 0);
-      container.addChild(text);
+      this.sprite.addChild(text);
     }
+    this.sprite.layerName = "hud";
     this.sprite.x = 5;
     this.sprite.y = 5;
   }

@@ -2,13 +2,12 @@ import { Text } from "pixi.js";
 import { ControllerButton } from "../../core/io/Gamepad";
 import * as Keys from "../../core/io/Keys";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { LayerName } from "../../core/graphics/Layers";
 
 /** Pauses and unpauses the game when visibility is lost. */
 export default class PauseController extends BaseEntity implements Entity {
-  layer: LayerName = "hud";
-  sprite: Text;
+  sprite: Text & GameSprite;
   pausable = false;
   persistent = true;
 
@@ -25,6 +24,8 @@ export default class PauseController extends BaseEntity implements Entity {
       fontFamily: ["DS Digital"],
       fontSize: 120,
     });
+    this.sprite.layerName = "hud";
+
     this.sprite.anchor.set(0.5, 0.5);
   }
 

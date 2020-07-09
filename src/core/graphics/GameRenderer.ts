@@ -2,6 +2,9 @@ import * as Pixi from "pixi.js";
 import { Vector } from "../Vector";
 import Camera from "./Camera";
 import { LayerInfo, LayerName, Layers } from "./Layers";
+import { GameSprite } from "../entity/Entity";
+
+const DEFAULT_LAYER = "world";
 
 // The thing that renders stuff to the screen. Mostly for handling layers.
 export default class GameRenderer {
@@ -77,16 +80,15 @@ export default class GameRenderer {
     this.pixiRenderer.view.style.cursor = this.cursor;
   }
 
-  add(
-    sprite: Pixi.DisplayObject,
-    layerName: LayerName = "world"
-  ): Pixi.DisplayObject {
+  add(sprite: GameSprite): Pixi.DisplayObject {
+    const layerName = sprite.layerName ?? DEFAULT_LAYER;
     this.getLayerInfo(layerName).layer.addChild(sprite);
     return sprite;
   }
 
   // Remove a child from a specific layer.
-  remove(sprite: Pixi.DisplayObject, layerName: LayerName = "world"): void {
+  remove(sprite: GameSprite): void {
+    const layerName = sprite.layerName ?? DEFAULT_LAYER;
     this.getLayerInfo(layerName).layer.removeChild(sprite);
   }
 

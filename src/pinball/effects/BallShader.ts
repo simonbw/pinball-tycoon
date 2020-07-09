@@ -27,25 +27,30 @@ export default class BallShaderFilter extends Pixi.Filter {
     output: Pixi.RenderTexture,
     clearMode: Pixi.CLEAR_MODES
   ): void {
-    const uniforms = this.uniforms as BallShaderUniforms;
-    const [x, y] = this.ball.body.position;
-    const r = this.ball.radius;
-    const game = this.ball.game!;
-    const lightUniforms = getLightUniformsForPoint(game, [x, y, r], r, r);
-    // Lights
-    uniforms.vLightPosition = lightUniforms.vLightPosition;
-    uniforms.vLightColor = lightUniforms.vLightColor;
-    uniforms.fLightPower = lightUniforms.fLightPower;
-    uniforms.fLightLinearFade = lightUniforms.fLightLinearFade;
-    uniforms.fLightQuadraticFade = lightUniforms.fLightQuadraticFade;
-    //Materials
-    uniforms.fMaterialShininess = SHININESS;
-    uniforms.vMaterialDiffuseColor = hexToVec3(DIFFUSE_COLOR);
-    uniforms.vMaterialSpecularColor = hexToVec3(SPECULAR_COLOR);
-    uniforms.vAmbientLightColor = hexToVec3(AMBIENT_COLOR);
-    // Other
-    uniforms.ballCoords = [x, y];
-    filterManager.applyFilter(this, input, output, clearMode);
+    if (this.ball.game) {
+      const uniforms = this.uniforms as BallShaderUniforms;
+      const [x, y] = this.ball.body.position;
+      const r = this.ball.radius;
+      const game = this.ball.game!;
+      const lightUniforms = getLightUniformsForPoint(game, [x, y, r], r, r);
+      // Lights
+      uniforms.vLightPosition = lightUniforms.vLightPosition;
+      uniforms.vLightColor = lightUniforms.vLightColor;
+      uniforms.fLightPower = lightUniforms.fLightPower;
+      uniforms.fLightLinearFade = lightUniforms.fLightLinearFade;
+      uniforms.fLightQuadraticFade = lightUniforms.fLightQuadraticFade;
+      //Materials
+      uniforms.fMaterialShininess = SHININESS;
+      uniforms.vMaterialDiffuseColor = hexToVec3(DIFFUSE_COLOR);
+      uniforms.vMaterialSpecularColor = hexToVec3(SPECULAR_COLOR);
+      uniforms.vAmbientLightColor = hexToVec3(AMBIENT_COLOR);
+      // Other
+      uniforms.ballCoords = [x, y];
+
+      filterManager.applyFilter(this, input, output, clearMode);
+    } else {
+      console.warn("applying filter for removed ball for some reason");
+    }
   }
 }
 
