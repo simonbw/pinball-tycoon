@@ -63,6 +63,10 @@ export class IOManager {
     return Boolean(this.keys.get(key));
   }
 
+  anyKeyIsDown(keys: readonly KeyCode[]) {
+    return keys.some((key) => this.keyIsDown(key));
+  }
+
   // Fire events for gamepad button presses.
   handleGamepads(): void {
     const gamepad = navigator.getGamepads()[0];

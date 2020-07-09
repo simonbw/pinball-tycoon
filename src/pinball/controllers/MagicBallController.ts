@@ -1,18 +1,12 @@
 import BaseEntity from "../../core/entity/BaseEntity";
-import Ball, { isBall } from "../playfield/Ball";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { Vector } from "../../core/Vector";
+import Ball, { isBall } from "../playfield/Ball";
+import { getBinding } from "../ui/KeyboardBindings";
 
 const FORCE = 150;
 const GRAVITY_COMP = 132;
-
-const KEY_MULTIBALL: KeyCode = "KeyB";
-const KEY_RESET: KeyCode = "KeyR";
-const KEY_LEFT: KeyCode = "ArrowLeft";
-const KEY_UP: KeyCode = "ArrowUp";
-const KEY_RIGHT: KeyCode = "ArrowRight";
-const KEY_DOWN: KeyCode = "ArrowDown";
 
 const RESET_POSITION: Vector = [26, 90];
 
@@ -22,16 +16,16 @@ export default class MagicBallController extends BaseEntity implements Entity {
     const ball = this.getBall();
     if (ball) {
       // Keyboard control
-      if (this.game!.io.keyIsDown(KEY_LEFT)) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC.LEFT"))) {
         ball.body.applyForce([-FORCE, 0]);
       }
-      if (this.game!.io.keyIsDown(KEY_UP)) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC.UP"))) {
         ball.body.applyForce([0, -FORCE - GRAVITY_COMP]);
       }
-      if (this.game!.io.keyIsDown(KEY_RIGHT)) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC.RIGHT"))) {
         ball.body.applyForce([FORCE, 0]);
       }
-      if (this.game!.io.keyIsDown(KEY_DOWN)) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC.DOWN"))) {
         ball.body.applyForce([0, FORCE]);
       }
 
@@ -56,12 +50,12 @@ export default class MagicBallController extends BaseEntity implements Entity {
     const ball = this.getBall();
     if (ball) {
       switch (key) {
-        case KEY_RESET:
+        case getBinding("MAGIC.RESET"):
           ball.body.position = RESET_POSITION.clone();
           ball.body.velocity = [0, 0];
           ball.body.angularVelocity = 0;
           break;
-        case KEY_MULTIBALL:
+        case getBinding("MAGIC.MULTI"):
           this.game!.addEntity(new Ball(RESET_POSITION));
           break;
       }

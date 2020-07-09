@@ -4,11 +4,9 @@ import { KeyCode } from "../core/io/Keys";
 import { Vector } from "../core/Vector";
 import Ball from "./playfield/Ball";
 import { playSoundEvent } from "./Soundboard";
+import { getBinding } from "./ui/KeyboardBindings";
 
 const NEW_BALL_LOCATION: Vector = [26, 95];
-const START_GAME_KEY = "KeyS";
-const LEFT_FLIPPER_KEY = "KeyX";
-const RIGHT_FLIPPER_KEY = "Period";
 
 export interface DrainEvent {
   type: "drain";
@@ -75,16 +73,16 @@ export default class LogicBoard extends BaseEntity implements Entity {
   onKeyDown(key: KeyCode) {
     if (!this.game?.paused) {
       switch (key) {
-        case START_GAME_KEY:
+        case getBinding("START_GAME"):
           this.game!.dispatch({ type: "gameStart" });
           break;
-        case LEFT_FLIPPER_KEY:
+        case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperUp" });
           this.game!.dispatch(
             playSoundEvent("flipperUp", { gain: 0.3, pan: -0.4 })
           );
           break;
-        case RIGHT_FLIPPER_KEY:
+        case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperUp" });
           this.game!.dispatch(
             playSoundEvent("flipperUp", { gain: 0.3, pan: 0.4 })
@@ -97,13 +95,13 @@ export default class LogicBoard extends BaseEntity implements Entity {
   onKeyUp(key: KeyCode) {
     if (!this.game?.paused) {
       switch (key) {
-        case LEFT_FLIPPER_KEY:
+        case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperDown" });
           this.game!.dispatch(
             playSoundEvent("flipperDown", { gain: 0.3, pan: -0.4 })
           );
           break;
-        case RIGHT_FLIPPER_KEY:
+        case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperDown" });
           this.game!.dispatch(
             playSoundEvent("flipperDown", { gain: 0.3, pan: 0.4 })

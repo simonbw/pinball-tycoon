@@ -2,13 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { Vector } from "../../core/Vector";
-
-const NUDGE_RIGHT_KEY: KeyCode = "Slash";
-const NUDGE_LEFT_KEY: KeyCode = "KeyZ";
-const NUDGE_UP_LEFT_KEY: KeyCode = "KeyC";
-const NUDGE_UP_RIGHT_KEY: KeyCode = "Comma";
-
-type NudgeDirection = "left" | "right" | "up";
+import { getBinding } from "../ui/KeyboardBindings";
 
 export interface NudgeEvent {
   type: "nudge";
@@ -32,16 +26,16 @@ export default class NudgeController extends BaseEntity implements Entity {
   async onKeyDown(key: KeyCode) {
     const power = 40;
     switch (key) {
-      case NUDGE_LEFT_KEY:
+      case getBinding("NUDGE_LEFT"):
         this.game!.dispatch(nudgeEvent([-power, 0]));
         break;
-      case NUDGE_RIGHT_KEY:
+      case getBinding("NUDGE_RIGHT"):
         this.game!.dispatch(nudgeEvent([power, 0]));
         break;
-      case NUDGE_UP_LEFT_KEY:
+      case getBinding("NUDGE_UP_LEFT"):
         this.game!.dispatch(nudgeEvent([-power, power]));
         break;
-      case NUDGE_UP_RIGHT_KEY:
+      case getBinding("NUDGE_UP_RIGHT"):
         this.game!.dispatch(nudgeEvent([power, power]));
         break;
     }

@@ -82,10 +82,9 @@ export function setupTable(game: Game) {
   game.addEntity(new Wall([28, 24], [28, 100]));
 
   // triangles
-  game.addEntity(new Flipper([19.5, 50.5], "right", 4));
   game.addEntity(
     new MultiWall([
-      [-24, 44],
+      [-24, 40],
       [-20, 50],
       [-20, 53],
       [-24, 56],
@@ -99,6 +98,7 @@ export function setupTable(game: Game) {
       [24, 56],
     ])
   );
+  game.addEntity(new Flipper([19.5, 50.5], "right", 4));
 
   const LO = 61;
   // Slingshots/inlanes
@@ -142,18 +142,8 @@ export function setupTable(game: Game) {
       [8, 30 + LO],
     ])
   );
-  game.addEntity(
-    new MultiWall([
-      [-24, 88],
-      [-4, 100],
-    ])
-  );
-  game.addEntity(
-    new MultiWall([
-      [24, 88],
-      [4, 100],
-    ])
-  );
+  game.addEntity(new Wall([-24, 88], [-4, 100]));
+  game.addEntity(new Wall([24, 88], [4, 100]));
   game.addEntity(new Drain([-4, 100], [4, 100]));
 
   game.addEntity(new Flipper([-8, 30.25 + LO], "left", 6.2));

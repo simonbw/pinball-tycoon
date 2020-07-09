@@ -1,6 +1,7 @@
 import * as Pixi from "pixi.js";
+import { Vector } from "../Vector";
 import Camera from "./Camera";
-import { LayerName, LayerInfo, Layers } from "./Layers";
+import { LayerInfo, LayerName, Layers } from "./Layers";
 
 // The thing that renders stuff to the screen. Mostly for handling layers.
 export default class GameRenderer {
@@ -41,6 +42,18 @@ export default class GameRenderer {
       throw new Error(`Cannot find layer: ${layerInfo}`);
     }
     return layerInfo;
+  }
+
+  getHeight(): number {
+    return this.pixiRenderer.height / this.pixiRenderer.resolution;
+  }
+
+  getWidth(): number {
+    return this.pixiRenderer.width / this.pixiRenderer.resolution;
+  }
+
+  getSize(): Vector {
+    return [this.getHeight(), this.getWidth()];
   }
 
   handleResize() {

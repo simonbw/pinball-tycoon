@@ -2,8 +2,8 @@ import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
 import Game from "../../core/Game";
-import { KeyCode } from "../../core/io/Keys";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import {
   angleDelta,
@@ -11,18 +11,15 @@ import {
   polarToVec,
   radToDeg,
   reflectX,
-  reflectY,
 } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
 import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
-const DOWN_ANGLE = degToRad(27);
+const DOWN_ANGLE = degToRad(30);
 const UP_ANGLE = degToRad(-38);
-const LEFT_KEY = "KeyX";
-const RIGHT_KEY = "Period";
-const UP_LOCK_STIFFNESS = 800000;
 const UP_STIFFNESS = 80000;
 const DOWN_STIFFNESS = 30000;
 const DAMPING = 1250;
@@ -40,9 +37,10 @@ export default class Flipper extends BaseEntity
   spring!: RotationalSpring;
   downAngle: number;
   upAngle: number;
-  key: KeyCode;
   side: Side;
   locked: boolean = false;
+  engaged: boolean = false;
+  handlers: CustomHandlersMap = {};
 
   ballCollisionInfo: BallCollisionInfo = {
     beginContactSound: "wallHit1",
@@ -62,12 +60,14 @@ export default class Flipper extends BaseEntity
       case "left":
         this.upAngle = upAngle;
         this.downAngle = downAngle;
-        this.key = LEFT_KEY;
+        this.handlers["leftFlipperUp"] = () => (this.engaged = true);
+        this.handlers["leftFlipperDown"] = () => (this.engaged = false);
         break;
       case "right":
         this.upAngle = reflectX(upAngle) + 2 * Math.PI;
         this.downAngle = reflectX(downAngle);
-        this.key = RIGHT_KEY;
+        this.handlers["rightFlipperUp"] = () => (this.engaged = true);
+        this.handlers["rightFlipperDown"] = () => (this.engaged = false);
         break;
     }
 
@@ -119,7 +119,12 @@ export default class Flipper extends BaseEntity
       damping: DAMPING,
       restAngle: this.downAngle,
     });
+
     this.springs = [this.spring];
+
+    const controlName = this.side === "left" ? "LEFT_FLIPPER" : "RIGHT_FLIPPER";
+    const key = getBinding(controlName);
+    this.engaged = game.io.keyIsDown(key);
   }
 
   onRender() {
@@ -157,10 +162,8 @@ export default class Flipper extends BaseEntity
   }
 
   onTick() {
-    const engaged = this.game!.io.keyIsDown(this.key);
-
-    this.spring.restAngle = engaged ? this.upAngle : this.downAngle;
-    this.spring.stiffness = engaged ? UP_STIFFNESS : DOWN_STIFFNESS;
+    this.spring.restAngle = this.engaged ? this.upAngle : this.downAngle;
+    this.spring.stiffness = this.engaged ? UP_STIFFNESS : DOWN_STIFFNESS;
 
     const shouldLock = this.shouldLock();
     if (!this.locked && shouldLock) {
