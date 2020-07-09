@@ -1,7 +1,7 @@
 import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
 import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
+import Entity, { GameSprite } from "../../core/entity/Entity";
 import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
 import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
@@ -17,6 +17,8 @@ import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
 import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
+import { LayerName } from "../layers";
+import { darken } from "../../core/util/ColorUtils";
 
 const DOWN_ANGLE = degToRad(30);
 const UP_ANGLE = degToRad(-38);
@@ -31,7 +33,7 @@ type Side = "left" | "right";
 
 export default class Flipper extends BaseEntity
   implements Entity, WithBallCollisionInfo {
-  sprite: Graphics;
+  sprites: GameSprite[];
   body: Body;
   joint?: RevoluteConstraint;
   spring!: RotationalSpring;
@@ -88,19 +90,35 @@ export default class Flipper extends BaseEntity
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape, [length / 2, 0]);
 
-    const graphics = new Graphics();
+    const color = 0x00ffff;
+    this.sprites = [
+      this.makeSprite(position, length, color, "mainfield_4"),
+      this.makeSprite(position, length, darken(color, 0.2), "mainfield_3"),
+      this.makeSprite(position, length, darken(color, 0.4), "mainfield_2"),
+      this.makeSprite(position, length, darken(color, 0.6), "mainfield_1"),
+    ];
+  }
+
+  makeSprite(
+    position: Vector,
+    length: number,
+    color: number,
+    layerName: LayerName
+  ) {
+    const graphics = new Graphics() as Graphics & GameSprite;
 
     graphics.moveTo(0, 0);
-    graphics.lineStyle(WIDTH, 0x00ffff);
+    graphics.lineStyle(WIDTH, color);
     graphics.lineTo(length, 0);
     graphics.lineStyle();
-    graphics.beginFill(0x00ffff);
+    graphics.beginFill(color);
     graphics.drawCircle(0, 0, WIDTH / 2);
     graphics.drawCircle(length, 0, WIDTH / 2);
     graphics.endFill();
 
+    graphics.layerName = layerName;
     graphics.position.set(...position);
-    this.sprite = graphics;
+    return graphics;
   }
 
   onAdd(game: Game) {
@@ -128,15 +146,11 @@ export default class Flipper extends BaseEntity
   }
 
   onRender() {
-    const p = this.body.position;
-    const up = polarToVec(this.upAngle, 6.0);
-    const down = polarToVec(this.downAngle, 6.0);
-
-    this.sprite.angle = radToDeg(this.body.angle);
-    this.sprite.x = this.body.position[0];
-    this.sprite.y = this.body.position[1];
-
-    this.sprite.tint = this.locked ? 0xeeeeee : 0xffffff;
+    for (const sprite of this.sprites) {
+      sprite.angle = radToDeg(this.body.angle);
+      sprite.x = this.body.position[0];
+      sprite.y = this.body.position[1];
+    }
   }
 
   shouldLock() {

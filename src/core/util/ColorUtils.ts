@@ -56,10 +56,10 @@ export function colorFade(from: number, to: number, percentTo: number): number {
   return rgbObjToHex(rgbFrom) + rgbObjToHex(rgbTo);
 }
 
-export function lighten(from: number, percent: number): number {
+export function lighten(from: number, percent: number = 0.1): number {
   return colorFade(from, 0xffffff, percent);
 }
 
-export function darken(from: number, percent: number): number {
+export function darken(from: number, percent: number = 0.1): number {
   return colorFade(from, 0x000000, percent);
 }

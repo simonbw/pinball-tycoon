@@ -55,6 +55,12 @@ Other Features
   [√] Slowmo bar
   [ ] Multiple z-levels
 
+UI:
+  [ ] Custom 7/14/16 segment display for text
+  [ ] Incorporate UI into Table
+    [ ] Slowmo
+    [ ] Balls Remaining
+
 Table Features
   [√] Flipper
   [√] Bumper
