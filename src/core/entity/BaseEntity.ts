@@ -1,7 +1,7 @@
 import p2, { Constraint, Spring } from "p2";
-import Pixi, { TilingSprite } from "pixi.js";
+import * as Three from "three";
 import Game from "../Game";
-import { Vector } from "../Vector";
+import { Vector, V } from "../Vector";
 import Entity from "./Entity";
 
 /**
@@ -9,8 +9,8 @@ import Entity from "./Entity";
  */
 export default abstract class BaseEntity implements Entity {
   game: Game | null = null;
-  sprite?: Pixi.DisplayObject;
-  sprites?: Pixi.DisplayObject[];
+  mesh?: Three.Mesh;
+  meshes?: Three.Mesh[];
   body?: p2.Body;
   pausable: boolean = true;
   persistent: boolean = false;
@@ -21,28 +21,19 @@ export default abstract class BaseEntity implements Entity {
   parent?: Entity;
 
   // Convert local coordinates to world coordinates.
-  // Requires either a body or a sprite.
+  // Requires a body
   localToWorld(worldPoint: [number, number]): Vector {
     if (this.body) {
-      const result: Vector = [0, 0];
+      const result: Vector = V(0, 0);
       this.body.toWorldFrame(result, worldPoint);
       return result;
     }
-    if (this.sprite) {
-      const result = this.sprite.toGlobal(
-        new Pixi.Point(worldPoint[0], worldPoint[1])
-      );
-      return [result.x, result.y];
-    }
-    return [0, 0];
+    return V(0, 0);
   }
 
   getPosition(): Vector {
     if (this.body) {
-      return this.body.position;
-    }
-    if (this.sprite) {
-      return [this.sprite.x, this.sprite.y];
+      return V(this.body.position);
     }
     throw new Error("Position is not implemented for this entity");
   }
@@ -69,14 +60,20 @@ export default abstract class BaseEntity implements Entity {
     if (child.parent) {
       throw new Error("Child already has a parent.");
     }
+    child.parent = this;
     this.children = this.children ?? [];
     this.children.push(child);
-    child.parent = this;
     // if we're already added, add the child too
     if (this.game) {
       this.game.addEntity(child);
     }
     return child;
+  }
+
+  addChildren(children: Entity[]): void {
+    for (const child of children) {
+      this.addChild(child);
+    }
   }
 
   wait(delay: number, onTick?: (dt: number) => void): Promise<void> {

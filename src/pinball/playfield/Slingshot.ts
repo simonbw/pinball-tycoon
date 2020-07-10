@@ -1,12 +1,11 @@
-import BaseEntity from "../../core/entity/BaseEntity";
-import { Graphics } from "pixi.js";
 import { Body, Capsule } from "p2";
-import { Vector } from "../../core/Vector";
-import { Materials } from "./Materials";
-import { CollisionGroups } from "./Collision";
-import Ball from "./Ball";
-import { clamp } from "../../core/util/MathUtil";
+import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { clamp } from "../../core/util/MathUtil";
+import { Vector } from "../../core/Vector";
+import Ball from "./Ball";
+import { CollisionGroups } from "./Collision";
+import { Materials } from "./Materials";
 
 const DEAD_SPACE = 0.03;
 const STRENGTH = 400;
@@ -16,7 +15,6 @@ const WIDTH = 0.5;
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
-  sprite: Graphics;
   body: Body;
   middlePercent: number;
   color: number;
@@ -41,7 +39,6 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.color = color;
     this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
 
-    this.sprite = new Graphics();
     this.body = this.makeBody();
   }
 
@@ -83,16 +80,16 @@ export default class Slingshot extends BaseEntity implements Entity {
     );
     const midpoint = start.add(end).imul(0.5).iadd(displacement);
 
-    this.sprite.clear();
-    this.sprite.lineStyle(WIDTH, this.color);
-    this.sprite.moveTo(start.x, start.y);
-    this.sprite.lineTo(midpoint.x, midpoint.y);
-    this.sprite.moveTo(midpoint.x, midpoint.y);
-    this.sprite.lineTo(end.x, end.y);
-    this.sprite.lineStyle();
-    this.sprite.beginFill(this.color);
-    this.sprite.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
-    this.sprite.endFill();
+    // this.sprite.clear();
+    // this.sprite.lineStyle(WIDTH, this.color);
+    // this.sprite.moveTo(start.x, start.y);
+    // this.sprite.lineTo(midpoint.x, midpoint.y);
+    // this.sprite.moveTo(midpoint.x, midpoint.y);
+    // this.sprite.lineTo(end.x, end.y);
+    // this.sprite.lineStyle();
+    // this.sprite.beginFill(this.color);
+    // this.sprite.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
+    // this.sprite.endFill();
   }
 
   getPercentAcross(C: Vector): number {

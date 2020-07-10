@@ -1,7 +1,7 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
-import { Vector } from "../../core/Vector";
+import { Vector, V } from "../../core/Vector";
 import { getBinding } from "../ui/KeyboardBindings";
 
 export interface NudgeEvent {
@@ -27,16 +27,16 @@ export default class NudgeController extends BaseEntity implements Entity {
     const power = 40;
     switch (key) {
       case getBinding("NUDGE_LEFT"):
-        this.game!.dispatch(nudgeEvent([-power, 0]));
+        this.game!.dispatch(nudgeEvent(V(-power, 0)));
         break;
       case getBinding("NUDGE_RIGHT"):
-        this.game!.dispatch(nudgeEvent([power, 0]));
+        this.game!.dispatch(nudgeEvent(V(power, 0)));
         break;
       case getBinding("NUDGE_UP_LEFT"):
-        this.game!.dispatch(nudgeEvent([-power, power]));
+        this.game!.dispatch(nudgeEvent(V(-power, power)));
         break;
       case getBinding("NUDGE_UP_RIGHT"):
-        this.game!.dispatch(nudgeEvent([power, power]));
+        this.game!.dispatch(nudgeEvent(V(power, power)));
         break;
     }
   }

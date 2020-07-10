@@ -16,7 +16,7 @@ export default class EntityList implements Iterable<Entity> {
     onTick: new FilterList<Entity>((e) => Boolean(e.onTick)),
     onPause: new FilterList<Entity>((e) => Boolean(e.onPause)),
     onUnpause: new FilterList<Entity>((e) => Boolean(e.onUnpause)),
-    hasSprite: new FilterList<Entity>((e) => Boolean(e.sprite)),
+    hasMesh: new FilterList<Entity>((e) => Boolean(e.mesh)),
     hasBody: new FilterList<Entity>((e) => Boolean(e.body)),
   };
 

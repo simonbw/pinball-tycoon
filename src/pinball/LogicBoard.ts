@@ -1,12 +1,12 @@
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
 import { KeyCode } from "../core/io/Keys";
-import { Vector } from "../core/Vector";
+import { Vector, V } from "../core/Vector";
 import Ball from "./playfield/Ball";
 import { playSoundEvent } from "./Soundboard";
 import { getBinding } from "./ui/KeyboardBindings";
 
-const NEW_BALL_LOCATION: Vector = [26, 95];
+const NEW_BALL_LOCATION: Vector = V(26, 95);
 
 export interface DrainEvent {
   type: "drain";
@@ -15,6 +15,11 @@ export interface DrainEvent {
 
 export interface ScoreEvent {
   type: "score";
+  points: number;
+}
+
+export interface UpdateScoreEvent {
+  type: "update_score";
   points: number;
 }
 

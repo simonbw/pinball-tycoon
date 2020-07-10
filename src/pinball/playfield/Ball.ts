@@ -1,17 +1,15 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import { Filter, Graphics } from "pixi.js";
+import { Mesh, MeshStandardMaterial, SphereGeometry } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity, { GameSprite } from "../../core/entity/Entity";
+import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp, degToRad } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { Vector, V } from "../../core/Vector";
 import { hasCollisionInfo, SparkInfo } from "../BallCollisionInfo";
 import { NudgeEvent } from "../controllers/NudgeController";
-import BallShaderFilter from "../effects/BallShader";
 import ParticleSystem from "../effects/ParticleSystem";
 import { makeSparkParams } from "../effects/Sparks";
-import { LAYERS } from "../layers";
 import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
@@ -23,32 +21,31 @@ const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
 const RESAMPLE = 1.0;
 
+const GEOMETRY = new SphereGeometry(RADIUS, 32, 32);
+const MATERIAL = new MeshStandardMaterial({
+  color: 0xffffff,
+  roughness: 0,
+  metalness: 0.8,
+});
+
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
   body: Body;
-  sprite: Graphics & GameSprite = new Graphics();
-  ballShaderFilter: Filter;
   radius: number = RADIUS;
+  mesh: Mesh;
 
-  rollingVelocity: Vector = [0, 0];
-  rollingPosition: Vector = [0, 0];
+  rollingVelocity: Vector = V(0, 0);
+  rollingPosition: Vector = V(0, 0);
 
-  constructor(position: Vector, velocity: Vector = [0, 0]) {
+  constructor(position: Vector, velocity: Vector = V(0, 0)) {
     super();
 
     this.body = this.makeBody();
     this.body.position = position;
     this.body.velocity = velocity;
 
-    this.ballShaderFilter = new BallShaderFilter(this);
-
-    const r = this.radius * RESAMPLE;
-    this.sprite.beginFill(0xffffff);
-    this.sprite.drawRect(-r, -r, 2 * r, 2 * r);
-    this.sprite.endFill();
-    this.sprite.filters = [this.ballShaderFilter];
-    this.sprite.scale.set(1.0 / RESAMPLE);
-    this.sprite.layerName = LAYERS.mainfield_3;
+    this.mesh = new Mesh(GEOMETRY, MATERIAL);
+    this.mesh.castShadow = true;
   }
 
   makeBody() {
@@ -66,23 +63,19 @@ export default class Ball extends BaseEntity implements Entity {
     return body;
   }
 
-  getVelocity(): Vector {
-    return this.body.velocity;
-  }
-
   onTick() {
     // Gravity
     this.body.applyForce([0, GRAVITY * MASS]);
 
     // Spin
-    const spinForce = this.body.velocity
+    const spinForce = V(this.body.velocity)
       .normalize()
       .irotate90cw()
       .imul(this.body.angularVelocity * 0.05);
     this.body.applyForce(spinForce);
 
     // Friction
-    const frictionForce = this.body.velocity.mul(-FRICTION);
+    const frictionForce = V(this.body.velocity).mul(-FRICTION);
     this.body.applyForce(frictionForce);
 
     this.rollingVelocity.set(this.body.velocity);
@@ -91,7 +84,9 @@ export default class Ball extends BaseEntity implements Entity {
 
   onRender() {
     const [x, y] = this.body.position;
-    this.sprite.position.set(x, y);
+    const z = this.radius;
+
+    this.mesh.position.set(x, y, -z);
   }
 
   handlers = {
@@ -173,7 +168,7 @@ export default class Ball extends BaseEntity implements Entity {
       );
       if (count > 0) {
         const isA = this.body === eq.bodyA;
-        const contactPos = isA ? eq.contactPointA : eq.contactPointB;
+        const contactPos = V(isA ? eq.contactPointA : eq.contactPointB);
         const position = this.getPosition().add(contactPos);
         const direction = contactPos.angle + Math.PI;
         const ballSpin = this.body.angularVelocity;

@@ -1,4 +1,4 @@
-import { Vector } from "../Vector";
+import { Vector, V } from "../Vector";
 
 // Modulo operator for modular arithmetic
 export function mod(a: number, b: number): number {
@@ -65,5 +65,5 @@ export function reflectXY(theta: number): number {
 }
 
 export function polarToVec(theta: number, r: number): Vector {
-  return [r * Math.cos(theta), r * Math.sin(theta)];
+  return V(r * Math.cos(theta), r * Math.sin(theta));
 }

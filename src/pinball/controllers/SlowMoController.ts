@@ -1,7 +1,5 @@
-import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity, { GameSprite } from "../../core/entity/Entity";
-import { LAYERS } from "../layers";
+import Entity from "../../core/entity/Entity";
 import { getBindings } from "../ui/KeyboardBindings";
 
 const SLOW_SPEED = 0.3;
@@ -17,12 +15,9 @@ const FILL_SPEED = 0.2;
 export default class SlowMoController extends BaseEntity implements Entity {
   remaining: number = 0.0;
   cooldown: boolean = true;
-  sprite: Graphics & GameSprite;
 
   constructor() {
     super();
-    this.sprite = new Graphics();
-    this.sprite.layerName = LAYERS.hud;
   }
 
   onTick(dt: number) {
@@ -48,20 +43,20 @@ export default class SlowMoController extends BaseEntity implements Entity {
     }
   }
 
-  onRender() {
-    this.sprite.clear();
-    this.sprite.beginFill(0x777777);
-    this.sprite.drawRect(0, 0, WIDTH, HEIGHT);
-    this.sprite.endFill();
-    this.sprite.beginFill(this.cooldown ? 0xff4444 : 0xffff00);
-    this.sprite.drawRect(0, 0, WIDTH * this.remaining, HEIGHT);
-    this.sprite.endFill();
-    this.sprite.x = this.game!.renderer.getWidth() - 110;
-    if (this.cooldown) {
-      this.sprite.lineStyle(2.0, 0xffffff, 0.5);
-      this.sprite.moveTo(WIDTH * COOLDOWN_POINT, 0);
-      this.sprite.lineTo(WIDTH * COOLDOWN_POINT, HEIGHT);
-    }
-    this.sprite.y = 80;
-  }
+  // onRender() {
+  //   this.sprite.clear();
+  //   this.sprite.beginFill(0x777777);
+  //   this.sprite.drawRect(0, 0, WIDTH, HEIGHT);
+  //   this.sprite.endFill();
+  //   this.sprite.beginFill(this.cooldown ? 0xff4444 : 0xffff00);
+  //   this.sprite.drawRect(0, 0, WIDTH * this.remaining, HEIGHT);
+  //   this.sprite.endFill();
+  //   this.sprite.x = this.game!.renderer2d.getWidth() - 110;
+  //   if (this.cooldown) {
+  //     this.sprite.lineStyle(2.0, 0xffffff, 0.5);
+  //     this.sprite.moveTo(WIDTH * COOLDOWN_POINT, 0);
+  //     this.sprite.lineTo(WIDTH * COOLDOWN_POINT, HEIGHT);
+  //   }
+  //   this.sprite.y = 80;
+  // }
 }

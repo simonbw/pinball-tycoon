@@ -1,14 +1,14 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
-import { Vector } from "../../core/Vector";
+import { Vector, V } from "../../core/Vector";
 import Ball, { isBall } from "../playfield/Ball";
 import { getBinding } from "../ui/KeyboardBindings";
 
 const FORCE = 150;
 const GRAVITY_COMP = 132;
 
-const RESET_POSITION: Vector = [26, 90];
+const RESET_POSITION: Vector = V(26, 90);
 
 /** Magically control the ball to put it where we want it */
 export default class MagicBallController extends BaseEntity implements Entity {
@@ -27,13 +27,6 @@ export default class MagicBallController extends BaseEntity implements Entity {
       }
       if (this.game!.io.keyIsDown(getBinding("MAGIC.DOWN"))) {
         ball.body.applyForce([0, FORCE]);
-      }
-
-      // Snap to mouse
-      if (this.game!.io.lmb) {
-        const p = this.game!.camera.toWorld(this.game!.io.mousePosition);
-        ball.body.position = p;
-        ball.body.velocity = [0, 0];
       }
     }
   }

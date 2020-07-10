@@ -1,45 +1,35 @@
-import * as Pixi from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity, { GameSprite } from "../../core/entity/Entity";
-import { isLogicBoard } from "../LogicBoard";
-import { LAYERS } from "../layers";
+import Entity from "../../core/entity/Entity";
+import { UpdateScoreEvent } from "../LogicBoard";
+import { PlaneGeometry, MeshStandardMaterial, Mesh } from "three";
 
 interface ScoreEvent {
   type: "score";
   points: number;
 }
 
+const MATERIAL = new MeshStandardMaterial({
+  color: 0x222222,
+});
+
 export default class Scoreboard extends BaseEntity implements Entity {
-  sprite: Pixi.Text & GameSprite;
-
-  constructor() {
+  constructor(left: number, right: number, height: number) {
     super();
-
-    this.sprite = new Pixi.Text(``, {
-      fill: 0xff3333,
-      fontFamily: ["DS Digital"],
-      fontSize: 48,
-      dropShadow: true,
-      dropShadowBlur: 10,
-      dropShadowColor: 0xff3333,
-      dropShadowAlpha: 0.5,
-      dropShadowDistance: 0,
-    });
-    this.sprite.anchor.set(1, 0);
-    this.sprite.layerName = LAYERS.hud;
-    this.updateText();
+    const width = right - left;
+    const x = (left + right) / 2;
+    const geometry = new PlaneGeometry(width, height);
+    geometry.rotateX(-Math.PI / 2);
+    geometry.translate(x, 0, -height / 2);
+    this.mesh = new Mesh(geometry, MATERIAL);
   }
 
-  onRender() {
-    this.sprite.x = this.game!.renderer.pixiRenderer.width / 2 - 5;
-    this.sprite.y = 5;
-    const logicBoard = this.game!.entities.getTagged("logic_board")[0];
-    if (isLogicBoard(logicBoard)) {
-      const { ballsRemaining, score } = logicBoard;
-      const newText = `${"◌".repeat(ballsRemaining)} ${score} pts`;
-      this.sprite.text = newText;
-    }
-  }
+  handlers = {
+    updateScore: ({ points }: UpdateScoreEvent) => {
+      this.updateText();
+    },
+  };
+
+  onRender() {}
 
   updateText() {}
 }

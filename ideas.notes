@@ -33,6 +33,7 @@ Child Entities:
   [√] They get added when the parent gets added
   [√] They get destroyed when the parent gets destroyed
   [√] When children destroy, they remove themselves from their parents
+  [ ] Allow child entitie's Mesh to be added to parent's mesh
 
 #---------#
 # Pinball #

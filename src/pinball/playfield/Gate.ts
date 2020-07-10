@@ -1,59 +1,86 @@
-import { Body, Capsule, RevoluteConstraint, Shape, ContactEquation } from "p2";
-import { Graphics } from "pixi.js";
+import {
+  Body,
+  Capsule,
+  ContactEquation,
+  RevoluteConstraint,
+  Shape as P2Shape,
+} from "p2";
+import {
+  ExtrudeGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  Shape as ThreeShape,
+} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
-import { Vector } from "../../core/Vector";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
-import { Materials } from "./Materials";
-import { CollisionGroups } from "./Collision";
-import { degToRad, radToDeg, clamp } from "../../core/util/MathUtil";
-import { isBall } from "./Ball";
+import { clamp } from "../../core/util/MathUtil";
+import { Vector } from "../../core/Vector";
 import { playSoundEvent } from "../Soundboard";
+import { isBall } from "./Ball";
+import { CollisionGroups } from "./Collision";
+import { Materials } from "./Materials";
+import { WithBallCollisionInfo, BallCollisionInfo } from "../BallCollisionInfo";
 
-export default class Gate extends BaseEntity implements Entity {
+const MATERIAL = new MeshStandardMaterial({
+  color: 0xffffff,
+  roughness: 0.0,
+  metalness: 0.5,
+});
+
+export default class Gate extends BaseEntity
+  implements Entity, WithBallCollisionInfo {
   body: Body;
-  sprite: Graphics;
   pivot: Vector;
   swingAmount: number;
+  ballCollisionInfo: BallCollisionInfo = {
+    beginContactSound: "gateHit",
+  };
 
   constructor(
     pivot: Vector,
     end: Vector,
     swingAmount: number = Math.PI,
-    width: number = 0.5,
-    color: number = 0xaaaaaa
+    width: number = 0.5
   ) {
     super();
     this.pivot = pivot;
     this.swingAmount = swingAmount;
 
     const delta = end.sub(pivot);
-
-    this.sprite = new Graphics();
-    this.sprite.moveTo(0, 0);
-    this.sprite.lineStyle(width, color);
-    this.sprite.lineTo(delta.x, delta.y);
-    this.sprite.lineStyle();
-    this.sprite.beginFill(color);
-    this.sprite.drawCircle(0, 0, width / 2);
-    this.sprite.drawCircle(delta.x, delta.y, width / 2);
-    this.sprite.endFill();
-    this.sprite.pivot.set(...delta.mul(0.5));
+    const length = delta.magnitude;
+    const position = pivot.add(delta.mul(0.5));
 
     this.body = new Body({
-      position: pivot.add(delta.mul(0.5)),
+      position,
       mass: 0.18,
     });
 
-    const shape = new Capsule({
-      length: delta.magnitude,
+    const p2Shape = new Capsule({
+      length: length,
       radius: width / 2,
     });
-    shape.material = Materials.wall;
-    shape.collisionGroup = CollisionGroups.Table;
-    shape.collisionMask = CollisionGroups.Ball;
-    this.body.addShape(shape, [0, 0], delta.angle);
+    p2Shape.material = Materials.wall;
+    p2Shape.collisionGroup = CollisionGroups.Table;
+    p2Shape.collisionMask = CollisionGroups.Ball;
+    this.body.addShape(p2Shape, [0, 0], delta.angle);
+
+    const shape = new ThreeShape();
+    const r = width / 2;
+    shape.moveTo(0, -r);
+    shape.lineTo(length, -r);
+    shape.absarc(length, 0, r, 0, Math.PI / 2, false);
+    shape.lineTo(0, r);
+    shape.lineTo(0, -r);
+
+    const geometry = new ExtrudeGeometry(shape, {
+      bevelEnabled: false,
+      depth: 1,
+    });
+    geometry.rotateZ(delta.angle);
+    this.mesh = new Mesh(geometry, MATERIAL);
+    this.mesh.position.set(pivot.x, pivot.y, -1.5);
   }
 
   onAdd(game: Game) {
@@ -77,22 +104,6 @@ export default class Gate extends BaseEntity implements Entity {
   }
 
   onRender() {
-    this.sprite.angle = radToDeg(this.body.angle);
-    this.sprite.position.set(...this.body.position);
-  }
-
-  onBeginContact(
-    ball: Entity,
-    _: Shape,
-    __: Shape,
-    contactEquations: ContactEquation[]
-  ) {
-    if (isBall(ball)) {
-      const eq = contactEquations[0];
-      const impact = Math.abs(eq.getVelocityAlongNormal());
-      const pan = clamp(ball.getPosition()[0] / 40, -0.5, 0.5);
-      const gain = clamp(impact / 50) ** 2;
-      this.game!.dispatch(playSoundEvent("gateHit", { pan, gain }));
-    }
+    this.mesh!.rotation.z = this.body.angle;
   }
 }

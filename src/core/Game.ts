@@ -1,14 +1,12 @@
-import Drawing from "./graphics/Drawing";
-import GameRenderer from "./graphics/GameRenderer";
-import p2, { ContactMaterial, ContactEquation } from "p2";
-import { IOManager } from "./io/IO";
-import Entity, { WithOwner } from "./entity/Entity";
-import Camera from "./graphics/Camera";
-import EntityList from "./EntityList";
+import p2, { ContactMaterial } from "p2";
 import ContactList, {
   ContactInfo,
   ContactInfoWithEquations,
 } from "./ContactList";
+import Entity, { WithOwner } from "./entity/Entity";
+import EntityList from "./EntityList";
+import { GameRenderer3d } from "./graphics/GameRenderer3d";
+import { IOManager } from "./io/IO";
 import { rRound } from "./util/Random";
 
 /**
@@ -19,10 +17,9 @@ export default class Game {
   entities: EntityList;
   /** Keeps track of entities that are ready to be removed */
   entitiesToRemove: Set<Entity>;
-  /** Controls rendering */
-  renderer: GameRenderer;
-  /** Provides an imperative API for drawing primatives. */
-  draw: Drawing;
+
+  renderer: GameRenderer3d;
+
   /** Manages keyboard/mouse/gamepad state and events. */
   io: IOManager;
   /** The top level container for physics. */
@@ -50,6 +47,10 @@ export default class Game {
   /** Number of ticks that happen per frame */
   tickIterations: number;
 
+  get camera() {
+    return this.renderer.camera;
+  }
+
   /**
    * Create a new Game.
    */
@@ -61,10 +62,9 @@ export default class Game {
     this.entities = new EntityList();
     this.entitiesToRemove = new Set();
 
-    this.renderer = new GameRenderer();
-    this.camera = this.renderer.camera;
-    this.draw = new Drawing();
-    this.io = new IOManager(this.renderer.pixiRenderer.view);
+    this.renderer = new GameRenderer3d();
+
+    this.io = new IOManager(this.renderer.threeRenderer.domElement);
 
     this.tickIterations = tickIterations;
     this.world = new p2.World({ gravity: [0, 0] });
@@ -98,18 +98,8 @@ export default class Game {
     return this.ticknumber / (this.framerate * this.tickIterations);
   }
 
-  /** The active camera. Controls where stuff is rendered */
-  get camera(): Camera {
-    return this.renderer.camera;
-  }
-  set camera(camera: Camera) {
-    this.renderer.camera = camera;
-  }
-
   /** Start the event loop for the game. */
   start(): void {
-    this.addEntity(this.camera);
-    this.addEntity(this.draw);
     window.requestAnimationFrame(() => this.loop(this.lastFrameTime));
   }
 
@@ -161,20 +151,26 @@ export default class Game {
     this.entities.add(entity);
     this.io.addHandler(entity);
 
-    if (entity.sprite) {
-      this.renderer.addSprite(entity.sprite);
-      entity.sprite.owner = entity;
+    if (entity.mesh) {
+      this.renderer.scene.add(entity.mesh);
+      entity.mesh.owner = entity;
     }
-    if (entity.sprites) {
-      for (const sprite of entity.sprites) {
-        this.renderer.addSprite(sprite);
-        sprite.owner = entity;
+    if (entity.meshes) {
+      for (const mesh of entity.meshes) {
+        this.renderer.scene.add(mesh);
+        mesh.owner = entity;
       }
     }
 
     if (entity.body) {
       this.world.addBody(entity.body);
       entity.body.owner = entity;
+    }
+    if (entity.bodies) {
+      for (const body of entity.bodies) {
+        this.world.addBody(body);
+        body.owner = entity;
+      }
     }
     if (entity.springs) {
       for (const spring of entity.springs) {
@@ -256,16 +252,22 @@ export default class Game {
       this.entities.remove(entity);
       this.io.removeHandler(entity);
 
-      if (entity.sprite) {
-        this.renderer.removeSprite(entity.sprite);
+      if (entity.mesh) {
+        this.renderer.scene.remove(entity.mesh);
       }
-      if (entity.sprites) {
-        for (const sprite of entity.sprites) {
-          this.renderer.removeSprite(sprite);
+      if (entity.meshes) {
+        for (const mesh of entity.meshes) {
+          this.renderer.scene.remove(mesh);
         }
       }
       if (entity.body) {
         this.world.removeBody(entity.body);
+      }
+      if (entity.bodies) {
+        for (const body of entity.bodies) {
+          this.world.removeBody(body);
+          body.owner = entity;
+        }
       }
       if (entity.springs) {
         for (const spring of entity.springs) {
@@ -320,6 +322,7 @@ export default class Game {
     for (const entity of this.entities.filtered.onRender) {
       entity.onRender!();
     }
+    // this.renderer2d?.render();
     this.renderer.render();
   }
 

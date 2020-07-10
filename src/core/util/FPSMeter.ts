@@ -1,26 +1,16 @@
-import * as Pixi from "pixi.js";
 import BaseEntity from "../entity/BaseEntity";
-import Entity, { GameSprite } from "../entity/Entity";
+import Entity from "../entity/Entity";
 import Game from "../Game";
-import { Vector } from "../Vector";
-import { LAYERS } from "../../pinball/layers";
+import { Vector, V } from "../Vector";
 
 export default class FPSMeter extends BaseEntity implements Entity {
   persistent = true;
-  sprite: Pixi.Text & GameSprite;
-
   lastUpdate: number;
   averageDuration: number = 0;
   slowFrameCount: number = 0;
 
-  constructor(position: Vector = [0, 0], color: number = 0x000000) {
+  constructor(position: Vector = V(0, 0), color: number = 0x000000) {
     super();
-    this.sprite = new Pixi.Text("", {
-      fontSize: "12px",
-      fill: color,
-    });
-    this.sprite.position.set(...position);
-    this.sprite.layerName = LAYERS.hud;
     this.lastUpdate = performance.now();
   }
 
@@ -37,7 +27,7 @@ export default class FPSMeter extends BaseEntity implements Entity {
     const fps = (1000 / this.averageDuration).toFixed(0);
     const bodies = this.game!.world.bodies.length;
 
-    const sprites = this.game!.renderer.spriteCount;
-    this.sprite.text = `fps: ${fps} | bodies: ${bodies} | sprites: ${sprites}`;
+    const objs = this.game!.renderer.scene.children.length;
+    const newText = `fps: ${fps} | bodies: ${bodies} | meshes: ${objs}`;
   }
 }

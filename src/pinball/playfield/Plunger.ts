@@ -1,13 +1,12 @@
 import { Body, Box, ContactEquation, LinearSpring, Shape, Spring } from "p2";
-import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { Vector } from "../../core/Vector";
-import { Materials } from "./Materials";
-import Ball, { isBall } from "./Ball";
-import { CollisionGroups } from "./Collision";
 import { clamp } from "../../core/util/MathUtil";
+import { Vector } from "../../core/Vector";
 import { playSoundEvent } from "../Soundboard";
+import { isBall } from "./Ball";
+import { CollisionGroups } from "./Collision";
+import { Materials } from "./Materials";
 
 const WIDTH = 2;
 const HEIGHT = 1.5;
@@ -20,17 +19,15 @@ const PULL_KEY = "Enter";
 
 export default class Plunger extends BaseEntity implements Entity {
   body: Body;
-  sprite: Graphics;
   neutralPosition: Vector;
   private pullSpring?: Spring;
 
   constructor(position: Vector) {
     super();
-    this.sprite = new Graphics();
     this.neutralPosition = position;
 
     this.body = new Body({
-      position,
+      position: position,
       mass: 3,
       fixedRotation: true,
       fixedX: true,
@@ -69,14 +66,13 @@ export default class Plunger extends BaseEntity implements Entity {
 
   onRender() {
     const [x, y] = this.body.position;
-    const graphics = this.sprite;
-    graphics.clear();
-    graphics.beginFill(0x666666);
-    graphics.drawRect(x - 0.4, y, 0.8, LENGTH);
-    graphics.endFill();
-    graphics.beginFill(0x000000);
-    graphics.drawRect(x - WIDTH / 2, y - HEIGHT / 2, WIDTH, HEIGHT);
-    graphics.endFill();
+    // graphics.clear();
+    // graphics.beginFill(0x666666);
+    // graphics.drawRect(x - 0.4, y, 0.8, LENGTH);
+    // graphics.endFill();
+    // graphics.beginFill(0x000000);
+    // graphics.drawRect(x - WIDTH / 2, y - HEIGHT / 2, WIDTH, HEIGHT);
+    // graphics.endFill();
   }
 
   onBeginContact(

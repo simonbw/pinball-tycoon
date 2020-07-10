@@ -1,5 +1,4 @@
 import { Body, Box } from "p2";
-import { Graphics } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { Vector } from "../../core/Vector";
@@ -13,10 +12,9 @@ export default class Drain extends BaseEntity implements Entity {
     const width = right.x - left.x;
     const height = 1;
 
-    const graphics = new Graphics();
-    graphics.beginFill(0x000000);
-    graphics.drawRect(left.x, left.y, width, height);
-    this.sprite = graphics;
+    // const graphics = new Graphics();
+    // graphics.beginFill(0x000000);
+    // graphics.drawRect(left.x, left.y, width, height);
 
     this.body = new Body({
       collisionResponse: false,

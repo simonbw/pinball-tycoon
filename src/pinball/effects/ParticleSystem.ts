@@ -1,12 +1,11 @@
-import { Container, Graphics } from "pixi.js";
+import { AABB, SAPBroadphase } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity, { WithOwner } from "../../core/entity/Entity";
-import { degToRad, polarToVec } from "../../core/util/MathUtil";
-import { rNormal, rUniform } from "../../core/util/Random";
-import { Vector } from "../../core/Vector";
-import { Body, World, SAPBroadphase, AABB } from "p2";
-import Wall from "../playfield/Wall";
+import { polarToVec } from "../../core/util/MathUtil";
+import { rUniform } from "../../core/util/Random";
+import { Vector, V } from "../../core/Vector";
 import Light from "../lighting/Light";
+import Wall from "../playfield/Wall";
 
 export interface ParticleSystemParams {
   position: Vector;
@@ -29,7 +28,6 @@ export interface ParticleSystemParams {
 }
 
 export default class ParticleSystem extends BaseEntity implements Entity {
-  sprite = new Container();
   particles: Particle[] = [];
 
   constructor({
@@ -72,10 +70,10 @@ export default class ParticleSystem extends BaseEntity implements Entity {
     this.particles.sort((a, b) => b.life - a.life);
     for (const particle of this.particles) {
       this.addChild(particle);
-      this.sprite.addChild(particle.pSprite);
+      // this.sprite.addChild(particle.pSprite);
     }
 
-    this.sprite.position.set(...position);
+    // this.sprite.position.set(...position);
   }
 
   onRender() {
@@ -102,7 +100,6 @@ interface ParticleOptions {
 }
 
 class Particle extends BaseEntity implements Entity {
-  pSprite = new Graphics();
   position: Vector;
   velocity: Vector;
   friction: number;
@@ -116,8 +113,8 @@ class Particle extends BaseEntity implements Entity {
   grow: number;
 
   constructor({
-    position = [0, 0],
-    velocity = [0, 0],
+    position = V(0, 0),
+    velocity = V(0, 0),
     friction = 0.0,
     life = 1.0,
     color = 0xffffff,
@@ -143,10 +140,6 @@ class Particle extends BaseEntity implements Entity {
     this.lifeToAlpha = lifeToAlpha;
     this.grow = grow;
 
-    this.pSprite.beginFill(color);
-    this.pSprite.drawCircle(0, 0, size);
-    this.pSprite.endFill();
-
     if (light) {
       this.addChild(light);
     }
@@ -164,7 +157,7 @@ class Particle extends BaseEntity implements Entity {
       this.velocity.angle += this.swirl * dt;
       this.velocity.imul(1.0 - this.friction * dt);
       this.position.iadd(this.velocity.mul(dt));
-      this.pSprite.scale.set(this.pSprite.scale.x * (1.0 + this.grow * dt));
+      // this.pSprite.scale.set(this.pSprite.scale.x * (1.0 + this.grow * dt));
     }
   }
   onRender() {
@@ -172,8 +165,8 @@ class Particle extends BaseEntity implements Entity {
       this.light.lightData.position[0] = this.position[0];
       this.light.lightData.position[1] = this.position[1];
     }
-    this.pSprite.position.set(...this.position);
-    this.pSprite.alpha = this.lifeToAlpha?.(this.life) ?? this.life;
+    // this.pSprite.position.set(...this.position);
+    // this.pSprite.alpha = this.lifeToAlpha?.(this.life) ?? this.life;
   }
 
   private checkCollisions(): boolean {

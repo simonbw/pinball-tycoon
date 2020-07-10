@@ -1,17 +1,11 @@
-import p2 from "p2";
-import * as Pixi from "pixi.js";
+import * as Three from "three";
 import Game from "../Game";
+import EntityPhysics from "./EntityPhysics";
 import GameEventHandler from "./GameEventHandler";
 import IOEventHandler from "./IOEventHandler";
-import PhysicsHandler from "./PhysicsHandler";
 
 export interface WithOwner {
   owner?: Entity;
-}
-
-export interface GameSprite extends Pixi.DisplayObject, WithOwner {
-  /** Layer to draw the sprite on */
-  layerName?: string;
 }
 
 /**
@@ -19,7 +13,7 @@ export interface GameSprite extends Pixi.DisplayObject, WithOwner {
  */
 export default interface Entity
   extends GameEventHandler,
-    PhysicsHandler,
+    EntityPhysics,
     IOEventHandler {
   /** The game this entity belongs to. This should only be set by the Game. */
   game: Game | null;
@@ -39,20 +33,11 @@ export default interface Entity
   /** True if this entity will stop updating when the game is paused. */
   readonly pausable: boolean;
 
-  /** The pixi sprite that gets added/removed from the stage automatically */
-  readonly sprite?: GameSprite;
+  /** The Three.js object that gets added/removed from the scene automatically */
+  readonly mesh?: Three.Mesh & WithOwner;
 
-  /** The pixi sprites that gets added/removed from the stage automatically */
-  readonly sprites?: readonly GameSprite[];
-
-  /** Physics body that gets automatically added/removed from the world */
-  readonly body?: p2.Body & WithOwner;
-
-  /** Physics springs that gets automatically added/removed from the world */
-  readonly springs?: p2.Spring[];
-
-  /** Physics constraints that gets automatically added/removed from the world */
-  readonly constraints?: p2.Constraint[];
+  /** The Three.js objects that gets added/removed from the scene automatically */
+  readonly meshes?: readonly (Three.Mesh & WithOwner)[];
 
   /** Called to remove this entity from the game */
   destroy(): void;

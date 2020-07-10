@@ -17,7 +17,7 @@ export interface LightUniforms {
 const EMPTY_LIGHT: LightData = {
   position: [0, 0, 0],
   color: 0,
-  power: 0,
+  intensity: 0,
   linearFade: 0,
   quadraticFade: 0,
   radius: 0,
@@ -34,7 +34,7 @@ export function getLightUniformsForPoint(
   const datas = game.entities
     .getTagged("light")
     .filter(isLight)
-    .filter((light) => light.lightData.power > 0)
+    .filter((light) => light.lightData.intensity > 0)
     .map((light) => light.lightData);
 
   // Sort by most important
@@ -68,7 +68,7 @@ export function getLightUniformsForPoint(
     vLightColor: new Float32Array(
       ([] as number[]).concat(...datas.map((data) => hexToVec3(data.color)))
     ),
-    fLightPower: new Float32Array(datas.map((data) => data.power)),
+    fLightPower: new Float32Array(datas.map((data) => data.intensity)),
     fLightLinearFade: new Float32Array(datas.map((data) => data.linearFade)),
     fLightQuadraticFade: new Float32Array(
       datas.map((data) => data.quadraticFade)
@@ -86,5 +86,5 @@ function rankLight(data: LightData, point: vec3, radius: number = 0): number {
   const dz = point[2] - data.position[2];
   const d = Math.max(Math.sqrt(dx ** 2 + dy ** 2 + dz ** 2) - radius, 0);
   const divisor = 1.0 + d * d * data.quadraticFade + d * data.linearFade;
-  return data.power / divisor;
+  return data.intensity / divisor;
 }

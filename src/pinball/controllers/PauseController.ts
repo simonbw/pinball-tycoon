@@ -1,39 +1,18 @@
-import { Text } from "pixi.js";
 import BaseEntity from "../../core/entity/BaseEntity";
-import Entity, { GameSprite } from "../../core/entity/Entity";
+import Entity from "../../core/entity/Entity";
 import { ControllerButton } from "../../core/io/Gamepad";
 import * as Keys from "../../core/io/Keys";
-import { LAYERS } from "../layers";
 
 /** Pauses and unpauses the game when visibility is lost. */
 export default class PauseController extends BaseEntity implements Entity {
-  sprite: Text & GameSprite;
   pausable = false;
   persistent = true;
 
   constructor() {
     super();
-
-    this.sprite = new Text("Paused", {
-      dropShadow: true,
-      dropShadowAlpha: 0.6,
-      dropShadowBlur: 20,
-      dropShadowColor: 0xffffff,
-      dropShadowDistance: 0,
-      fill: 0xffffff,
-      fontFamily: ["DS Digital"],
-      fontSize: 120,
-    });
-    this.sprite.layerName = LAYERS.hud;
-
-    this.sprite.anchor.set(0.5, 0.5);
   }
 
-  onRender() {
-    this.sprite.visible = this.game!.paused;
-    this.sprite.x = this.game!.renderer.pixiRenderer.width / 4;
-    this.sprite.y = this.game!.renderer.pixiRenderer.height / 4;
-  }
+  onRender() {}
 
   onButtonDown(button: number) {
     if (button === ControllerButton.START) {
