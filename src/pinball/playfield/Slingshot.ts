@@ -1,4 +1,12 @@
 import { Body, Capsule } from "p2";
+import {
+  CurvePath,
+  LineCurve3,
+  Mesh,
+  MeshStandardMaterial,
+  TubeGeometry,
+  Vector3,
+} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
@@ -12,6 +20,11 @@ const STRENGTH = 400;
 const EXPAND_AMOUNT = 0.8;
 const ANIMATION_DURATION = 0.07;
 const WIDTH = 0.5;
+
+const MATERIAL = new MeshStandardMaterial({
+  color: 0x111111,
+  roughness: 0.7,
+});
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
@@ -39,29 +52,41 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.color = color;
     this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
 
-    this.body = this.makeBody();
-  }
-
-  makeBody() {
     const delta = this.end.sub(this.start);
     const center = this.start.add(delta.mul(0.5));
-    const body = new Body({
+    this.body = new Body({
       position: center,
       angle: delta.angle,
       mass: 0,
     });
 
-    const shape = new Capsule({
-      length: delta.magnitude,
-      radius: WIDTH / 2,
-    });
+    const shape = new Capsule({ length: delta.magnitude, radius: WIDTH / 2 });
     shape.material = Materials.slingshot;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
-    body.addShape(shape);
+    this.body.addShape(shape);
 
-    return body;
+    const midpoint = start.add(end).imul(0.5);
+    const curve = new CurvePath<Vector3>();
+    curve.add(
+      new LineCurve3(
+        new Vector3(start.x, start.y, 0),
+        new Vector3(midpoint.x, midpoint.y, 0)
+      )
+    );
+    curve.add(
+      new LineCurve3(
+        new Vector3(midpoint.x, midpoint.y, 0),
+        new Vector3(end.x, end.y, 0)
+      )
+    );
+
+    const geometry = new TubeGeometry(curve, 2, 0.3);
+    geometry.translate(0, 0, -1);
+    this.mesh = new Mesh(geometry, MATERIAL);
   }
+
+  makeBody() {}
 
   getNormal(): Vector {
     return this.end.sub(this.start).irotate90ccw().inormalize();

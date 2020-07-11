@@ -6,12 +6,20 @@ import { Vector } from "../../core/Vector";
 import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
-import { MeshStandardMaterial, BoxGeometry, Mesh } from "three";
+import {
+  MeshStandardMaterial,
+  BoxGeometry,
+  Mesh,
+  MeshToonMaterial,
+} from "three";
+import { TEXTURES } from "../graphics/textures";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
-  color: 0x0000ff,
-  roughness: 0.3,
+  // color: 0xffffff,
+  roughness: 2.0,
   metalness: 0.2,
+  roughnessMap: TEXTURES.Wood,
+  map: TEXTURES.Wood,
 });
 
 export default class Wall extends BaseEntity
@@ -60,7 +68,7 @@ export default class Wall extends BaseEntity
       },
     };
 
-    const geometry = new BoxGeometry(length, width, 2 * width);
+    const geometry = new BoxGeometry(length, width, 1 + 2 * width);
     this.mesh = new Mesh(geometry, WALL_MATERIAL);
     this.mesh.position.set(center.x, center.y, -width);
     this.mesh.rotateZ(delta.angle);

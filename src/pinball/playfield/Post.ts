@@ -11,7 +11,10 @@ import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
-const MATERIAL = new MeshStandardMaterial({});
+const MATERIAL = new MeshStandardMaterial({
+  roughness: 0,
+  metalness: 0.2,
+});
 
 export default class Post extends BaseEntity
   implements Entity, WithBallCollisionInfo {
@@ -47,6 +50,8 @@ export default class Post extends BaseEntity
     geometry.rotateX(Math.PI / 2);
     this.mesh = new Mesh(geometry, MATERIAL);
     this.mesh.position.set(position.x, position.y, -1.0);
+    this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
   }
 
   onBeginContact(

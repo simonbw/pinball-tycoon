@@ -19,9 +19,9 @@ export class IOManager {
   mouseButtons = [false, false, false, false, false, false];
   mousePosition: Vector = V(0, 0);
   usingGamepad: boolean = false; // True if the gamepad is the main input device
-  view: HTMLCanvasElement;
+  view: HTMLElement;
 
-  constructor(view: HTMLCanvasElement) {
+  constructor(view: HTMLElement) {
     this.view = view;
 
     this.view.onclick = (e) => this.onClick(e);

@@ -64,7 +64,7 @@ export default class Game {
 
     this.renderer = new GameRenderer3d();
 
-    this.io = new IOManager(this.renderer.threeRenderer.domElement);
+    this.io = new IOManager(this.renderer.domElement);
 
     this.tickIterations = tickIterations;
     this.world = new p2.World({ gravity: [0, 0] });
@@ -155,10 +155,16 @@ export default class Game {
       this.renderer.scene.add(entity.mesh);
       entity.mesh.owner = entity;
     }
-    if (entity.meshes) {
-      for (const mesh of entity.meshes) {
+    if (entity.object3ds) {
+      for (const mesh of entity.object3ds) {
         this.renderer.scene.add(mesh);
         mesh.owner = entity;
+      }
+    }
+
+    if (entity.lights) {
+      for (const light of entity.lights) {
+        this.renderer.scene.add(light);
       }
     }
 
@@ -255,9 +261,14 @@ export default class Game {
       if (entity.mesh) {
         this.renderer.scene.remove(entity.mesh);
       }
-      if (entity.meshes) {
-        for (const mesh of entity.meshes) {
+      if (entity.object3ds) {
+        for (const mesh of entity.object3ds) {
           this.renderer.scene.remove(mesh);
+        }
+      }
+      if (entity.lights) {
+        for (const light of entity.lights) {
+          this.renderer.scene.remove(light);
         }
       }
       if (entity.body) {

@@ -37,7 +37,10 @@ export default interface Entity
   readonly mesh?: Three.Mesh & WithOwner;
 
   /** The Three.js objects that gets added/removed from the scene automatically */
-  readonly meshes?: readonly (Three.Mesh & WithOwner)[];
+  readonly object3ds?: readonly (Three.Object3D & WithOwner)[];
+
+  /** The Three.js objects that gets added/removed from the scene automatically */
+  readonly lights?: readonly (Three.Light & WithOwner)[];
 
   /** Called to remove this entity from the game */
   destroy(): void;

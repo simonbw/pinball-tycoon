@@ -17,10 +17,10 @@ export default class CameraController extends BaseEntity implements Entity {
   lookTarget: Vector;
   private nudgeOffset = V(0, 0);
 
-  constructor(tableCenter: Vector) {
+  constructor(tableCenter: Vector3) {
     super();
-    this.tableCenter = tableCenter.clone();
-    this.lookTarget = tableCenter.clone();
+    this.tableCenter = V(tableCenter.x, tableCenter.y);
+    this.lookTarget = this.tableCenter.clone();
   }
 
   onAdd(game: Game) {

@@ -10,8 +10,10 @@ import Entity from "./Entity";
 export default abstract class BaseEntity implements Entity {
   game: Game | null = null;
   mesh?: Three.Mesh;
-  meshes?: Three.Mesh[];
+  object3ds?: Three.Object3D[];
+  lights?: Three.Light[];
   body?: p2.Body;
+  bodies?: p2.Body[];
   pausable: boolean = true;
   persistent: boolean = false;
   springs?: Spring[];
@@ -70,7 +72,7 @@ export default abstract class BaseEntity implements Entity {
     return child;
   }
 
-  addChildren(children: Entity[]): void {
+  addChildren(...children: Entity[]): void {
     for (const child of children) {
       this.addChild(child);
     }

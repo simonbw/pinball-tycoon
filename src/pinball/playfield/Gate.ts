@@ -1,10 +1,4 @@
-import {
-  Body,
-  Capsule,
-  ContactEquation,
-  RevoluteConstraint,
-  Shape as P2Shape,
-} from "p2";
+import { Body, Capsule, RevoluteConstraint } from "p2";
 import {
   ExtrudeGeometry,
   Mesh,
@@ -15,13 +9,10 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
-import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import { playSoundEvent } from "../Soundboard";
-import { isBall } from "./Ball";
+import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
-import { WithBallCollisionInfo, BallCollisionInfo } from "../BallCollisionInfo";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0xffffff,
@@ -81,6 +72,9 @@ export default class Gate extends BaseEntity
     geometry.rotateZ(delta.angle);
     this.mesh = new Mesh(geometry, MATERIAL);
     this.mesh.position.set(pivot.x, pivot.y, -1.5);
+
+    this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
   }
 
   onAdd(game: Game) {

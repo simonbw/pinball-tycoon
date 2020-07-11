@@ -1,15 +1,24 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import { Mesh, MeshStandardMaterial, SphereGeometry } from "three";
+import {
+  CubeCamera,
+  Material,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  SphereGeometry,
+  WebGLCubeRenderTarget,
+} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp, degToRad } from "../../core/util/MathUtil";
-import { Vector, V } from "../../core/Vector";
+import { V, Vector } from "../../core/Vector";
 import { hasCollisionInfo, SparkInfo } from "../BallCollisionInfo";
 import { NudgeEvent } from "../controllers/NudgeController";
 import ParticleSystem from "../effects/ParticleSystem";
 import { makeSparkParams } from "../effects/Sparks";
+import { TEXTURES } from "../graphics/textures";
 import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
@@ -19,20 +28,17 @@ const MASS = 2.8; // In ounces
 const FRICTION = 0.005; // rolling friction
 const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
-const RESAMPLE = 1.0;
 
 const GEOMETRY = new SphereGeometry(RADIUS, 32, 32);
-const MATERIAL = new MeshStandardMaterial({
-  color: 0xffffff,
-  roughness: 0,
-  metalness: 0.8,
-});
 
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
   body: Body;
   radius: number = RADIUS;
   mesh: Mesh;
+  material: Material;
+  cubeCamera: CubeCamera;
+  object3ds: Object3D[] = [];
 
   rollingVelocity: Vector = V(0, 0);
   rollingPosition: Vector = V(0, 0);
@@ -44,7 +50,20 @@ export default class Ball extends BaseEntity implements Entity {
     this.body.position = position;
     this.body.velocity = velocity;
 
-    this.mesh = new Mesh(GEOMETRY, MATERIAL);
+    const renderTarget = new WebGLCubeRenderTarget(32);
+    this.cubeCamera = new CubeCamera(0.1, 10, renderTarget);
+
+    this.object3ds.push(this.cubeCamera);
+
+    this.material = new MeshStandardMaterial({
+      color: 0xdddddd,
+      roughness: 1.2,
+      metalness: 0.8,
+      roughnessMap: TEXTURES.IronScuffedRoughness,
+      envMap: renderTarget.texture,
+    });
+
+    this.mesh = new Mesh(GEOMETRY, this.material);
     this.mesh.castShadow = true;
   }
 
@@ -61,6 +80,11 @@ export default class Ball extends BaseEntity implements Entity {
     shape.collisionMask = CollisionGroups.Ball | CollisionGroups.Table;
     body.addShape(shape);
     return body;
+  }
+
+  /** The visual height of the center of the ball above the playfield */
+  getZ(): number {
+    return this.radius;
   }
 
   onTick() {
@@ -83,10 +107,16 @@ export default class Ball extends BaseEntity implements Entity {
   }
 
   onRender() {
+    const { threeRenderer, scene } = this.game!.renderer;
     const [x, y] = this.body.position;
     const z = this.radius;
-
     this.mesh.position.set(x, y, -z);
+    this.cubeCamera.position.copy(this.mesh.position);
+    this.cubeCamera.update(threeRenderer, scene);
+  }
+
+  onDestroy() {
+    this.material.dispose();
   }
 
   handlers = {

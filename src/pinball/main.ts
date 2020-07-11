@@ -5,7 +5,7 @@ import { waitForFontsLoaded } from "../core/resources/fonts";
 import { loadAllSounds } from "../core/resources/sounds";
 import PauseController from "./controllers/PauseController";
 import { ContactMaterials } from "./playfield/Materials";
-import { setupTable } from "./Table";
+import Table, { setupTable } from "./Table";
 
 declare global {
   interface Window {
@@ -34,7 +34,6 @@ export async function main() {
   game.world.frictionGravity = 10; // TODO: Tune this
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
-
-  setupTable(game);
+  game.addEntity(new Table());
   game.start();
 }

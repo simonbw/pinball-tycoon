@@ -56,6 +56,10 @@ Other Features
   [√] Slowmo bar
   [ ] Multiple z-levels
 
+Visuals:
+  [ ] Apron of the machine
+  [ ] "Street lighting", i.e. lots of little LEDs in the apron of the machine to light up all the corners
+
 UI:
   [ ] Custom 7/14/16 segment display for text
   [ ] Incorporate UI into Table
@@ -81,6 +85,8 @@ Table Features
   [ ] Spinner
   [ ] Merry-go-round
   [ ] Lights
+  [ ] Kickback
+  [ ] Ball Save
 
 Sounds
   [ ] Flippers

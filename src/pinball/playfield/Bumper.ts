@@ -8,6 +8,7 @@ import { playSoundEvent } from "../Soundboard";
 import { isBall } from "./Ball";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
+import { TEXTURES } from "../graphics/textures";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -17,7 +18,14 @@ const COLOR_1 = 0xffbb00;
 const COLOR_2 = 0xdd2200;
 const RESAMPLE = 4.0;
 
-const MATERIAL = new MeshStandardMaterial({});
+const MATERIAL = new MeshStandardMaterial({
+  // roughness: 0.4,
+  // color: COLOR_1,
+  // emissive: COLOR_2,
+  // metalness: 0.0,
+  map: TEXTURES.Hay,
+  roughness: 1.0,
+});
 
 export default class Bumper extends BaseEntity implements Entity {
   lastHit: number = -Infinity;

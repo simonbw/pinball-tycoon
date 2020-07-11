@@ -13,9 +13,8 @@ import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({
-  color: 0x00ffff,
+  color: 0x554411,
   roughness: 0.7,
-  metalness: 0.1,
 });
 
 const DOWN_ANGLE = degToRad(30);
