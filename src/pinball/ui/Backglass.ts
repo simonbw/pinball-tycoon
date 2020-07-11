@@ -25,6 +25,7 @@ export default class Backglass extends BaseEntity implements Entity {
   ctx: CanvasRenderingContext2D;
   texture: CanvasTexture;
   fpsMeter: FPSMeter;
+  score: number = 0;
 
   constructor(left: number, right: number, height: number) {
     super();
@@ -58,11 +59,13 @@ export default class Backglass extends BaseEntity implements Entity {
 
   handlers = {
     updateScore: ({ score }: UpdateScoreEvent) => {
-      this.updateText(score);
+      this.score = score;
     },
   };
 
-  onRender() {}
+  onRender() {
+    this.updateText();
+  }
 
   updateText(score: number = 0) {
     const ctx = this.ctx;
@@ -83,8 +86,8 @@ export default class Backglass extends BaseEntity implements Entity {
     ctx.textBaseline = "bottom";
     ctx.textAlign = "left";
     ctx.fillText(`fps: ${stats.getFps()}`, 10, h - 120, w - 20);
-    ctx.fillText(`${stats.getBodyCount()}`, 10, h - 80, w - 20);
-    ctx.fillText(`${stats.getObjCount()}`, 10, h - 40, w - 20);
+    ctx.fillText(`bodies: ${stats.getBodyCount()}`, 10, h - 80, w - 20);
+    ctx.fillText(`objs: ${stats.getObjCount()}`, 10, h - 40, w - 20);
 
     this.texture.needsUpdate = true;
   }

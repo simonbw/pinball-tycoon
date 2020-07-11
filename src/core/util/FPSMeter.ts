@@ -25,7 +25,7 @@ export default class FPSMeter extends BaseEntity implements Entity {
   }
 
   getFps(): number {
-    return Math.round(1000 / this.averageDuration);
+    return Math.ceil(1000 / this.averageDuration);
   }
 
   getBodyCount(): number {

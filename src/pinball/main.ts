@@ -24,8 +24,8 @@ export async function main() {
 
   console.log("window load");
   await Promise.all([
-    waitForFontsLoaded([digiFont]),
     waitForTexturesLoaded(),
+    waitForFontsLoaded([digiFont]),
     loadAllSounds(audioContext),
   ]);
   console.log("assets loaded");

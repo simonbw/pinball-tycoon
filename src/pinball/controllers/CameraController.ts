@@ -5,7 +5,7 @@ import { lerp } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { NudgeEvent } from "./NudgeController";
-import { Camera, Vector3 } from "three";
+import { Camera, Vector3, PerspectiveCamera } from "three";
 import Game from "../../core/Game";
 import { TABLE_ANGLE } from "../Table";
 
@@ -39,17 +39,17 @@ export default class CameraController extends BaseEntity implements Entity {
       TABLE_ANGLE
     );
     camera.up.copy(UP);
-    this.manualMove(camera);
+    this.manualMove(camera as PerspectiveCamera);
 
     const ball = this.game.entities.getTagged("ball")[0];
     const t = this.tableCenter;
     if (isBall(ball)) {
       const b = ball.getPosition();
-      const x = lerp(t.x, b.x, 0.4);
+      const x = lerp(t.x, b.x, 0.3);
       const y = lerp(t.y, b.y, 0.3);
       this.lookTarget.ilerp(V(x, y), 0.1);
     } else {
-      this.lookTarget.ilerp(this.tableCenter, 0.1);
+      this.lookTarget.ilerp(this.tableCenter, 0.01);
     }
 
     camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
@@ -68,13 +68,17 @@ export default class CameraController extends BaseEntity implements Entity {
     },
   };
 
-  manualMove(camera: Camera) {
+  manualMove(camera: PerspectiveCamera) {
     const io = this.game!.io;
     if (io.keyIsDown("Equal")) {
-      camera.position.add(camera.up);
+      // camera.position.add(camera.up);
+      camera.fov *= 0.99;
+      camera.updateProjectionMatrix();
     }
     if (io.keyIsDown("Minus")) {
-      camera.position.add(camera.up.clone().multiplyScalar(-1));
+      // camera.position.add(camera.up.clone().multiplyScalar(-1));
+      camera.fov *= 1.01;
+      camera.updateProjectionMatrix();
     }
 
     const t = this.tableCenter;

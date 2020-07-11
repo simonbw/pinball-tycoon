@@ -1,10 +1,10 @@
 import {
+  DefaultLoadingManager,
   LinearFilter,
   LinearMipMapLinearFilter,
   MirroredRepeatWrapping,
   RepeatWrapping,
   TextureLoader,
-  DefaultLoadingManager,
 } from "three";
 import haytexture from "../../../resources/images/haytexture.jpg";
 import ironScuffedRoughness from "../../../resources/images/Iron-Scuffed_roughness.png";
@@ -15,6 +15,7 @@ import metalgrid4Roughness from "../../../resources/images/metalgrid4_roughness.
 import woodSrc from "../../../resources/images/wood.png";
 
 const loader = new TextureLoader();
+loader.manager.onStart = (url) => console.log(`loading ${url}`);
 
 const Wood = loader.load(woodSrc);
 Wood.wrapS = RepeatWrapping;
@@ -55,8 +56,17 @@ export const TEXTURES = {
 };
 
 export function waitForTexturesLoaded() {
+  if (Object.values(TEXTURES).every((texture) => Boolean(texture.image))) {
+    console.log("all textures already loaded");
+    return Promise.resolve();
+  }
   return new Promise((resolve, reject) => {
-    DefaultLoadingManager.onLoad = resolve;
-    DefaultLoadingManager.onError = reject;
+    console.log("loading textures...");
+    const manager = loader.manager;
+    manager.manager.onLoad = () => resolve();
+    manager.onError = () => reject();
+
+    manager.onStart = (url) => console.log(`loading ${url}`);
+    manager.onProgress = (url, n, t) => console.log(`loaded ${url}, ${n}/${t}`);
   });
 }
