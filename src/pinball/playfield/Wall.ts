@@ -18,11 +18,10 @@ import {
 import { TEXTURES } from "../graphics/textures";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
-  // color: 0xffffff,
+  color: 0x111111,
   roughness: 2.0,
-  metalness: 0.2,
-  roughnessMap: TEXTURES.Wood,
-  map: TEXTURES.Wood,
+  metalness: 0.0,
+  roughnessMap: TEXTURES.IronScuffedRoughness,
 });
 
 export default class Wall extends BaseEntity

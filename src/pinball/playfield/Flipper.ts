@@ -16,7 +16,7 @@ import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({
-  color: 0x554411,
+  color: 0xcc0000,
   roughness: 0.7,
 });
 

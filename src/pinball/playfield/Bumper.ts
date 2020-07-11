@@ -19,12 +19,9 @@ const COLOR_2 = 0xdd2200;
 const RESAMPLE = 4.0;
 
 const MATERIAL = new MeshStandardMaterial({
-  // roughness: 0.4,
-  // color: COLOR_1,
+  roughness: 0.0,
+  color: COLOR_1,
   // emissive: COLOR_2,
-  // metalness: 0.0,
-  map: TEXTURES.Hay,
-  roughness: 1.0,
 });
 
 export default class Bumper extends BaseEntity implements Entity {

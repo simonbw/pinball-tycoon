@@ -129,3 +129,62 @@ Game Flow
   [√] Fire event when stuff is hit
   [√] Score manager class with all scoring logic
   [ ] Convert score to money
+
+
+#--------#
+# Themes #
+#--------#
+
+Super clean modern spaceship interior look
+ - I think assets would be relatively easy to make
+ - I think I could make some cool sounds
+ - I can imagine a mode where there's an emergency and all the lighting turns red and an alarm sounds
+ - Sounds:
+    - Beeps and boops
+    - alarm
+    - airlock opening
+    - blastoff when you plunge
+ - Visuals
+    - White metal textures
+    - Bright white lighting
+    - Flashing red lighting
+    - Lots of lamps
+
+Soviet/Red Army themed
+ - Pretty unique I feel like
+ - Could be visually very bold with a lot of red and yellow
+ - Sounds:
+   - Red Army Choir music would be fun
+
+Plumbing themed
+ - Pipes that you can transport around in
+ - An upper playfield with a toiletbowl that makes a flushing sound when you go down it
+ - Generic water flowing sounds could be cool
+ - Models seems a lot harder to make
+
+Portal Themed:
+ - Very simple textures
+ - When you hit different targets, it opens up portals at different places around the table. When you get an orange and a blue one open, they connect.
+ - I would get to do the coding for making a portal effect
+ - Could use portal sound effects
+
+Steam Punk
+ - Could use a lot of really cool textures
+
+Hockey
+ - Graphics are probably pretty easy
+ - Defender targets that you knock down to unlock shot on Goal
+ - Moving goalie target in front of goal
+ - Backglass could look like a scoreboard
+ - Your drain could look like a goal
+ - There could be lines on the surface that look like lines on the ice
+ - Sounds
+   - GOAL buzzer
+   - Ref whistle
+
+Dr. Seuss:
+ - Seems really harder
+ - Would be super unique
+ - Sounds
+   - All sorts of zany cartoony stuff
+   - 
