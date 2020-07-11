@@ -5,7 +5,7 @@ import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
 import { playSoundEvent } from "../Soundboard";
-import { isBall } from "./Ball";
+import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 import { TEXTURES } from "../graphics/textures";

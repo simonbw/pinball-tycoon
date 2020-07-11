@@ -2,7 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { Vector, V } from "../../core/Vector";
-import Ball, { isBall } from "../playfield/Ball";
+import Ball, { isBall } from "../ball/Ball";
 import { getBinding } from "../ui/KeyboardBindings";
 
 const FORCE = 150;

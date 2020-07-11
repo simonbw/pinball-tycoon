@@ -39,6 +39,15 @@ export class IOManager {
     };
     document.onkeyup = (e) => this.onKeyUp(e);
 
+    document.onvisibilitychange = (e) => {
+      for (const keyCode of this.keys.keys()) {
+        this.keys.set(keyCode, false);
+        for (const handler of this.handlers.filtered.onKeyUp) {
+          handler.onKeyUp!(keyCode);
+        }
+      }
+    };
+
     // Because this is a polling not pushing interface
     window.setInterval(() => this.handleGamepads(), 1); // TODO: Is 1 ms too frequent?
   }

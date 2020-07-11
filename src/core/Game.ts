@@ -83,14 +83,24 @@ export default class Game {
     this.masterGain.connect(this.audio.destination);
   }
 
-  /** The intended time between renders in seconds */
+  /** The current intended time between renders in game seconds */
   get renderTimestep(): number {
     return (1 / this.framerate) * this.slowMo;
   }
 
-  /** The intended time between ticks in seconds */
+  /** The intended time between renders in real-world seconds */
+  get trueRenderTimestep(): number {
+    return (1 / this.framerate) * this.slowMo;
+  }
+
+  /** The intended time between ticks in game seconds */
   get tickTimestep(): number {
     return this.renderTimestep / this.tickIterations;
+  }
+
+  /** The intended time between ticks in real-world seconds */
+  get trueTickTimestep(): number {
+    return this.trueRenderTimestep / this.tickIterations;
   }
 
   /** Total amount of game time elapsed since starting */
@@ -201,7 +211,7 @@ export default class Game {
   };
 
   /** Shortcut for adding multiple entities. */
-  addEntities(entities: Entity[]): Entity[] {
+  addEntities<T extends Entity[]>(entities: T): T {
     for (const entity of entities) {
       this.addEntity(entity);
     }

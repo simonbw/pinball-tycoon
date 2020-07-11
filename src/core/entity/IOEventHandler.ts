@@ -17,7 +17,7 @@ export default interface IOEventHandler {
   // called when a keyboard key is pressed
   onKeyDown?(key: KeyCode, event: KeyboardEvent): void;
   // called when a keyboard key is released
-  onKeyUp?(key: KeyCode, event: KeyboardEvent): void;
+  onKeyUp?(key: KeyCode, event?: KeyboardEvent): void;
   // Called when a gamepad button is pressed
   onButtonDown?(button: ControllerButton): void;
   // Called when a gamepad button is released

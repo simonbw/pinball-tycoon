@@ -1,14 +1,13 @@
 import Bezier from "bezier-js";
+import { DirectionalLight, HemisphereLight, Vector3 } from "three";
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
-import Game from "../core/Game";
 import { degToRad } from "../core/util/MathUtil";
 import { V } from "../core/Vector";
 import CameraController from "./controllers/CameraController";
 import MagicBallController from "./controllers/MagicBallController";
 import NudgeController from "./controllers/NudgeController";
 import SlowMoController from "./controllers/SlowMoController";
-import Light from "./lighting/Light";
 import LogicBoard from "./LogicBoard";
 import Bumper from "./playfield/Bumper";
 import CurveWall from "./playfield/CurveWall";
@@ -23,26 +22,20 @@ import Slingshot from "./playfield/Slingshot";
 import Wall from "./playfield/Wall";
 import { Rect } from "./Rect";
 import Soundboard from "./Soundboard";
-import Scoreboard from "./ui/Backglass";
+import Backglass from "./ui/Backglass";
 import ControlDisplay from "./ui/ControlDisplay";
 import Speedometer from "./ui/Speedometer";
-import {
-  HemisphereLight,
-  DirectionalLight,
-  Vector3,
-  DirectionalLightHelper,
-} from "three";
 
 export const TABLE_CENTER = new Vector3(0, 50, 0);
 export const TABLE_RECT: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
+export const TABLE_ANGLE = degToRad(15);
 
 export default class Table extends BaseEntity implements Entity {
   constructor() {
     super();
 
-    this.lights = [];
     this.object3ds = [];
-    this.lights.push(new HemisphereLight(0xffffff, 0x333333, 0.3));
+    this.object3ds.push(new HemisphereLight(0xffffff, 0x333333, 0.3));
 
     for (const [x, y] of [
       [-20, -20],
@@ -59,8 +52,7 @@ export default class Table extends BaseEntity implements Entity {
       light.shadow.camera.right = 100;
       light.shadow.camera.top = 100;
       light.shadow.camera.bottom = -100;
-      this.lights.push(light);
-      this.object3ds.push(light.target);
+      this.object3ds.push(light, light.target);
     }
 
     this.addChild(new LogicBoard());
@@ -71,7 +63,7 @@ export default class Table extends BaseEntity implements Entity {
     this.addChild(new MagicBallController());
 
     // Misc
-    this.addChild(new Scoreboard(TABLE_RECT.left, TABLE_RECT.right, 20));
+    this.addChild(new Backglass(TABLE_RECT.left, TABLE_RECT.right, 20));
     this.addChild(new Speedometer());
     this.addChild(new ControlDisplay());
     this.addChild(new Playfield(TABLE_RECT));
@@ -145,9 +137,4 @@ export default class Table extends BaseEntity implements Entity {
       )
     );
   }
-}
-
-export function setupTable(game: Game) {
-  // Overhead Lights
-  // Controls
 }

@@ -11,7 +11,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import Ball from "./Ball";
+import Ball from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 
@@ -105,6 +105,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     );
     const midpoint = start.add(end).imul(0.5).iadd(displacement);
 
+    const tube = this.mesh!.geometry as TubeGeometry;
     // this.sprite.clear();
     // this.sprite.lineStyle(WIDTH, this.color);
     // this.sprite.moveTo(start.x, start.y);

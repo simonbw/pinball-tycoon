@@ -10,7 +10,10 @@ import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { Vector } from "../../core/Vector";
-import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import {
+  BallCollisionInfo,
+  WithBallCollisionInfo,
+} from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 

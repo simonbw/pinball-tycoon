@@ -3,10 +3,11 @@ import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { lerp } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
-import { isBall } from "../playfield/Ball";
+import { isBall } from "../ball/Ball";
 import { NudgeEvent } from "./NudgeController";
 import { Camera, Vector3 } from "three";
 import Game from "../../core/Game";
+import { TABLE_ANGLE } from "../Table";
 
 const NUDGE_SCALE = 1 / 2.8;
 const ZOOM_SPEED = 0.005;
@@ -31,7 +32,13 @@ export default class CameraController extends BaseEntity implements Entity {
     if (!this.game) return;
 
     const camera = this.game.camera;
-    camera.up.set(0, -0.3, -1);
+
+    // TODO: Why can't this be a constant?
+    const UP = new Vector3(0, 0, -1).applyAxisAngle(
+      new Vector3(-1, 0, 0),
+      TABLE_ANGLE
+    );
+    camera.up.copy(UP);
     this.manualMove(camera);
 
     const ball = this.game.entities.getTagged("ball")[0];
@@ -50,6 +57,7 @@ export default class CameraController extends BaseEntity implements Entity {
 
   handlers = {
     nudge: async (e: NudgeEvent) => {
+      // TODO: This will probably be in the Table class
       // const camera = this.game!.camera;
       // await this.wait(e.duration / 2, (dt) =>
       //   this.nudgeOffset.iadd(e.impulse.mul(NUDGE_SCALE * dt))

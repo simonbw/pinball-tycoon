@@ -11,7 +11,6 @@ export default abstract class BaseEntity implements Entity {
   game: Game | null = null;
   mesh?: Three.Mesh;
   object3ds?: Three.Object3D[];
-  lights?: Three.Light[];
   body?: p2.Body;
   bodies?: p2.Body[];
   pausable: boolean = true;
@@ -58,7 +57,7 @@ export default abstract class BaseEntity implements Entity {
     }
   }
 
-  addChild(child: Entity): Entity {
+  addChild<T extends Entity>(child: T): T {
     if (child.parent) {
       throw new Error("Child already has a parent.");
     }
@@ -100,6 +99,8 @@ export default abstract class BaseEntity implements Entity {
 }
 
 // TODO: Implement this some other way?
+// TODO: This doesn't need to extend BaseEntity. That way we could have it in
+// a different file, and it might be a little lighter weight
 class Timer extends BaseEntity implements Entity {
   timeRemaining: number = 0;
   endEffect?: () => void;

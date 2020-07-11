@@ -2,7 +2,7 @@ import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
 import { KeyCode } from "../core/io/Keys";
 import { Vector, V } from "../core/Vector";
-import Ball from "./playfield/Ball";
+import Ball from "./ball/Ball";
 import { playSoundEvent } from "./Soundboard";
 import { getBinding } from "./ui/KeyboardBindings";
 
@@ -19,8 +19,8 @@ export interface ScoreEvent {
 }
 
 export interface UpdateScoreEvent {
-  type: "update_score";
-  points: number;
+  type: "updateScore";
+  score: number;
 }
 
 /**
@@ -54,9 +54,6 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.ballsRemaining -= 1;
       this.game!.addEntity(new Ball(NEW_BALL_LOCATION.clone()));
     },
-    score: ({ points }: ScoreEvent) => {
-      this.score += points;
-    },
     drain: async ({ ball }: DrainEvent) => {
       ball.destroy();
 
@@ -72,6 +69,13 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.gameStarted = false;
       this.game!.dispatch(playSoundEvent("gameOver", { gain: 0.5 }));
       console.log("Game Over");
+    },
+    score: ({ points }: ScoreEvent) => {
+      this.score += points;
+      this.game!.dispatch({
+        type: "updateScore",
+        score: this.score,
+      } as UpdateScoreEvent);
     },
   };
 

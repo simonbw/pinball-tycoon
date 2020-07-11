@@ -3,7 +3,10 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { colorFade } from "../../core/util/ColorUtils";
 import { Vector } from "../../core/Vector";
-import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import {
+  BallCollisionInfo,
+  WithBallCollisionInfo,
+} from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 import {

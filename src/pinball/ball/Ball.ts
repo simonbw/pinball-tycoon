@@ -1,27 +1,19 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import {
-  CubeCamera,
-  Material,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  SphereGeometry,
-  WebGLCubeRenderTarget,
-} from "three";
+import { CubeCamera, Material, Mesh, Object3D, SphereGeometry } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
-import { hasCollisionInfo, SparkInfo } from "../BallCollisionInfo";
+import { hasCollisionInfo, SparkInfo } from "./BallCollisionInfo";
 import { NudgeEvent } from "../controllers/NudgeController";
 import ParticleSystem from "../effects/ParticleSystem";
 import { makeSparkParams } from "../effects/Sparks";
-import { TEXTURES } from "../graphics/textures";
+import BallMesh from "./BallMesh";
 import { playSoundEvent } from "../Soundboard";
-import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { CollisionGroups } from "../playfield/Collision";
+import { Materials } from "../playfield/Materials";
 
 const RADIUS = 1.0625; // Radius in half inches
 const MASS = 2.8; // In ounces
@@ -35,10 +27,6 @@ export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
   body: Body;
   radius: number = RADIUS;
-  mesh: Mesh;
-  material: Material;
-  cubeCamera: CubeCamera;
-  object3ds: Object3D[] = [];
 
   rollingVelocity: Vector = V(0, 0);
   rollingPosition: Vector = V(0, 0);
@@ -46,40 +34,21 @@ export default class Ball extends BaseEntity implements Entity {
   constructor(position: Vector, velocity: Vector = V(0, 0)) {
     super();
 
-    this.body = this.makeBody();
-    this.body.position = position;
-    this.body.velocity = velocity;
-
-    const renderTarget = new WebGLCubeRenderTarget(32);
-    this.cubeCamera = new CubeCamera(0.1, 10, renderTarget);
-
-    this.object3ds.push(this.cubeCamera);
-
-    this.material = new MeshStandardMaterial({
-      color: 0xdddddd,
-      roughness: 1.2,
-      metalness: 0.8,
-      roughnessMap: TEXTURES.IronScuffedRoughness,
-      envMap: renderTarget.texture,
-    });
-
-    this.mesh = new Mesh(GEOMETRY, this.material);
-    this.mesh.castShadow = true;
-  }
-
-  makeBody() {
-    const body = new CCDBody({
+    this.body = new CCDBody({
       mass: MASS,
       ccdSpeedThreshold: 0,
       ccdIterations: 15,
     });
+    this.body.position = position;
+    this.body.velocity = velocity;
 
     const shape = new Circle({ radius: this.radius });
     shape.material = Materials.ball;
     shape.collisionGroup = CollisionGroups.Ball;
     shape.collisionMask = CollisionGroups.Ball | CollisionGroups.Table;
-    body.addShape(shape);
-    return body;
+    this.body.addShape(shape);
+
+    this.addChild(new BallMesh(this));
   }
 
   /** The visual height of the center of the ball above the playfield */
@@ -104,19 +73,6 @@ export default class Ball extends BaseEntity implements Entity {
 
     this.rollingVelocity.set(this.body.velocity);
     this.rollingPosition.iadd(this.rollingVelocity);
-  }
-
-  onRender() {
-    const { threeRenderer, scene } = this.game!.renderer;
-    const [x, y] = this.body.position;
-    const z = this.radius;
-    this.mesh.position.set(x, y, -z);
-    this.cubeCamera.position.copy(this.mesh.position);
-    this.cubeCamera.update(threeRenderer, scene);
-  }
-
-  onDestroy() {
-    this.material.dispose();
   }
 
   handlers = {

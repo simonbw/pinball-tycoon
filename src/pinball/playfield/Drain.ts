@@ -2,7 +2,7 @@ import { Body, Box } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { Vector } from "../../core/Vector";
-import { isBall } from "./Ball";
+import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 
 export default class Drain extends BaseEntity implements Entity {

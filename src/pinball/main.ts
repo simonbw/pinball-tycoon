@@ -4,8 +4,10 @@ import Game from "../core/Game";
 import { waitForFontsLoaded } from "../core/resources/fonts";
 import { loadAllSounds } from "../core/resources/sounds";
 import PauseController from "./controllers/PauseController";
+import { initializeFilters } from "./graphics/postprocessing";
 import { ContactMaterials } from "./playfield/Materials";
-import Table, { setupTable } from "./Table";
+import Table from "./Table";
+import { waitForTexturesLoaded } from "./graphics/textures";
 
 declare global {
   interface Window {
@@ -23,11 +25,13 @@ export async function main() {
   console.log("window load");
   await Promise.all([
     waitForFontsLoaded([digiFont]),
+    waitForTexturesLoaded(),
     loadAllSounds(audioContext),
   ]);
   console.log("assets loaded");
 
   const game = new Game(audioContext, ContactMaterials, 20);
+  initializeFilters(game);
   window.DEBUG = { game };
 
   // TODO: A lot of this stuff probably shouldn't be here

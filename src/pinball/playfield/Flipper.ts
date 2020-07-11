@@ -7,7 +7,10 @@ import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { angleDelta, degToRad, reflectX } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import {
+  BallCollisionInfo,
+  WithBallCollisionInfo,
+} from "../ball/BallCollisionInfo";
 import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
@@ -72,7 +75,7 @@ export default class Flipper extends BaseEntity
     this.body = new Body({
       position: position,
       mass: MASS,
-      angle: this.downAngle + Math.PI / 2,
+      angle: this.downAngle,
       fixedX: true,
       fixedY: true,
     });

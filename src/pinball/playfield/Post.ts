@@ -5,9 +5,12 @@ import Entity from "../../core/entity/Entity";
 import { colorFade } from "../../core/util/ColorUtils";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import { BallCollisionInfo, WithBallCollisionInfo } from "../BallCollisionInfo";
+import {
+  BallCollisionInfo,
+  WithBallCollisionInfo,
+} from "../ball/BallCollisionInfo";
 import { playSoundEvent } from "../Soundboard";
-import { isBall } from "./Ball";
+import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 import { Materials } from "./Materials";
 

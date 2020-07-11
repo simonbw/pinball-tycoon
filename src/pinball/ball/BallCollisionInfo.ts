@@ -1,5 +1,5 @@
-import Entity from "../core/entity/Entity";
-import { SoundName } from "../core/resources/sounds";
+import Entity from "../../core/entity/Entity";
+import { SoundName } from "../../core/resources/sounds";
 
 /** Describes what happens when a ball collides with this */
 export interface BallCollisionInfo {
