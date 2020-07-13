@@ -104,7 +104,6 @@ export default class CCDBody extends Body {
     return true;
   }
 
-  // TODO: These can probalby just be properties not methods
   private getCollisionMask() {
     let mask = 0;
     for (const shape of this.shapes) {

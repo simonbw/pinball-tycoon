@@ -1,8 +1,9 @@
 import p2, { Constraint, Spring } from "p2";
 import * as Three from "three";
 import Game from "../Game";
-import { Vector, V } from "../Vector";
+import { V, Vector } from "../Vector";
 import Entity from "./Entity";
+import { CustomHandlersMap } from "./GameEventHandler";
 
 /**
  * Base class for lots of stuff in the game.
@@ -17,6 +18,7 @@ export default abstract class BaseEntity implements Entity {
   persistent: boolean = false;
   springs?: Spring[];
   constraints?: Constraint[];
+  handlers: CustomHandlersMap = {};
 
   children?: Entity[];
   parent?: Entity;
@@ -71,13 +73,18 @@ export default abstract class BaseEntity implements Entity {
     return child;
   }
 
-  addChildren(...children: Entity[]): void {
+  addChildren(...children: readonly Entity[]): void {
     for (const child of children) {
       this.addChild(child);
     }
   }
 
-  wait(delay: number, onTick?: (dt: number) => void): Promise<void> {
+  /**
+   * Fulfills after the given amount of game time.
+   * Use with delay=0 to wait until the next tick.
+   * @param onTick  Do something every tick while waiting
+   */
+  wait(delay: number = 0, onTick?: (dt: number) => void): Promise<void> {
     return new Promise((resolve) => {
       const timer = new Timer(delay, () => resolve(), onTick);
       try {
@@ -88,6 +95,9 @@ export default abstract class BaseEntity implements Entity {
     });
   }
 
+  /**
+   * Remove all timers from this instance. i.e. cancel all 'waits'.
+   */
   clearTimers(): void {
     if (this.children) {
       const timers = this.children.filter((e) => e instanceof Timer);
@@ -98,9 +108,7 @@ export default abstract class BaseEntity implements Entity {
   }
 }
 
-// TODO: Implement this some other way?
-// TODO: This doesn't need to extend BaseEntity. That way we could have it in
-// a different file, and it might be a little lighter weight
+// TODO: Implement this some other way? Ideally without extending BaseEntity
 class Timer extends BaseEntity implements Entity {
   timeRemaining: number = 0;
   endEffect?: () => void;

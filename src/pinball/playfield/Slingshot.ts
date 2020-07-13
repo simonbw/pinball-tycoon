@@ -4,6 +4,7 @@ import {
   LineCurve3,
   Mesh,
   MeshStandardMaterial,
+  TubeBufferGeometry,
   TubeGeometry,
   Vector3,
 } from "three";
@@ -13,7 +14,7 @@ import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
 import Ball from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const DEAD_SPACE = 0.03;
 const STRENGTH = 400;
@@ -22,8 +23,8 @@ const ANIMATION_DURATION = 0.07;
 const WIDTH = 0.5;
 
 const MATERIAL = new MeshStandardMaterial({
-  color: 0x111111,
-  roughness: 0.7,
+  color: 0xffff00,
+  roughness: 1.0,
 });
 
 export default class Slingshot extends BaseEntity implements Entity {
@@ -61,7 +62,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     });
 
     const shape = new Capsule({ length: delta.magnitude, radius: WIDTH / 2 });
-    shape.material = Materials.slingshot;
+    shape.material = P2Materials.slingshot;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
@@ -81,7 +82,7 @@ export default class Slingshot extends BaseEntity implements Entity {
       )
     );
 
-    const geometry = new TubeGeometry(curve, 2, 0.3);
+    const geometry = new TubeBufferGeometry(curve, 2, 0.3);
     geometry.translate(0, 0, -1);
     this.mesh = new Mesh(geometry, MATERIAL);
   }
@@ -138,7 +139,7 @@ export default class Slingshot extends BaseEntity implements Entity {
       const impulse = this.getNormal().imul(STRENGTH);
       ball.body.applyImpulse(impulse);
 
-      this.game!.dispatch({ type: "score", points: 10 });
+      this.game!.dispatch({ type: "score", points: 45 });
       this.game!.dispatch({
         type: "playSound",
         sound: "boing1",

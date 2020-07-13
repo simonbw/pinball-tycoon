@@ -14,18 +14,18 @@ const RESET_POSITION: Vector = V(26, 90);
 export default class MagicBallController extends BaseEntity implements Entity {
   onTick() {
     const ball = this.getBall();
-    if (ball) {
+    if (ball && !ball.captured) {
       // Keyboard control
-      if (this.game!.io.keyIsDown(getBinding("MAGIC.LEFT"))) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC_LEFT"))) {
         ball.body.applyForce([-FORCE, 0]);
       }
-      if (this.game!.io.keyIsDown(getBinding("MAGIC.UP"))) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC_UP"))) {
         ball.body.applyForce([0, -FORCE - GRAVITY_COMP]);
       }
-      if (this.game!.io.keyIsDown(getBinding("MAGIC.RIGHT"))) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC_RIGHT"))) {
         ball.body.applyForce([FORCE, 0]);
       }
-      if (this.game!.io.keyIsDown(getBinding("MAGIC.DOWN"))) {
+      if (this.game!.io.keyIsDown(getBinding("MAGIC_DOWN"))) {
         ball.body.applyForce([0, FORCE]);
       }
     }
@@ -43,12 +43,12 @@ export default class MagicBallController extends BaseEntity implements Entity {
     const ball = this.getBall();
     if (ball) {
       switch (key) {
-        case getBinding("MAGIC.RESET"):
+        case getBinding("MAGIC_RESET"):
           ball.body.position = RESET_POSITION.clone();
           ball.body.velocity = [0, 0];
           ball.body.angularVelocity = 0;
           break;
-        case getBinding("MAGIC.MULTI"):
+        case getBinding("MAGIC_MULTI"):
           this.game!.addEntity(new Ball(RESET_POSITION));
           break;
       }

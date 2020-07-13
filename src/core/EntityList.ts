@@ -71,7 +71,6 @@ export default class EntityList implements Iterable<Entity> {
     if (tags.length === 0) {
       return [];
     }
-    // TODO: this can be improved both for memory and speed
     return this.getTagged(tags[0]).filter((e) =>
       tags.every((t) => e.tags!.includes(t))
     );

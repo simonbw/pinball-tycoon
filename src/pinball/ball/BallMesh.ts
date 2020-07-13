@@ -4,19 +4,18 @@ import {
   Mesh,
   MeshStandardMaterial,
   Object3D,
-  SphereGeometry,
+  SphereBufferGeometry,
   WebGLCubeRenderTarget,
 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { degToRad } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
 import { TEXTURES } from "../graphics/textures";
 import Ball from "./Ball";
 
 const RADIUS = 1.0625; // Radius in half inches
 
-const GEOMETRY = new SphereGeometry(RADIUS, 32, 32);
+const GEOMETRY = new SphereBufferGeometry(RADIUS, 16, 16);
 
 export default class BallMesh extends BaseEntity implements Entity {
   ball: Ball;

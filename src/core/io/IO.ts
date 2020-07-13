@@ -5,7 +5,6 @@ import * as MouseButtons from "./MouseButtons";
 import { KeyCode } from "./Keys";
 import { Vector, V } from "../Vector";
 
-// TODO: allow user configuration/calibration
 const GAMEPAD_MINIMUM = 0.2;
 const GAMEPAD_MAXIMUM = 0.95;
 
@@ -49,7 +48,7 @@ export class IOManager {
     };
 
     // Because this is a polling not pushing interface
-    window.setInterval(() => this.handleGamepads(), 1); // TODO: Is 1 ms too frequent?
+    window.setInterval(() => this.handleGamepads(), 1);
   }
 
   // True if the left mouse button is down.
@@ -253,7 +252,7 @@ export class IOManager {
   getButton(button: ControllerButton): number {
     const gamepad = navigator.getGamepads()[0];
     if (gamepad) {
-      return gamepad.buttons[button].value; // TODO: Value or nothing?
+      return gamepad.buttons[button].value;
     }
     return 0;
   }

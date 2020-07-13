@@ -1,4 +1,4 @@
-import { SoundName, sounds } from "../resources/sounds";
+import { SoundName, SOUNDS } from "../resources/sounds";
 
 // Useful for having multiple overlapping sounds not start in sync
 export function startAtRandomOffset(source: AudioBufferSourceNode): void {
@@ -13,7 +13,7 @@ export function createLoopingSource(
   soundName: SoundName
 ): AudioBufferSourceNode {
   const source = audioContext.createBufferSource();
-  source.buffer = sounds.get(soundName)!;
+  source.buffer = SOUNDS.get(soundName)!;
   source.loop = true;
   startAtRandomOffset(source);
   return source;

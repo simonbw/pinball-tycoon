@@ -2,6 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { ControllerButton } from "../../core/io/Gamepad";
 import * as Keys from "../../core/io/Keys";
+import { getBinding } from "../ui/KeyboardBindings";
 
 /** Pauses and unpauses the game when visibility is lost. */
 export default class PauseController extends BaseEntity implements Entity {
@@ -21,7 +22,7 @@ export default class PauseController extends BaseEntity implements Entity {
   }
 
   onKeyDown(key: Keys.KeyCode) {
-    if (key === "KeyP") {
+    if (key === getBinding("PAUSE")) {
       this.game!.togglePause();
     }
   }

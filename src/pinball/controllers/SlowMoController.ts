@@ -2,7 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { getBindings } from "../ui/KeyboardBindings";
 
-const SLOW_SPEED = 0.3;
+const SLOW_SPEED = 0.4;
 const RAMP_DOWN_SPEED = 0.01;
 const RAMP_UP_SPEED = 0.005;
 const COOLDOWN_POINT = 0.8;
@@ -41,21 +41,4 @@ export default class SlowMoController extends BaseEntity implements Entity {
       game.slowMo = Math.min(game.slowMo + RAMP_UP_SPEED, 1);
     }
   }
-
-  // onRender() {
-  //   this.sprite.clear();
-  //   this.sprite.beginFill(0x777777);
-  //   this.sprite.drawRect(0, 0, WIDTH, HEIGHT);
-  //   this.sprite.endFill();
-  //   this.sprite.beginFill(this.cooldown ? 0xff4444 : 0xffff00);
-  //   this.sprite.drawRect(0, 0, WIDTH * this.remaining, HEIGHT);
-  //   this.sprite.endFill();
-  //   this.sprite.x = this.game!.renderer2d.getWidth() - 110;
-  //   if (this.cooldown) {
-  //     this.sprite.lineStyle(2.0, 0xffffff, 0.5);
-  //     this.sprite.moveTo(WIDTH * COOLDOWN_POINT, 0);
-  //     this.sprite.lineTo(WIDTH * COOLDOWN_POINT, HEIGHT);
-  //   }
-  //   this.sprite.y = 80;
-  // }
 }

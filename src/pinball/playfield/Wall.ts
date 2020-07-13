@@ -1,4 +1,5 @@
 import { Body, Capsule } from "p2";
+import { BoxBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { colorFade } from "../../core/util/ColorUtils";
@@ -7,21 +8,16 @@ import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
-import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
-import {
-  MeshStandardMaterial,
-  BoxGeometry,
-  Mesh,
-  MeshToonMaterial,
-} from "three";
 import { TEXTURES } from "../graphics/textures";
+import { CollisionGroups } from "./Collision";
+import { P2Materials } from "./Materials";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
   color: 0x111111,
   roughness: 2.0,
   metalness: 0.0,
   roughnessMap: TEXTURES.IronScuffedRoughness,
+  flatShading: true,
 });
 
 export default class Wall extends BaseEntity
@@ -53,7 +49,7 @@ export default class Wall extends BaseEntity
       length,
       radius: width / 2,
     });
-    shape.material = Materials.wall;
+    shape.material = P2Materials.wall;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
@@ -70,12 +66,14 @@ export default class Wall extends BaseEntity
       },
     };
 
-    const geometry = new BoxGeometry(length, width, 1 + 2 * width);
-    this.mesh = new Mesh(geometry, WALL_MATERIAL);
-    this.mesh.position.set(center.x, center.y, -width);
-    this.mesh.rotateZ(delta.angle);
+    if (renderSelf) {
+      const geometry = new BoxBufferGeometry(length, width, 1 + 2 * width);
+      this.mesh = new Mesh(geometry, WALL_MATERIAL);
+      this.mesh.position.set(center.x, center.y, -width);
+      this.mesh.rotateZ(delta.angle);
 
-    this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+      this.mesh.castShadow = true;
+      this.mesh.receiveShadow = true;
+    }
   }
 }

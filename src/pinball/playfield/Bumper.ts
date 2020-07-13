@@ -1,14 +1,14 @@
 import { Body, Circle } from "p2";
-import { CylinderGeometry, Mesh, MeshStandardMaterial } from "three";
+import { CylinderBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
-import { playSoundEvent } from "../Soundboard";
 import { isBall } from "../ball/Ball";
+import { scoreEvent } from "../LogicBoard";
+import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
-import { TEXTURES } from "../graphics/textures";
+import { P2Materials } from "./Materials";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -37,12 +37,12 @@ export default class Bumper extends BaseEntity implements Entity {
     });
 
     const shape = new Circle({ radius: size * 0.8 });
-    shape.material = Materials.bumper;
+    shape.material = P2Materials.bumper;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
 
-    const geometry = new CylinderGeometry(size, size, 3.0, 32, 1);
+    const geometry = new CylinderBufferGeometry(size, size, 3.0, 32, 1);
     geometry.rotateX(Math.PI / 2);
     geometry.translate(0, 0, 1.5);
     this.mesh = new Mesh(geometry, MATERIAL);
@@ -61,7 +61,7 @@ export default class Bumper extends BaseEntity implements Entity {
 
   onImpact(ball: Entity) {
     if (isBall(ball)) {
-      this.game!.dispatch({ type: "score", points: 70 });
+      this.game!.dispatch(scoreEvent(700));
       const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
       this.game!.dispatch(playSoundEvent("pop1", { pan }));
 
@@ -74,25 +74,6 @@ export default class Bumper extends BaseEntity implements Entity {
       ball.body.applyImpulse(impulse);
 
       this.lastHit = this.game!.elapsedTime;
-
-      // const swirlDirection = rSign();
-      //   this.game!.addEntity(
-      //     new ParticleSystem({
-      //       position: this.body.position.clone(),
-      //       count: 50,
-      //       lifespan: 0.3,
-      //       getColor: () => (rBool(0.7) ? COLOR_1 : COLOR_2),
-      //       size: 0.5,
-      //       grow: 2,
-      //       swirlFriction: 4.0,
-      //       friction: 0.1,
-      //       getSpeed: () => rUniform(20, 50),
-      //       getSwirl: () => rNormal(30 * swirlDirection, 10.0),
-      //       getLife: () => rUniform(0.5, 1.0),
-      //       lifeToAlpha: (life) => life ** 2 / 2.0,
-      //     })
-      //   );
-      // }
     }
   }
 }

@@ -1,31 +1,29 @@
 import { Body, Plane } from "p2";
-import {
-  Mesh,
-  MeshPhysicalMaterial,
-  PlaneGeometry,
-  Vector2,
-  PlaneBufferGeometry,
-} from "three";
+import { Mesh, MeshPhysicalMaterial, PlaneBufferGeometry } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V } from "../../core/Vector";
 import { TEXTURES } from "../graphics/textures";
 import { Rect } from "../Rect";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const MATERIAL = new MeshPhysicalMaterial({
   color: 0xffffff,
-  roughness: 1.2,
-  metalness: 0.0,
-  // map: TEXTURES.Wood,
-  // roughnessMap: TEXTURES.Wood,
-  // bumpMap: TEXTURES.Wood,
-  bumpScale: 0.4,
-  clearcoat: 0.8,
-  clearcoatRoughness: 2.0,
-  clearcoatRoughnessMap: TEXTURES.IronScuffedRoughness,
+  emissive: 0x000011,
+
+  map: TEXTURES.PlasticScuffed,
+  roughness: 0.7,
+  normalMap: TEXTURES.PlasticScuffedNormal,
+
+  clearcoat: 0.3,
+  clearcoatRoughness: 0.8,
+  clearcoatRoughnessMap: TEXTURES.PlasticScuffedRoughness,
 });
+
+// const MATERIAL = new MeshPhongMaterial({
+//   color: 0xffffff,
+// });
 
 /**
  * The main boundary of the game, makes sure the ball can't possibly be in weird places.
@@ -60,7 +58,7 @@ export default class Playfield extends BaseEntity implements Entity {
 
 function makeP2Plane() {
   const shape = new Plane({});
-  shape.material = Materials.boundary;
+  shape.material = P2Materials.boundary;
   shape.collisionGroup = CollisionGroups.Table;
   shape.collisionMask = CollisionGroups.Ball;
   return shape;

@@ -1,0 +1,77 @@
+import { Body, Box, ContactEquation, Shape } from "p2";
+import BaseEntity from "../../core/entity/BaseEntity";
+import Entity from "../../core/entity/Entity";
+import { SoundName } from "../../core/resources/sounds";
+import { V, Vector } from "../../core/Vector";
+import { isBall } from "../ball/Ball";
+import { scoreEvent } from "../LogicBoard";
+import { playSoundEvent } from "../Soundboard";
+import { CollisionGroups } from "./Collision";
+
+interface ScoopOptions {
+  position: Vector;
+  angle: number;
+  width?: number;
+  depth?: number;
+  captureDuration?: number;
+  releaseForce?: number;
+  soundName?: SoundName;
+}
+
+/** Captures a ball for a duration then spits it back out */
+export default class Scoop extends BaseEntity implements Entity {
+  cooldown: boolean = false;
+
+  constructor(
+    position: Vector,
+    angle: number = 0,
+    width = 2.0,
+    depth: number = 2.0,
+    public captureDuration: number = 1.5,
+    public releaseForce: number = 100,
+    public onScoop?: () => void,
+    public onRelease?: () => void
+  ) {
+    super();
+
+    const sensorShape = new Box({ width, height: depth });
+    sensorShape.collisionGroup = CollisionGroups.Table;
+    sensorShape.collisionMask = CollisionGroups.Ball;
+
+    this.body = new Body({ position, angle, collisionResponse: false });
+    this.body.addShape(sensorShape);
+  }
+
+  async onBeginContact(
+    ball: Entity,
+    _: Shape,
+    __: Shape,
+    equations: ContactEquation[]
+  ) {
+    if (isBall(ball) && !this.cooldown) {
+      // GOAL!
+      equations.forEach((eq) => (eq.enabled = false));
+      ball.capture();
+      ball.body.position[0] = this.body!.position[0];
+      ball.body.position[1] = this.body!.position[1];
+      if (this.onScoop) {
+        this.onScoop();
+      } else {
+        this.game!.dispatch(scoreEvent(1000));
+      }
+
+      await this.wait(this.captureDuration);
+
+      ball.release();
+      const impulse = V(0, this.releaseForce).irotate(this.body!.angle);
+      ball.body.applyImpulse(impulse);
+      this.cooldown = true;
+
+      this.onRelease?.();
+
+      await this.wait(0.5);
+
+      this.cooldown = false;
+    }
+  }
+}

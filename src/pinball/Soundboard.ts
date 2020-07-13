@@ -1,17 +1,11 @@
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
-import { SoundName, sounds } from "../core/resources/sounds";
+import { SoundName, SOUNDS } from "../core/resources/sounds";
 import Game from "../core/Game";
 import SoundChain from "./util/SoundChain";
 
 /**
  * Plays sounds from the table.
- *
- * TODO:
- *  - Keep track of sounds playing
- *  - Add options like gain, pan, gain
- *  - Pause sounds that are playing
- *  -
  */
 export default class Soundboard extends BaseEntity implements Entity {
   output!: AudioNode;
@@ -46,7 +40,7 @@ export default class Soundboard extends BaseEntity implements Entity {
       const chain = new SoundChain();
 
       const sourceNode = audio.createBufferSource();
-      sourceNode.buffer = sounds.get(e.sound)!;
+      sourceNode.buffer = SOUNDS.get(e.sound)!;
       chain.addNode(sourceNode);
 
       if (e.pan !== undefined) {

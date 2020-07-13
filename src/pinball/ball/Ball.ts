@@ -1,19 +1,18 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import { CubeCamera, Material, Mesh, Object3D, SphereGeometry } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V, Vector } from "../../core/Vector";
-import { hasCollisionInfo, SparkInfo } from "./BallCollisionInfo";
 import { NudgeEvent } from "../controllers/NudgeController";
 import ParticleSystem from "../effects/ParticleSystem";
 import { makeSparkParams } from "../effects/Sparks";
-import BallMesh from "./BallMesh";
-import { playSoundEvent } from "../Soundboard";
 import { CollisionGroups } from "../playfield/Collision";
-import { Materials } from "../playfield/Materials";
+import { P2Materials } from "../playfield/Materials";
+import { playSoundEvent } from "../Soundboard";
+import { hasCollisionInfo, SparkInfo } from "./BallCollisionInfo";
+import PuckMesh from "./PuckMesh";
 
 const RADIUS = 1.0625; // Radius in half inches
 const MASS = 2.8; // In ounces
@@ -21,13 +20,11 @@ const FRICTION = 0.005; // rolling friction
 const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
 const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
 
-const GEOMETRY = new SphereGeometry(RADIUS, 32, 32);
-
 export default class Ball extends BaseEntity implements Entity {
   tags = ["ball"];
   body: Body;
   radius: number = RADIUS;
-
+  captured: boolean = false;
   rollingVelocity: Vector = V(0, 0);
   rollingPosition: Vector = V(0, 0);
 
@@ -43,36 +40,57 @@ export default class Ball extends BaseEntity implements Entity {
     this.body.velocity = velocity;
 
     const shape = new Circle({ radius: this.radius });
-    shape.material = Materials.ball;
+    shape.material = P2Materials.ball;
     shape.collisionGroup = CollisionGroups.Ball;
     shape.collisionMask = CollisionGroups.Ball | CollisionGroups.Table;
     this.body.addShape(shape);
 
-    this.addChild(new BallMesh(this));
+    // this.addChild(new BallMesh(this));
+    this.addChild(new PuckMesh(this));
   }
 
   /** The visual height of the center of the ball above the playfield */
   getZ(): number {
+    if (this.captured) {
+      return -this.radius / 3;
+    }
     return this.radius;
   }
 
   onTick() {
     // Gravity
-    this.body.applyForce([0, GRAVITY * MASS]);
+    if (!this.captured) {
+      this.body.applyForce([0, GRAVITY * MASS]);
 
-    // Spin
-    const spinForce = V(this.body.velocity)
-      .normalize()
-      .irotate90cw()
-      .imul(this.body.angularVelocity * 0.05);
-    this.body.applyForce(spinForce);
+      // Spin
+      const spinForce = V(this.body.velocity)
+        .normalize()
+        .irotate90cw()
+        .imul(this.body.angularVelocity * 0.05);
+      this.body.applyForce(spinForce);
 
-    // Friction
-    const frictionForce = V(this.body.velocity).mul(-FRICTION);
-    this.body.applyForce(frictionForce);
+      // Friction
+      const frictionForce = V(this.body.velocity).mul(-FRICTION);
+      this.body.applyForce(frictionForce);
 
-    this.rollingVelocity.set(this.body.velocity);
-    this.rollingPosition.iadd(this.rollingVelocity);
+      this.rollingVelocity.set(this.body.velocity);
+      this.rollingPosition.iadd(this.rollingVelocity);
+    }
+  }
+
+  // Ball gets controlled by other entity
+  capture() {
+    this.captured = true;
+    this.body.collisionResponse = false;
+    this.body.velocity[0] = 0;
+    this.body.velocity[1] = 0;
+    this.body.angularVelocity = 0;
+    this.rollingVelocity.set([0, 0]);
+  }
+
+  release() {
+    this.captured = false;
+    this.body.collisionResponse = true;
   }
 
   handlers = {

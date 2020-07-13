@@ -18,9 +18,18 @@ export interface ScoreEvent {
   points: number;
 }
 
+export function scoreEvent(points: number): ScoreEvent {
+  return { type: "score", points };
+}
+
 export interface UpdateScoreEvent {
   type: "updateScore";
   score: number;
+}
+
+interface NewBallEvent {
+  type: "newBall";
+  noSound?: boolean;
 }
 
 /**
@@ -58,7 +67,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
       ball.destroy();
 
       if (this.ballsRemaining > 0) {
-        this.game!.dispatch(playSoundEvent("drain", { gain: 0.5 }));
+        this.game!.dispatch(playSoundEvent("hockeyDrain"));
         await this.wait(1.0);
         this.game!.dispatch({ type: "newBall" });
       } else {
@@ -126,9 +135,4 @@ export default class LogicBoard extends BaseEntity implements Entity {
 /** Type guard for ball entity */
 export function isLogicBoard(e?: Entity): e is LogicBoard {
   return e instanceof LogicBoard;
-}
-
-interface NewBallEvent {
-  type: "newBall";
-  noSound?: boolean;
 }

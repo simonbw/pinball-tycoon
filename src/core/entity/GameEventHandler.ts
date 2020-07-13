@@ -5,24 +5,25 @@ export interface CustomHandlersMap {
 }
 
 export default interface GameEventHandler {
-  // Custom event handlers
+  /** Custom event handlers */
+  // TODO: Figure out how to do this nicer
   readonly handlers?: CustomHandlersMap;
-  // Called when added to the game
+  /** Called when added to the game */
   onAdd?(game: Game): void;
-  // Called right after being added to the game
+  /** Called right after being added to the game */
   afterAdded?(game: Game): void;
-  // Called after physics
+  /** Called after physics */
   afterPhysics?(): void;
-  // Called before the tick happens
+  /** Called before the tick happens */
   beforeTick?(): void;
-  // Called before rendering
+  /** Called before rendering */
   onRender?(): void;
-  // Called during the update tick
+  /** Called during the update tick */
   onTick?(dt: number): void;
-  // Called when the game is paused
+  /** Called when the game is paused */
   onPause?(): void;
-  // Called when the game is unpaused
+  /** Called when the game is unpaused */
   onUnpause?(): void;
-  // Called after being destroyed
+  /** Called after being destroyed */
   onDestroy?(game: Game): void;
 }

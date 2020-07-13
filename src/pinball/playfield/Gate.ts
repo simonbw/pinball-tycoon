@@ -1,6 +1,6 @@
 import { Body, Capsule, RevoluteConstraint } from "p2";
 import {
-  ExtrudeGeometry,
+  ExtrudeBufferGeometry,
   Mesh,
   MeshStandardMaterial,
   Shape as ThreeShape,
@@ -15,7 +15,7 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0xffffff,
@@ -55,7 +55,7 @@ export default class Gate extends BaseEntity
       length: length,
       radius: width / 2,
     });
-    p2Shape.material = Materials.wall;
+    p2Shape.material = P2Materials.wall;
     p2Shape.collisionGroup = CollisionGroups.Table;
     p2Shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(p2Shape, [0, 0], delta.angle);
@@ -68,7 +68,7 @@ export default class Gate extends BaseEntity
     shape.lineTo(0, r);
     shape.lineTo(0, -r);
 
-    const geometry = new ExtrudeGeometry(shape, {
+    const geometry = new ExtrudeBufferGeometry(shape, {
       bevelEnabled: false,
       depth: 1,
     });

@@ -13,6 +13,9 @@ import metalgrid4Basecolor from "../../../resources/images/metalgrid4_basecolor.
 import metalgrid4NormalOgl from "../../../resources/images/metalgrid4_normal-ogl.png";
 import metalgrid4Roughness from "../../../resources/images/metalgrid4_roughness.png";
 import woodSrc from "../../../resources/images/wood.png";
+import scuffedPlasticRough from "../../../resources/images/scuffed-plastic-rough.png";
+import scuffedPlasticNormal from "../../../resources/images/scuffed-plastic-normal.png";
+import scuffedPlastic5Alb from "../../../resources/images/scuffed-plastic5-alb.png";
 
 const loader = new TextureLoader();
 loader.manager.onStart = (url) => console.log(`loading ${url}`);
@@ -36,6 +39,22 @@ const IronScuffedRoughness = loader.load(ironScuffedRoughness);
 IronScuffedRoughness.wrapS = RepeatWrapping;
 IronScuffedRoughness.wrapT = RepeatWrapping;
 
+const PlasticScuffed = loader.load(scuffedPlastic5Alb);
+const PlasticScuffedRoughness = loader.load(scuffedPlasticRough);
+const PlasticScuffedNormal = loader.load(scuffedPlasticNormal);
+
+for (const t of [
+  PlasticScuffed,
+  PlasticScuffedNormal,
+  PlasticScuffedRoughness,
+]) {
+  t.wrapS = MirroredRepeatWrapping;
+  t.wrapT = MirroredRepeatWrapping;
+  t.repeat.set(3, 3);
+
+  t.anisotropy = 4;
+}
+
 const Hay = loader.load(haytexture);
 
 for (const t of [MetalGrid, MetalGridAO, MetalGridNormal, MetalGridRoughness]) {
@@ -52,21 +71,28 @@ export const TEXTURES = {
   MetalGridNormal,
   MetalGridRoughness,
   IronScuffedRoughness,
+  PlasticScuffed,
+  PlasticScuffedRoughness,
+  PlasticScuffedNormal,
   Hay,
 };
 
-export function waitForTexturesLoaded() {
+export function waitForTexturesLoaded(
+  onProgress?: (completed: number, total: number) => void
+) {
   if (Object.values(TEXTURES).every((texture) => Boolean(texture.image))) {
     console.log("all textures already loaded");
+    const total = Object.values(TEXTURES).length;
+    onProgress?.(total, total);
     return Promise.resolve();
   }
   return new Promise((resolve, reject) => {
     console.log("loading textures...");
     const manager = loader.manager;
-    manager.manager.onLoad = () => resolve();
+    manager.onLoad = () => resolve();
     manager.onError = () => reject();
 
     manager.onStart = (url) => console.log(`loading ${url}`);
-    manager.onProgress = (url, n, t) => console.log(`loaded ${url}, ${n}/${t}`);
+    manager.onProgress = (url, n, t) => onProgress?.(n, t);
   });
 }

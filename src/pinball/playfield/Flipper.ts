@@ -1,5 +1,10 @@
 import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
-import { ExtrudeGeometry, Mesh, MeshStandardMaterial, Shape } from "three";
+import {
+  ExtrudeBufferGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  Shape,
+} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
@@ -13,21 +18,21 @@ import {
 } from "../ball/BallCollisionInfo";
 import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({
-  color: 0xcc0000,
+  color: 0x0000cc,
   roughness: 0.7,
 });
 
 const DOWN_ANGLE = degToRad(30);
 const UP_ANGLE = degToRad(-38);
-const UP_STIFFNESS = 80000;
-const DOWN_STIFFNESS = 30000;
+const UP_STIFFNESS = 100000;
+const DOWN_STIFFNESS = 40000;
 const DAMPING = 1250;
 const OVEREXTENSION_AMOUNT = degToRad(3);
 const WIDTH = 1.2;
-const MASS = 2.2;
+const MASS = 2.8;
 
 type Side = "left" | "right";
 
@@ -44,7 +49,7 @@ export default class Flipper extends BaseEntity
   handlers: CustomHandlersMap = {};
 
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "wallHit1",
+    beginContactSound: "flipperHit",
   };
 
   constructor(
@@ -84,7 +89,7 @@ export default class Flipper extends BaseEntity
       length: length,
       radius: WIDTH / 2,
     });
-    p2Shape.material = Materials.flipper;
+    p2Shape.material = P2Materials.flipper;
     p2Shape.collisionGroup = CollisionGroups.Table;
     p2Shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(p2Shape, [length / 2, 0]);
@@ -97,7 +102,7 @@ export default class Flipper extends BaseEntity
     shape.lineTo(0, r);
     shape.lineTo(0, -r);
 
-    const geometry = new ExtrudeGeometry(shape, {
+    const geometry = new ExtrudeBufferGeometry(shape, {
       bevelEnabled: false,
       depth: 1,
     });

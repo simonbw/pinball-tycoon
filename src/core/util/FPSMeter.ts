@@ -24,22 +24,18 @@ export default class FPSMeter extends BaseEntity implements Entity {
     this.lastUpdate = now;
   }
 
-  getFps(): number {
-    return Math.ceil(1000 / this.averageDuration);
-  }
-
-  getBodyCount(): number {
-    return this.game?.world.bodies.length ?? 0;
-  }
-
-  getObjCount() {
-    return this.game?.renderer.scene.children.length;
+  getStats() {
+    const renderer = this.game?.renderer;
+    return {
+      fps: Math.ceil(1000 / this.averageDuration),
+      objCount: renderer?.scene.children.length ?? 0,
+      renderCount: renderer?.threeRenderer.info.render.calls ?? 0,
+      bodyCount: this.game?.world.bodies.length ?? 0,
+    };
   }
 
   getText() {
-    const fps = this.getFps();
-    const bodyCount = this.getBodyCount();
-    const objCount = this.getObjCount();
+    const { fps, bodyCount, mem, objCount } = this.getStats();
     return `fps: ${fps} | bodies: ${bodyCount} | objects: ${objCount}`;
   }
 }

@@ -241,6 +241,7 @@ export default class Game {
     }
   }
 
+  private iterationsRemaining = 0.0;
   /** The main event loop. Run one frame of the game.  */
   private loop(time: number): void {
     window.requestAnimationFrame((t) => this.loop(t));
@@ -248,9 +249,8 @@ export default class Game {
     this.lastFrameTime = time;
 
     const dt = this.tickTimestep;
-    // TODO: Make this deterministic
-    const iterations = rRound(this.tickIterations * this.slowMo);
-    for (let i = 0; i < iterations; i++) {
+    this.iterationsRemaining += this.tickIterations * this.slowMo;
+    for (; this.iterationsRemaining > 1.0; this.iterationsRemaining--) {
       this.tick(dt);
       if (!this.paused) {
         this.world.step(dt);

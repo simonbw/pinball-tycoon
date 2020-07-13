@@ -1,24 +1,30 @@
 import { KeyCode } from "../../core/io/Keys";
 
 const DEFAULT_BINDINGS = {
-  START_GAME: "KeyS",
-  LEFT_FLIPPER: "KeyX",
-  RIGHT_FLIPPER: "Period",
+  START_GAME: "KeyS" as KeyCode,
+  LEFT_FLIPPER: "KeyX" as KeyCode,
+  RIGHT_FLIPPER: "Period" as KeyCode,
 
-  NUDGE_RIGHT: "Slash",
-  NUDGE_LEFT: "KeyZ",
-  NUDGE_UP_LEFT: "KeyC",
-  NUDGE_UP_RIGHT: "Comma",
+  NUDGE_RIGHT: "Slash" as KeyCode,
+  NUDGE_LEFT: "KeyZ" as KeyCode,
+  NUDGE_UP_LEFT: "KeyC" as KeyCode,
+  NUDGE_UP_RIGHT: "Comma" as KeyCode,
 
-  SLO_MO: "ShiftLeft",
-  SLO_MO2: "ShiftRight",
+  SLO_MO: "ShiftLeft" as KeyCode,
+  SLO_MO2: "ShiftRight" as KeyCode,
 
-  "MAGIC.MULTI": "KeyB",
-  "MAGIC.RESET": "KeyR",
-  "MAGIC.LEFT": "ArrowLeft",
-  "MAGIC.UP": "ArrowUp",
-  "MAGIC.RIGHT": "ArrowRight",
-  "MAGIC.DOWN": "ArrowDown",
+  MAGIC_MULTI: "KeyB" as KeyCode,
+  MAGIC_RESET: "KeyR" as KeyCode,
+  MAGIC_LEFT: "ArrowLeft" as KeyCode,
+  MAGIC_UP: "ArrowUp" as KeyCode,
+  MAGIC_RIGHT: "ArrowRight" as KeyCode,
+  MAGIC_DOWN: "ArrowDown" as KeyCode,
+
+  QUALITY_LOW: "Digit1" as KeyCode,
+  QUALITY_MEDIUM: "Digit2" as KeyCode,
+  QUALITY_HIGH: "Digit3" as KeyCode,
+
+  PAUSE: "Escape" as KeyCode,
 };
 
 let bindings = { ...DEFAULT_BINDINGS };

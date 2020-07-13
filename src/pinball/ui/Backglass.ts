@@ -1,20 +1,15 @@
 import {
   CanvasTexture,
-  Mesh,
-  MeshStandardMaterial,
-  PlaneGeometry,
-  MeshBasicMaterial,
-  NearestFilter,
   LinearFilter,
-  LinearMipMapNearestFilter,
-  NearestMipMapNearestFilter,
+  Mesh,
   MeshPhongMaterial,
+  PlaneBufferGeometry,
 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { UpdateScoreEvent } from "../LogicBoard";
-import { TABLE_ANGLE } from "../Table";
 import FPSMeter from "../../core/util/FPSMeter";
+import { UpdateScoreEvent } from "../LogicBoard";
+import { TABLE_ANGLE } from "../tables/HockeyTable";
 
 interface ScoreEvent {
   type: "score";
@@ -50,7 +45,7 @@ export default class Backglass extends BaseEntity implements Entity {
     });
 
     const x = (left + right) / 2;
-    const geometry = new PlaneGeometry(width, height);
+    const geometry = new PlaneBufferGeometry(width, height);
     geometry.rotateX(-Math.PI / 2);
     geometry.translate(x, 0, -height / 2);
     this.mesh = new Mesh(geometry, material);
@@ -67,7 +62,7 @@ export default class Backglass extends BaseEntity implements Entity {
     this.updateText();
   }
 
-  updateText(score: number = 0) {
+  updateText() {
     const ctx = this.ctx;
     const { width: w, height: h } = ctx.canvas;
 
@@ -79,15 +74,18 @@ export default class Backglass extends BaseEntity implements Entity {
 
     ctx.textBaseline = "top";
     ctx.textAlign = "right";
-    ctx.fillText(`${score}`, w - 10, 10, w - 20);
+    const scoreText = this.score.toLocaleString(undefined, {
+      useGrouping: true,
+    });
+    ctx.fillText(`${scoreText} pts`, w - 10, 10, w - 20);
 
-    const stats = this.fpsMeter;
+    const { fps, bodyCount, renderCount } = this.fpsMeter.getStats();
     ctx.font = "40px DS Digital, sans";
     ctx.textBaseline = "bottom";
     ctx.textAlign = "left";
-    ctx.fillText(`fps: ${stats.getFps()}`, 10, h - 120, w - 20);
-    ctx.fillText(`bodies: ${stats.getBodyCount()}`, 10, h - 80, w - 20);
-    ctx.fillText(`objs: ${stats.getObjCount()}`, 10, h - 40, w - 20);
+    ctx.fillText(`fps: ${fps}`, 10, h - 120, w - 20);
+    ctx.fillText(`bodies: ${bodyCount}`, 10, h - 80, w - 20);
+    ctx.fillText(`draw: ${renderCount}`, 10, h - 40, w - 20);
 
     this.texture.needsUpdate = true;
   }

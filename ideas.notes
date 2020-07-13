@@ -2,8 +2,6 @@
 # Core #
 #------#
 
-
-
 Improve Resources:
   [ ] Move resource loading to be on the Game class
   [ ] Create api to load resources that can be used outside of `core`
@@ -43,6 +41,7 @@ Misc:
   [√] Display controls
   [ ] Better flipper shape
   [ ] Use consistent real-world units i.e. inches
+  [ ] Support for multiple tables
 
 Controls
   [ ] More accurate flipper timing by using sub-frame timing
@@ -61,10 +60,14 @@ Visuals:
   [ ] "Street lighting", i.e. lots of little LEDs in the apron of the machine to light up all the corners
 
 UI:
-  [ ] Custom 7/14/16 segment display for text
   [ ] Incorporate UI into Table
     [ ] Slowmo
     [ ] Balls Remaining
+
+Backglass Ideas:
+  [ ] Show "Press S to Start" message when game hasn't started yet
+  [ ] Show "Game Over" Message
+  [ ] Custom 7/14/16 segment display for text
 
 Table Features
   [√] Flipper

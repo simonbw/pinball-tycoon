@@ -1,18 +1,18 @@
 import { Body, Circle, ContactEquation, Shape } from "p2";
-import { CylinderGeometry, Mesh, MeshStandardMaterial } from "three";
+import { CylinderBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { colorFade } from "../../core/util/ColorUtils";
 import { clamp } from "../../core/util/MathUtil";
 import { Vector } from "../../core/Vector";
+import { isBall } from "../ball/Ball";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { playSoundEvent } from "../Soundboard";
-import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({
   roughness: 0,
@@ -32,7 +32,7 @@ export default class Post extends BaseEntity
     });
 
     const shape = new Circle({ radius: size });
-    shape.material = Materials.bumper;
+    shape.material = P2Materials.bumper;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
@@ -49,7 +49,7 @@ export default class Post extends BaseEntity
       },
     };
 
-    const geometry = new CylinderGeometry(size, size, 3.0, 32, 1);
+    const geometry = new CylinderBufferGeometry(size, size, 3.0, 32, 1);
     geometry.rotateX(Math.PI / 2);
     this.mesh = new Mesh(geometry, MATERIAL);
     this.mesh.position.set(position.x, position.y, -1.0);

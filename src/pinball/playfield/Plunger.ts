@@ -6,7 +6,7 @@ import { Vector } from "../../core/Vector";
 import { playSoundEvent } from "../Soundboard";
 import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
-import { Materials } from "./Materials";
+import { P2Materials } from "./Materials";
 
 const WIDTH = 2;
 const HEIGHT = 1.5;
@@ -34,7 +34,7 @@ export default class Plunger extends BaseEntity implements Entity {
     });
 
     const shape = new Box({ width: WIDTH, height: HEIGHT });
-    shape.material = Materials.plunger;
+    shape.material = P2Materials.plunger;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
