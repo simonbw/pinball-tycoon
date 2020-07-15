@@ -1,9 +1,9 @@
 type ArrayLen2 = [number, number];
 
-export function V(a: ArrayLen2): Vector;
-export function V(x: number, y: number): Vector;
+export function V(a: ArrayLen2): V2d;
+export function V(x: number, y: number): V2d;
 
-interface Vector extends ArrayLen2 {
+export interface V2d extends ArrayLen2 {
   constructor(x: number, y: number): void;
 
   x: number;
@@ -23,37 +23,37 @@ interface Vector extends ArrayLen2 {
   angle: number;
 
   /** Return the result of adding this vector to another. */
-  add(other: ArrayLen2): Vector;
+  add(other: ArrayLen2): V2d;
 
   /** (In Place) Return the result of adding this vector to another. */
   iadd(other: ArrayLen2): this;
 
   /** Return the result of subtracting a vector from this one. */
-  sub(other: ArrayLen2): Vector;
+  sub(other: ArrayLen2): V2d;
 
   /** (In Place) Return the result of subtracting a vector from this one. */
   isub(other: ArrayLen2): this;
 
   /** Return the result of multiplying this vector by a scalar. */
-  mul(scalar: number): Vector;
+  mul(scalar: number): V2d;
 
   /** (In Place) Return the result of multiplying this vector by a scalar. */
   imul(scalar: number): this;
 
   /** Returns the result of rotating this vector 90 decgrees clockwise */
-  rotate90cw(): Vector;
+  rotate90cw(): V2d;
 
   /** (In Place) Returns the result of rotating this vector 90 decgrees clockwise */
   irotate90cw(): this;
 
   /** Returns the result of rotating this vector 90 decgrees counter-clockwise */
-  rotate90ccw(): Vector;
+  rotate90ccw(): V2d;
 
   /** (In Place) Returns the result of rotating this vector 90 decgrees counter-clockwise */
   irotate90ccw(): this;
 
   /** Return the result of rotating this angle by `angle` radians ccw. */
-  rotate(angle: number): Vector;
+  rotate(angle: number): V2d;
 
   /** (In Place) Return the result of rotating this angle by `angle` radians ccw. */
   irotate(angle: number): this;
@@ -66,16 +66,16 @@ interface Vector extends ArrayLen2 {
   set(x: number, y: number): this;
 
   /** Return a normalized version of this vector */
-  normalize(): Vector;
+  normalize(): V2d;
 
   /** (In Place) Return a normalized version of this vector */
   inormalize(): this;
 
   /** Return a new vector with the same values as this one */
-  clone(): Vector;
+  clone(): V2d;
 
   /** Return a vector that is between this and other */
-  lerp(other: ArrayLen2, t: number): Vector;
+  lerp(other: ArrayLen2, t: number): V2d;
 
   /** (In place) Return a vector that is between this and other */
   ilerp(other: ArrayLen2, t: number): this;

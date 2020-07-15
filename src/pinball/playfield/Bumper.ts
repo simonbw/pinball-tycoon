@@ -3,12 +3,12 @@ import { CylinderBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { scoreEvent } from "../LogicBoard";
-import { playSoundEvent } from "../Soundboard";
+import { playSoundEvent } from "../system/Soundboard";
 import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
+import { scoreEvent } from "../system/LogicBoard";
 
 const STRENGTH = 250;
 const VELOCITY_MULTIPLIER = 0.2;
@@ -28,7 +28,7 @@ export default class Bumper extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
   body: Body;
 
-  constructor(position: Vector, size: number = 1.7) {
+  constructor(position: V2d, size: number = 1.7) {
     super();
 
     this.body = new Body({
@@ -49,7 +49,7 @@ export default class Bumper extends BaseEntity implements Entity {
     this.mesh.position.set(position.x, position.y, -3.0);
 
     this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+    this.mesh.receiveShadow = false;
   }
 
   onRender() {

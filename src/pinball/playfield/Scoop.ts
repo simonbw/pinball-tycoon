@@ -2,14 +2,13 @@ import { Body, Box, ContactEquation, Shape } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { SoundName } from "../../core/resources/sounds";
-import { V, Vector } from "../../core/Vector";
+import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { scoreEvent } from "../LogicBoard";
-import { playSoundEvent } from "../Soundboard";
+import { scoreEvent } from "../system/LogicBoard";
 import { CollisionGroups } from "./Collision";
 
 interface ScoopOptions {
-  position: Vector;
+  position: V2d;
   angle: number;
   width?: number;
   depth?: number;
@@ -23,7 +22,7 @@ export default class Scoop extends BaseEntity implements Entity {
   cooldown: boolean = false;
 
   constructor(
-    position: Vector,
+    position: V2d,
     angle: number = 0,
     width = 2.0,
     depth: number = 2.0,

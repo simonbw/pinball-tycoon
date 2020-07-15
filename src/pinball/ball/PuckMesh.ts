@@ -2,55 +2,60 @@ import {
   CylinderBufferGeometry,
   Mesh,
   MeshStandardMaterial,
-  Object3D,
+  MeshBasicMaterial,
+  MeshLambertMaterial,
+  MixOperation,
+  AddOperation,
+  MeshPhongMaterial,
 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { V, Vector } from "../../core/Vector";
+import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
 import Ball from "./Ball";
 
 const RADIUS = 1.0625; // Radius in half inches
 const HEIGHT = RADIUS / 1.5; // Ratio of hockey puck size
 
-const GEOMETRY = new CylinderBufferGeometry(RADIUS, RADIUS, HEIGHT, 32, 1);
+const GEOMETRY = new CylinderBufferGeometry(RADIUS, RADIUS, HEIGHT, 32, 4);
 GEOMETRY.rotateX(Math.PI / 2);
 
-const roughnessMap = TEXTURES.PlasticScuffedRoughness.clone();
-roughnessMap.repeat.set(0.5, 0.5);
-roughnessMap.center.set(0.5, 0.5);
-
-const MATERIAL = new MeshStandardMaterial({
-  color: 0x111111,
-  roughness: 2.0,
-  roughnessMap,
-});
-
 export default class PuckMesh extends BaseEntity implements Entity {
-  ball: Ball;
   mesh: Mesh;
-  object3ds: Object3D[] = [];
+  reflector: any;
 
-  rollingVelocity: Vector = V(0, 0);
-  rollingPosition: Vector = V(0, 0);
-
-  constructor(ball: Ball) {
+  constructor(private ball: Ball) {
     super();
 
-    this.ball = ball;
+    this.reflector = this.addChild(new Reflector());
 
-    this.mesh = new Mesh(GEOMETRY, MATERIAL);
+    const top = new MeshStandardMaterial({
+      color: 0x111111,
+      roughness: 1.5,
+      roughnessMap: TEXTURES.BumpyPlasticRoughness,
+      normalMap: TEXTURES.BumpyPlasticNormal,
+    });
+    const sides = new MeshStandardMaterial({
+      color: 0x000000,
+      roughness: 1.5,
+    });
+
+    this.mesh = new Mesh(GEOMETRY, [sides, top, top]);
+    this.mesh.receiveShadow = false;
     this.mesh.castShadow = true;
+    this.reflector.parentMesh = this.mesh;
+
+    this.disposeables = [top, sides];
   }
 
   onRender() {
     const [x, y] = this.ball.body.position;
     const z = -HEIGHT / 2;
     this.mesh.position.set(x, y, z);
-  }
-}
+    this.mesh.rotation.z = this.ball.body.angle;
 
-/** Type guard for ball entity */
-export function isBall(e?: Entity): e is Ball {
-  return e instanceof Ball;
+    if (this.game!.framenumber % 4 === 1) {
+      this.reflector.update();
+    }
+  }
 }

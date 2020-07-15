@@ -11,7 +11,7 @@ import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
 import Game from "../../core/Game";
 import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
 import { angleDelta, degToRad, reflectX } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
@@ -53,7 +53,7 @@ export default class Flipper extends BaseEntity
   };
 
   constructor(
-    position: Vector,
+    position: V2d,
     side: Side = "left",
     length: number = 6,
     upAngle = UP_ANGLE,
@@ -110,7 +110,7 @@ export default class Flipper extends BaseEntity
     this.mesh.position.set(position.x, position.y, -1.5);
 
     this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+    this.mesh.receiveShadow = false;
   }
 
   onAdd(game: Game) {

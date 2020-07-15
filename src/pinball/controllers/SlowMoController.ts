@@ -8,7 +8,7 @@ const RAMP_UP_SPEED = 0.005;
 const COOLDOWN_POINT = 0.8;
 
 // const DRAIN_SPEED = 0.5;
-const DRAIN_SPEED = 0.005;
+const DRAIN_SPEED = 0.5;
 const FILL_SPEED = 0.2;
 
 export default class SlowMoController extends BaseEntity implements Entity {

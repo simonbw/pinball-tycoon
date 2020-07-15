@@ -1,14 +1,11 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
-import { Vector, V } from "../../core/Vector";
 import Ball, { isBall } from "../ball/Ball";
 import { getBinding } from "../ui/KeyboardBindings";
 
 const FORCE = 150;
 const GRAVITY_COMP = 132;
-
-const RESET_POSITION: Vector = V(26, 90);
 
 /** Magically control the ball to put it where we want it */
 export default class MagicBallController extends BaseEntity implements Entity {
@@ -44,12 +41,11 @@ export default class MagicBallController extends BaseEntity implements Entity {
     if (ball) {
       switch (key) {
         case getBinding("MAGIC_RESET"):
-          ball.body.position = RESET_POSITION.clone();
-          ball.body.velocity = [0, 0];
-          ball.body.angularVelocity = 0;
+          ball.destroy();
+          this.game!.dispatch({ type: "newBall" });
           break;
         case getBinding("MAGIC_MULTI"):
-          this.game!.addEntity(new Ball(RESET_POSITION));
+          this.game!.dispatch({ type: "newBall" });
           break;
       }
     }

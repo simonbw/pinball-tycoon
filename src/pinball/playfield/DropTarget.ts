@@ -4,16 +4,16 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
 import { clamp } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
-import { playSoundEvent } from "../Soundboard";
+import { scoreEvent } from "../system/LogicBoard";
+import { playSoundEvent } from "../system/Soundboard";
 import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
-import { scoreEvent } from "../LogicBoard";
 
 const UP_SPEED = 15.0;
 const DOWN_SPEED = 100.0;
@@ -37,7 +37,7 @@ export default class DropTarget extends BaseEntity
   };
 
   constructor(
-    position: Vector,
+    position: V2d,
     angle: number = 0,
     width: number = 2.0,
     height?: number,
@@ -67,7 +67,7 @@ export default class DropTarget extends BaseEntity
     this.mesh.position.set(position.x, position.y, 0);
     this.mesh.rotateZ(angle);
     this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+    this.mesh.receiveShadow = false;
   }
 
   getGeometry(width: number, height: number, depth: number) {
@@ -112,6 +112,7 @@ export default class DropTarget extends BaseEntity
       if (raiseDelay) {
         await this.wait(raiseDelay);
         this.raise();
+        this.onTimeout();
       }
     }
   }
@@ -128,6 +129,8 @@ export default class DropTarget extends BaseEntity
     const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
     this.game!.dispatch(playSoundEvent("pop1", { pan }));
   }
+
+  onTimeout() {}
 
   handlers: CustomHandlersMap = {
     newBall: () => {

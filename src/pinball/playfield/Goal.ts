@@ -1,20 +1,20 @@
 import { Body, Box, Shape } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { V, Vector } from "../../core/Vector";
+import { V, V2d } from "../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
-import { scoreEvent } from "../LogicBoard";
-import { playSoundEvent } from "../Soundboard";
+import { scoreEvent } from "../system/LogicBoard";
+import { playSoundEvent } from "../system/Soundboard";
 import { CollisionGroups } from "./Collision";
 import GoalMesh from "./GoalMesh";
 import Scoop from "./Scoop";
 
 const CAPTURE_DURATION = 1.5;
 const RELEASE_FORCE = 500;
-const WALL_WIDTH = 0.25;
+const WALL_WIDTH = 0.5;
 
 export default class Goal extends BaseEntity
   implements Entity, WithBallCollisionInfo {
@@ -25,7 +25,7 @@ export default class Goal extends BaseEntity
   };
 
   constructor(
-    position: Vector,
+    position: V2d,
     angle: number = 0,
     width = 8.0,
     depth: number = 5.0
@@ -66,7 +66,7 @@ export default class Goal extends BaseEntity
         () => {
           this.game!.dispatch(scoreEvent(25000));
           this.game!.dispatch({ type: "goal" });
-          this.game!.dispatch(playSoundEvent("goalHorn"));
+          this.game!.dispatch(playSoundEvent("goal"));
         },
         async () => {
           await this.wait(0.5);

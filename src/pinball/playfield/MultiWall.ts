@@ -1,12 +1,13 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { Vector, V } from "../../core/Vector";
+import { V2d, V } from "../../core/Vector";
 import Wall, { WALL_MATERIAL } from "./Wall";
 import { Shape, ExtrudeBufferGeometry, Mesh } from "three";
+import { makeOutlineShape } from "../util/OutlineShape";
 
 export default class MultiWall extends BaseEntity implements Entity {
   constructor(
-    points: readonly Vector[],
+    points: readonly V2d[],
     width: number = 1.0,
     color?: number,
     renderSelf: boolean = true
@@ -23,36 +24,7 @@ export default class MultiWall extends BaseEntity implements Entity {
     }
 
     if (renderSelf) {
-      const shape = new Shape();
-
-      shape.moveTo(points[0][0], points[0][1]);
-      const processPoint = (current: Vector, last?: Vector, next?: Vector) => {
-        const n = V(0, 0);
-        if (last) n.iadd(current.sub(last).inormalize().irotate90ccw());
-        if (next) n.iadd(next.sub(current).inormalize().irotate90ccw());
-        n.inormalize().imul(width / 2);
-
-        shape.lineTo(current.x + n.x, current.y + n.y);
-      };
-
-      // shape
-      for (let i = 0; i < points.length; i++) {
-        const last = points[i - 1];
-        const current = points[i];
-        const next = points[i + 1];
-
-        processPoint(current, last, next);
-      }
-
-      for (let i = points.length - 1; i > 0; i--) {
-        const last = points[i + 1];
-        const current = points[i];
-        const next = points[i - 1];
-
-        processPoint(current, last, next);
-      }
-
-      shape.closePath();
+      const shape = makeOutlineShape(points, width);
 
       const geometry = new ExtrudeBufferGeometry(shape, {
         bevelEnabled: false,
@@ -60,6 +32,8 @@ export default class MultiWall extends BaseEntity implements Entity {
       });
       geometry.translate(0, 0, -2 * width);
       this.mesh = new Mesh(geometry, WALL_MATERIAL);
+      this.mesh.receiveShadow = false;
+      this.mesh.castShadow = true;
     }
   }
 }

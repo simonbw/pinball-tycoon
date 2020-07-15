@@ -31,11 +31,12 @@ export default class FPSMeter extends BaseEntity implements Entity {
       objCount: renderer?.scene.children.length ?? 0,
       renderCount: renderer?.threeRenderer.info.render.calls ?? 0,
       bodyCount: this.game?.world.bodies.length ?? 0,
+      entityCount: this.game?.entities.all.size ?? 0,
     };
   }
 
   getText() {
-    const { fps, bodyCount, mem, objCount } = this.getStats();
+    const { fps, bodyCount, objCount } = this.getStats();
     return `fps: ${fps} | bodies: ${bodyCount} | objects: ${objCount}`;
   }
 }

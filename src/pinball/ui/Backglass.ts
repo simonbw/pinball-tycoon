@@ -8,35 +8,35 @@ import {
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import FPSMeter from "../../core/util/FPSMeter";
-import { UpdateScoreEvent } from "../LogicBoard";
-import { TABLE_ANGLE } from "../tables/HockeyTable";
+import { UpdateScoreEvent } from "../system/LogicBoard";
+import { getBinding } from "./KeyboardBindings";
+import { keyCodeToName } from "../../core/io/Keys";
+import Table from "../tables/Table";
 
-interface ScoreEvent {
-  type: "score";
-  points: number;
-}
+type DisplayMode = "pre-game" | "midgame" | "post-game";
 
 export default class Backglass extends BaseEntity implements Entity {
+  displayMode: DisplayMode = "pre-game";
   ctx: CanvasRenderingContext2D;
   texture: CanvasTexture;
   fpsMeter: FPSMeter;
   score: number = 0;
 
-  constructor(left: number, right: number, height: number) {
+  constructor(table: Table) {
     super();
     this.fpsMeter = this.addChild(new FPSMeter());
 
-    const width = right - left;
+    const width = table.width;
+    const height = 24;
 
     const canvas = document.createElement("canvas");
-    canvas.width = width * 16;
+    canvas.width = table.width * 16;
     canvas.height = height * 16;
 
     this.ctx = canvas.getContext("2d")!;
     this.texture = new CanvasTexture(canvas);
     this.texture.anisotropy = 4;
     this.texture.minFilter = LinearFilter;
-    this.updateText();
 
     const material = new MeshPhongMaterial({
       color: 0x000000,
@@ -44,49 +44,86 @@ export default class Backglass extends BaseEntity implements Entity {
       emissiveMap: this.texture,
     });
 
-    const x = (left + right) / 2;
+    const x = table.center.x;
     const geometry = new PlaneBufferGeometry(width, height);
     geometry.rotateX(-Math.PI / 2);
     geometry.translate(x, 0, -height / 2);
     this.mesh = new Mesh(geometry, material);
-    this.mesh.rotateX(-TABLE_ANGLE);
+    this.mesh.rotateX(-table.incline);
   }
 
   handlers = {
     updateScore: ({ score }: UpdateScoreEvent) => {
       this.score = score;
     },
+
+    gameStart: () => (this.displayMode = "midgame"),
+    gameOver: () => (this.displayMode = "post-game"),
   };
 
   onRender() {
-    this.updateText();
+    this.renderBack();
+
+    switch (this.displayMode) {
+      case "pre-game":
+        const startKey = keyCodeToName(getBinding("START_GAME"));
+        this.renderMiddleText(`Press ${startKey} to start`);
+        break;
+      case "midgame":
+        this.renderScore();
+        break;
+      case "post-game":
+        this.renderScore();
+        this.renderMiddleText("Game Over");
+        break;
+    }
+    this.renderStats();
+    this.texture.needsUpdate = true;
   }
 
-  updateText() {
-    const ctx = this.ctx;
-    const { width: w, height: h } = ctx.canvas;
+  renderBack() {
+    const { width, height } = this.ctx.canvas;
+    this.ctx.fillStyle = "#111";
+    this.ctx.fillRect(0, 0, width, height);
+  }
 
-    ctx.fillStyle = "#111";
-    ctx.fillRect(0, 0, w, h);
+  renderMiddleText(text: string) {
+    const { width: w, height: h } = this.ctx.canvas;
+    this.ctx.fillStyle = "#f00";
+    this.ctx.font = "64px DS Digital, sans-serif";
+    this.ctx.textBaseline = "middle";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(text, w / 2, h / 2, w - 20);
+  }
 
-    ctx.fillStyle = "#f00";
-    ctx.font = "64px DS Digital, sans";
-
-    ctx.textBaseline = "top";
-    ctx.textAlign = "right";
+  renderScore() {
+    const { width: w, height: h } = this.ctx.canvas;
+    this.ctx.fillStyle = "#f00";
+    this.ctx.font = "64px DS Digital, sans-serif";
+    this.ctx.textBaseline = "top";
+    this.ctx.textAlign = "right";
     const scoreText = this.score.toLocaleString(undefined, {
       useGrouping: true,
     });
-    ctx.fillText(`${scoreText} pts`, w - 10, 10, w - 20);
+    this.ctx.fillText(`${scoreText} pts`, w - 10, 10, w - 20);
+  }
 
-    const { fps, bodyCount, renderCount } = this.fpsMeter.getStats();
-    ctx.font = "40px DS Digital, sans";
-    ctx.textBaseline = "bottom";
-    ctx.textAlign = "left";
-    ctx.fillText(`fps: ${fps}`, 10, h - 120, w - 20);
-    ctx.fillText(`bodies: ${bodyCount}`, 10, h - 80, w - 20);
-    ctx.fillText(`draw: ${renderCount}`, 10, h - 40, w - 20);
+  renderStats() {
+    const { width: w, height: h } = this.ctx.canvas;
+    const {
+      fps,
+      bodyCount,
+      renderCount,
+      entityCount,
+    } = this.fpsMeter.getStats();
 
-    this.texture.needsUpdate = true;
+    this.ctx.font = "28px sans-serif";
+    this.ctx.textBaseline = "bottom";
+    this.ctx.textAlign = "left";
+    const spacing = 28;
+    this.ctx.fillText(`fps: ${fps}`, 10, h - spacing * 4, w - 20);
+    this.ctx.fillText(`entities: ${entityCount}`, 10, h - spacing * 3, w - 20);
+    this.ctx.fillText(`bodies: ${bodyCount}`, 10, h - spacing * 2, w - 20);
+    this.ctx.fillText(`draw: ${renderCount}`, 10, h - spacing * 1, w - 20);
   }
 }

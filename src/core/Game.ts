@@ -172,12 +172,6 @@ export default class Game {
       }
     }
 
-    if (entity.lights) {
-      for (const light of entity.lights) {
-        this.renderer.scene.add(light);
-      }
-    }
-
     if (entity.body) {
       this.world.addBody(entity.body);
       entity.body.owner = entity;
@@ -199,12 +193,12 @@ export default class Game {
       }
     }
 
-    if (entity.afterAdded) {
-      entity.afterAdded(this);
-    }
-
     if (entity.children) {
       this.addEntities(entity.children);
+    }
+
+    if (entity.afterAdded) {
+      entity.afterAdded(this);
     }
 
     return entity;
@@ -276,9 +270,9 @@ export default class Game {
           this.renderer.scene.remove(mesh);
         }
       }
-      if (entity.lights) {
-        for (const light of entity.lights) {
-          this.renderer.scene.remove(light);
+      if (entity.disposeables) {
+        for (const disposeable of entity.disposeables) {
+          disposeable.dispose();
         }
       }
       if (entity.body) {

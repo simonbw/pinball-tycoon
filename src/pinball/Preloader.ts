@@ -30,7 +30,6 @@ export default class Preloader extends BaseEntity implements Entity {
       this.loadSounds(game.audio),
     ]);
     this._resolve();
-    this.destroy();
   }
 
   waitTillLoaded() {

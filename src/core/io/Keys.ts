@@ -1,3 +1,13 @@
+export function keyCodeToName(keyCode: KeyCode) {
+  if (keyCode.startsWith("Key")) {
+    return keyCode.substring("Key".length);
+  } else if (keyCode.startsWith("Digit")) {
+    return keyCode.substring("Digit".length);
+  } else {
+    return keyCode;
+  }
+}
+
 /**
  * Possible values for `KeyboardEvent.code
  *

@@ -1,15 +1,15 @@
 import { lerp } from "./util/MathUtil";
 
 export function V(x, y) {
-  if (x instanceof Vector) {
+  if (x instanceof V2d) {
     return x;
   } else if (x instanceof Array) {
-    return new Vector(x[0], x[1]);
+    return new V2d(x[0], x[1]);
   }
-  return new Vector(x, y);
+  return new V2d(x, y);
 }
 
-export class Vector extends Array {
+export class V2d extends Array {
   constructor(x, y) {
     super();
     this[0] = x;
@@ -58,7 +58,7 @@ export class Vector extends Array {
 
   /** Returns the result of rotating this vector 90 decgrees clockwise */
   rotate90cw() {
-    return new Vector(this[1], -this[0]);
+    return new V2d(this[1], -this[0]);
   }
 
   /** (In Place) Returns the result of rotating this vector 90 decgrees clockwise */
@@ -69,7 +69,7 @@ export class Vector extends Array {
 
   /** Returns the result of rotating this vector 90 decgrees counter-clockwise */
   rotate90ccw() {
-    return new Vector(-this[1], this[0]);
+    return new V2d(-this[1], this[0]);
   }
 
   /** (In Place) Returns the result of rotating this vector 90 decgrees counter-clockwise */
@@ -126,7 +126,7 @@ export class Vector extends Array {
 
   /** Return a new vector with the same values as this one */
   clone() {
-    return new Vector(this[0], this[1]);
+    return new V2d(this[0], this[1]);
   }
 
   /** Return a vector that is between this and other */

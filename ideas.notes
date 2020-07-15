@@ -3,34 +3,16 @@
 #------#
 
 Improve Resources:
-  [ ] Move resource loading to be on the Game class
   [ ] Create api to load resources that can be used outside of `core`
-  [√] Create a way to easily play sounds
-  [ ] Some sort of preloader
-
-Layers:
-  [ ] Move defined layers out of the engine
-  [ ] Allow custom defining layers
-  [ ] Custom layer scaling
 
 IO Improvements:
-  [√] Use `KeyboardEvent.code` instead of `.which`
-  [√] Switch away from using key codes (they're deprecated)
   [ ] Keep track of *when* a key was pressed/released for more precise timings
 
-Extended Collisions:
-  [√] Entity.onColliding Handler
-  [√] Keep track of currently happening collisions
-
 Custom events:
-  [√] Dispatch
-  [√] Handler
   [ ] Better typing
+  [ ] Better inheritence
 
 Child Entities:
-  [√] They get added when the parent gets added
-  [√] They get destroyed when the parent gets destroyed
-  [√] When children destroy, they remove themselves from their parents
   [ ] Allow child entitie's Mesh to be added to parent's mesh
 
 #---------#
@@ -38,21 +20,21 @@ Child Entities:
 #---------#
 
 Misc:
-  [√] Display controls
+  [ ] Display controls
+
+Game Feel:
   [ ] Better flipper shape
-  [ ] Use consistent real-world units i.e. inches
-  [ ] Support for multiple tables
+  [ ] More accurate flipper timing by using sub-frame timing
+  [ ] More nudge options
+  [ ] Ball rolling sound
+
 
 Controls
-  [ ] More accurate flipper timing by using sub-frame timing
   [ ] Keyboard control configuration
   [ ] Gamepad Control
-  [√] Up flipper should have more resistance to ball hitting it
 
 Other Features
-  [√] Nudging
   [ ] Tilt sensor
-  [√] Slowmo bar
   [ ] Multiple z-levels
 
 Visuals:
@@ -78,18 +60,18 @@ Table Features
   [√] Curved Wall
   [√] Drain
   [√] Gate
+  [√] Drop Targets
+  [√] Scoop
+  [ ] Ball Save
   [ ] Simple sensor
   [ ] Rollover
-  [ ] Drop Targets
   [ ] Bowl
   [ ] Loop
   [ ] Rail
-  [ ] Wormhole/tunnel/catch+spit
   [ ] Spinner
   [ ] Merry-go-round
   [ ] Lights
   [ ] Kickback
-  [ ] Ball Save
 
 Sounds
   [ ] Flippers
@@ -110,84 +92,71 @@ Sounds
   [ ] Rolling?
   [ ] Nudge
 
-Upgrades
-  [ ] Bumpers
-    [ ] Number
-    [ ] Power
-    [ ] Score
-    [ ] Color
-  [ ] Flippers
-    [ ] Upper Flippers
-  [ ] Slow-Mo
-    [ ] Slow amount
-    [ ] Bar fill rate
-
-Game Flow
-  [ ] Main Menu
-  [ ] Upgrade states
-  [ ] Table setup
-
-[√] Scoring
-  [√] Use custom events
-  [√] Fire event when stuff is hit
-  [√] Score manager class with all scoring logic
-  [ ] Convert score to money
-
-
 #--------#
 # Themes #
 #--------#
 
 Super clean modern spaceship interior look
- - I think assets would be relatively easy to make
- - I think I could make some cool sounds
- - I can imagine a mode where there's an emergency and all the lighting turns red and an alarm sounds
- - Sounds:
+  - I think assets would be relatively easy to make
+  - I think I could make some cool sounds
+  - I can imagine a mode where there's an emergency and all the lighting turns red and an alarm sounds
+  - Sounds:
     - Beeps and boops
     - alarm
     - airlock opening
     - blastoff when you plunge
- - Visuals
-    - White metal textures
+  - Visuals
+    - White/light gray metal textures
     - Bright white lighting
     - Flashing red lighting
     - Lots of lamps
 
-Soviet/Red Army themed
- - Pretty unique I feel like
- - Could be visually very bold with a lot of red and yellow
- - Sounds:
-   - Red Army Choir music would be fun
+Soviet/Red Army themed:
+  - Pretty unique I feel like
+  - Could be visually very bold with a lot of red and yellow
+  - Sounds:
+    - Red Army Choir music would be fun
 
-Plumbing themed
- - Pipes that you can transport around in
- - An upper playfield with a toiletbowl that makes a flushing sound when you go down it
- - Generic water flowing sounds could be cool
- - Models seems a lot harder to make
+Plumbing themed:
+  - Pipes that you can transport around in
+  - An upper playfield with a toiletbowl that makes a flushing sound when you go down it
+  - Generic water flowing sounds could be cool
+  - Models seems a lot harder to make
 
 Portal Themed:
- - Very simple textures
- - When you hit different targets, it opens up portals at different places around the table. When you get an orange and a blue one open, they connect.
- - I would get to do the coding for making a portal effect
- - Could use portal sound effects
+  - Very simple textures
+  - When you hit different targets, it opens up portals at different places around the table. When you get an orange and a blue one open, they connect.
+  - I would get to do the coding for making a portal effect
+  - Could use portal sound effects
 
-Steam Punk
- - Could use a lot of really cool textures
+Steam Punk:
+  - Could use a lot of really cool textures
+  - Could probably make sound interesting sounds
 
-Hockey
- - Graphics are probably pretty easy
- - Defender targets that you knock down to unlock shot on Goal
- - Moving goalie target in front of goal
- - Backglass could look like a scoreboard
- - Your drain could look like a goal
- - There could be lines on the surface that look like lines on the ice
- - Sounds
-   - GOAL buzzer
-   - Ref whistle
+Hockey:
+  - Graphics are probably pretty easy
+  - Defender targets that you knock down to unlock shot on Goal
+  - Moving goalie target in front of goal
+  - Backglass could look like a scoreboard
+  - Your drain could look like a goal
+  - There could be lines on the surface that look like lines on the ice
+  - Sounds
+    - GOAL buzzer
+    - Ref whistle
+
+MultiSport:
+  - Pretty complicated
+  - Something on the playfield that swaps to another sport
+  - possible sports
+    - Baseball
+      - Bats for flippers
+      - Targets are different things in the outfield
+  - 
+   
 
 Dr. Seuss:
- - Seems really harder
- - Would be super unique
- - Sounds
-   - All sorts of zany cartoony stuff
-   - 
+  - Seems really harder
+  - Would be super unique
+  - Sounds
+    - All sorts of zany cartoony stuff
+    - Non-electronic. e.g. toy whistle, jaw harp, 

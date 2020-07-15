@@ -8,6 +8,10 @@ export interface WithOwner {
   owner?: Entity;
 }
 
+export interface Disposable {
+  dispose: () => void;
+}
+
 /**
  * A thing that responds to game events.
  */
@@ -39,8 +43,8 @@ export default interface Entity
   /** The Three.js objects that gets added/removed from the scene automatically */
   readonly object3ds?: readonly (Three.Object3D & WithOwner)[];
 
-  /** The Three.js objects that gets added/removed from the scene automatically */
-  readonly lights?: readonly (Three.Light & WithOwner)[];
+  /** Things that should be disposed of when this entity is destroyed */
+  readonly disposeables?: ReadonlyArray<Disposable>;
 
   /** Called to remove this entity from the game */
   destroy(): void;

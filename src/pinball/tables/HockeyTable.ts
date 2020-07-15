@@ -1,14 +1,10 @@
 import Bezier from "bezier-js";
-import { DirectionalLight, HemisphereLight, Object3D, Vector3 } from "three";
-import BaseEntity from "../../core/entity/BaseEntity";
+import { HemisphereLight, Light } from "three";
 import Entity from "../../core/entity/Entity";
 import { degToRad } from "../../core/util/MathUtil";
 import { V } from "../../core/Vector";
-import CameraController from "../controllers/CameraController";
-import MagicBallController from "../controllers/MagicBallController";
-import NudgeController from "../controllers/NudgeController";
-import SlowMoController from "../controllers/SlowMoController";
-import LogicBoard from "../LogicBoard";
+import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
+import OverheadLight from "../graphics/OverheadLight";
 import Bumper from "../playfield/Bumper";
 import CurveWall from "../playfield/CurveWall";
 import Defender from "../playfield/Defender";
@@ -22,44 +18,32 @@ import Playfield from "../playfield/Playfield";
 import Plunger from "../playfield/Plunger";
 import Slingshot from "../playfield/Slingshot";
 import Wall from "../playfield/Wall";
-import { Rect } from "../Rect";
-import Soundboard from "../Soundboard";
 import Backglass from "../ui/Backglass";
-import ControlDisplay from "../ui/ControlDisplay";
-import Speedometer from "../ui/Speedometer";
+import { Rect } from "../util/Rect";
+import Table from "./Table";
 
-export const TABLE_CENTER = new Vector3(0, 50, 0);
-export const TABLE_RECT: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
-export const TABLE_ANGLE = degToRad(15);
+const BOUNDS: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
+const INCLINE = degToRad(15);
+const BALL_DROP = V(26, 92);
 
-export default class Table extends BaseEntity implements Entity {
-  object3ds: Object3D[] = [];
+export default class HockeyTable extends Table implements Entity {
+  spotlights: Light[] = [];
 
   constructor() {
-    super();
+    super(BOUNDS, INCLINE, BALL_DROP);
 
     this.setupLights();
 
-    // Controllers
-    this.addChild(new LogicBoard());
-    this.addChild(new Soundboard());
-    this.addChild(new NudgeController());
-    this.addChild(new CameraController(TABLE_CENTER));
-    this.addChild(new SlowMoController());
-    this.addChild(new MagicBallController());
-
     // Misc
-    this.addChild(new Backglass(TABLE_RECT.left, TABLE_RECT.right, 20));
-    this.addChild(new Speedometer());
-    this.addChild(new ControlDisplay());
+    this.addChild(new Backglass(this));
 
     this.setupPlayfield();
   }
 
   setupPlayfield() {
     // Playfield
-    this.addChild(new Playfield(TABLE_RECT));
-    this.addChild(new Plunger(V(26, 97.5)));
+    this.addChild(new Playfield(BOUNDS));
+    this.addChild(new Plunger(V(26, 96)));
 
     this.setupUpperPlayfield();
     this.setupLowerPlayfield();
@@ -154,14 +138,15 @@ export default class Table extends BaseEntity implements Entity {
     );
 
     // Outlanes
-    this.addChild(new MultiWall([V(-20, 60), V(-20, 22 + LO), V(-8, 30 + LO)]));
-    this.addChild(new MultiWall([V(20, 60), V(20, 22 + LO), V(8, 30 + LO)]));
+    this.addChildren(
+      new MultiWall([V(-20, LO - 2), V(-20, 22 + LO), V(-8, 30 + LO)]),
+      new MultiWall([V(20, LO - 2), V(20, 22 + LO), V(8, 30 + LO)])
+    );
 
     // Bottom ramp to drain
     this.addChild(new Wall(V(-24, 88), V(-4, 100)));
     this.addChild(new Wall(V(24, 88), V(4, 100)));
 
-    // this.addChild(new GoalMesh(V(0, 100), Math.PI, 8, 4));
     this.addChild(new Drain(V(-4, 100), V(4, 100)));
 
     this.addChild(new Flipper(V(-8, 30.25 + LO), "left", 6.2));
@@ -169,32 +154,33 @@ export default class Table extends BaseEntity implements Entity {
   }
 
   setupLights() {
-    this.object3ds.push(new HemisphereLight(0xffffff, 0x333333, 0.1));
+    const hemisphereLight = new HemisphereLight(0xffffff, 0x333333, 1);
+    hemisphereLight.position.set(0, 0, -2);
+    this.object3ds.push(hemisphereLight);
 
     for (const [x, y] of [
-      [-50, -20],
       [0, -20],
-      [50, -20],
       [-50, 40],
-      [0, 40],
       [50, 40],
-      [-50, 110],
       [0, 110],
-      [50, 110],
     ]) {
-      const light = new DirectionalLight(0xffffff, 0.1);
-      light.position.set(x, y, -90);
-      light.target.position.copy(TABLE_CENTER);
-      light.castShadow = true;
-      light.shadow.mapSize.height *= 4;
-      light.shadow.mapSize.width *= 4;
-      light.shadow.camera.left = -100;
-      light.shadow.camera.right = 100;
-      light.shadow.camera.top = 100;
-      light.shadow.camera.bottom = -100;
-      this.object3ds.push(light, light.target);
+      this.addChild(new OverheadLight(V(x, y)));
     }
+
+    this
+      .addChildren
+      // new BallSpotlight(this, this.center.x, this.bounds.top, -24, 10)
+      // new BallSpotlight(this, this.center.x, this.bounds.bottom, -10, 200)
+      ();
   }
+
+  handlers = {
+    setQuality: () => {
+      for (const light of this.spotlights) {
+        light.castShadow = getGraphicsQuality() === "high";
+      }
+    },
+  };
 }
 
 /** Create a bezier point */

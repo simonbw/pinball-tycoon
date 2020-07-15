@@ -1,28 +1,29 @@
 import { MeshPhongMaterial } from "three";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
+import { scoreEvent } from "../system/LogicBoard";
+import { SoundInstance } from "../system/SoundInstance";
+import { getDefenderUpCount } from "./Defender";
 import DropTarget from "./DropTarget";
-import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
-import { scoreEvent } from "../LogicBoard";
 
 const MATERIAL = new MeshPhongMaterial({
   color: 0xff0000,
 });
 
-const DROP_FORCE = 150;
+const DROP_FORCE = 100;
 const RESET_TIME = 5;
 const WIDTH = 3.3;
 const HEIGHT = 4.5;
 
 export default class Goalie extends DropTarget implements Entity {
-  start: Vector;
-  end: Vector;
+  start: V2d;
+  end: V2d;
   t: number = 0;
   reverse: boolean = false;
   speed: number = 2.0;
 
-  constructor(start: Vector, end: Vector) {
+  constructor(start: V2d, end: V2d) {
     super(start, end.sub(start).angle, WIDTH, HEIGHT, DROP_FORCE, RESET_TIME);
 
     this.start = start.clone();
@@ -39,7 +40,18 @@ export default class Goalie extends DropTarget implements Entity {
   }
 
   onDrop() {
-    this.game!.dispatch(scoreEvent(5300));
+    const defenderUpCount = getDefenderUpCount(this.game!);
+    if (defenderUpCount === 0) {
+      this.game!.dispatch(scoreEvent(5300));
+      this.addChild(new SoundInstance("goalieDown"));
+    } else {
+      this.game!.dispatch(scoreEvent(3450));
+      this.addChild(new SoundInstance("goalieDown"));
+    }
+  }
+
+  onTimeout() {
+    this.addChild(new SoundInstance("defenderDown2"));
   }
 
   getMaterial() {

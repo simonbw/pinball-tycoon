@@ -1,56 +1,35 @@
 import { Body, Capsule } from "p2";
-import {
-  CurvePath,
-  LineCurve3,
-  Mesh,
-  MeshStandardMaterial,
-  TubeBufferGeometry,
-  TubeGeometry,
-  Vector3,
-} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { clamp } from "../../core/util/MathUtil";
-import { Vector } from "../../core/Vector";
+import { clamp, radToDeg } from "../../core/util/MathUtil";
+import { V2d } from "../../core/Vector";
 import Ball from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
+import SlingshotMesh from "./SlingshotMesh";
+import Post from "./Post";
 
-const DEAD_SPACE = 0.03;
+const DEAD_SPACE = 0.02;
 const STRENGTH = 400;
-const EXPAND_AMOUNT = 0.8;
-const ANIMATION_DURATION = 0.07;
 const WIDTH = 0.5;
-
-const MATERIAL = new MeshStandardMaterial({
-  color: 0xffff00,
-  roughness: 1.0,
-});
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
   body: Body;
   middlePercent: number;
-  color: number;
-  start: Vector;
-  end: Vector;
+  start: V2d;
+  end: V2d;
+  slingshotMesh: SlingshotMesh;
 
   constructor(
-    start: Vector,
-    end: Vector,
+    start: V2d,
+    end: V2d,
     middlePercent: number = 0.5,
-    reverse: boolean = false,
-    color: number = 0x000000
+    reverse: boolean = false
   ) {
     super();
-    if (reverse) {
-      this.start = end;
-      this.end = start;
-    } else {
-      this.start = start;
-      this.end = end;
-    }
-    this.color = color;
+    this.start = reverse ? end : start;
+    this.end = reverse ? start : end;
     this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
 
     const delta = this.end.sub(this.start);
@@ -67,59 +46,14 @@ export default class Slingshot extends BaseEntity implements Entity {
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
 
-    const midpoint = start.add(end).imul(0.5);
-    const curve = new CurvePath<Vector3>();
-    curve.add(
-      new LineCurve3(
-        new Vector3(start.x, start.y, 0),
-        new Vector3(midpoint.x, midpoint.y, 0)
-      )
-    );
-    curve.add(
-      new LineCurve3(
-        new Vector3(midpoint.x, midpoint.y, 0),
-        new Vector3(end.x, end.y, 0)
-      )
+    this.slingshotMesh = this.addChild(
+      new SlingshotMesh(this.start, this.end, this.middlePercent)
     );
 
-    const geometry = new TubeBufferGeometry(curve, 2, 0.3);
-    geometry.translate(0, 0, -1);
-    this.mesh = new Mesh(geometry, MATERIAL);
+    this.addChildren(new Post(start, 0.6), new Post(end, 0.6));
   }
 
-  makeBody() {}
-
-  getNormal(): Vector {
-    return this.end.sub(this.start).irotate90ccw().inormalize();
-  }
-
-  getAnimationPercent(): number {
-    const timeSinceHit = this.game!.elapsedTime - this.lastHit;
-    return clamp(timeSinceHit, 0, ANIMATION_DURATION) / ANIMATION_DURATION;
-  }
-
-  onRender() {
-    const { start, end } = this;
-
-    const displacement = this.getNormal().imul(
-      (1.0 - this.getAnimationPercent()) * EXPAND_AMOUNT
-    );
-    const midpoint = start.add(end).imul(0.5).iadd(displacement);
-
-    const tube = this.mesh!.geometry as TubeGeometry;
-    // this.sprite.clear();
-    // this.sprite.lineStyle(WIDTH, this.color);
-    // this.sprite.moveTo(start.x, start.y);
-    // this.sprite.lineTo(midpoint.x, midpoint.y);
-    // this.sprite.moveTo(midpoint.x, midpoint.y);
-    // this.sprite.lineTo(end.x, end.y);
-    // this.sprite.lineStyle();
-    // this.sprite.beginFill(this.color);
-    // this.sprite.drawCircle(midpoint.x, midpoint.y, WIDTH / 2);
-    // this.sprite.endFill();
-  }
-
-  getPercentAcross(C: Vector): number {
+  getPercentAcross(C: V2d): number {
     const A = this.start;
     const B = this.end;
     const AB = B.sub(A);
@@ -136,7 +70,13 @@ export default class Slingshot extends BaseEntity implements Entity {
     const impactLocation = this.getPercentAcross(ball.getPosition());
 
     if (impactLocation > DEAD_SPACE && impactLocation < 1 - DEAD_SPACE) {
-      const impulse = this.getNormal().imul(STRENGTH);
+      const impulse = this.end
+        .sub(this.start)
+        .irotate90ccw()
+        .inormalize()
+        .imul(STRENGTH);
+      // TODO: Rotate impulse based on location
+      // TODO: Random impulse
       ball.body.applyImpulse(impulse);
 
       this.game!.dispatch({ type: "score", points: 45 });
@@ -146,7 +86,7 @@ export default class Slingshot extends BaseEntity implements Entity {
         pan: clamp(this.body!.position[0] / 40, -0.5, 0.5),
       });
 
-      this.lastHit = this.game!.elapsedTime;
+      this.slingshotMesh.animationStartTime = this.game!.elapsedTime;
     }
   }
 }

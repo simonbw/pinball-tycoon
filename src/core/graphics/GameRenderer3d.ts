@@ -1,15 +1,13 @@
 import {
   Camera,
   Color,
+  PCFSoftShadowMap,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
-  PCFShadowMap,
-  Vector2,
 } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass";
 
 export class GameRenderer3d {
   scene: Scene = new Scene();
@@ -28,8 +26,9 @@ export class GameRenderer3d {
     this.threeRenderer = new WebGLRenderer({ alpha: false, antialias: true });
     this.threeRenderer.domElement.style.pointerEvents = "none";
     this.threeRenderer.domElement.style.cursor = "none";
-    // this.threeRenderer.shadowMap.enabled = true;
-    this.threeRenderer.shadowMap.type = PCFShadowMap;
+    this.threeRenderer.shadowMap.enabled = true;
+    this.threeRenderer.shadowMap.type = PCFSoftShadowMap;
+    this.threeRenderer.physicallyCorrectLights = true;
 
     this.threeRenderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.threeRenderer.domElement);
@@ -37,7 +36,6 @@ export class GameRenderer3d {
 
     this.composer = new EffectComposer(this.threeRenderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
-    // this.composer.addPass(new SSAOPass(this.scene, this.camera));
   }
 
   render() {

@@ -1,50 +1,64 @@
+import { PerspectiveCamera, Vector3 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import Game from "../../core/Game";
 import { KeyCode } from "../../core/io/Keys";
 import { lerp } from "../../core/util/MathUtil";
-import { V, Vector } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
+import Table from "../tables/Table";
 import { NudgeEvent } from "./NudgeController";
-import { Camera, Vector3, PerspectiveCamera } from "three";
-import Game from "../../core/Game";
-import { TABLE_ANGLE } from "../tables/HockeyTable";
+import { getBinding } from "../ui/KeyboardBindings";
 
-const NORMAL_POS = new Vector3(0, 110, -60);
+const NUDGE_SCALE = 1 / 1.8;
+const NUDGE_DURATION_SCALE = 1.5;
 
 export default class CameraController extends BaseEntity implements Entity {
-  tableCenter: Vector3;
+  table: Table;
   lookTarget: Vector3;
+  normalPosition: Vector3;
+  nudgeOffset: Vector3 = new Vector3(0, 0, 0);
 
-  mode: "normal" | "top" | "manual" = "normal";
+  mode: "normal" | "top" | "manual" | "ball" = "normal";
 
-  constructor(tableCenter: Vector3) {
+  constructor(table: Table) {
     super();
-    this.tableCenter = tableCenter.clone();
-    this.lookTarget = this.tableCenter.clone();
+    this.table = table;
+    this.lookTarget = table.center.clone();
+    this.normalPosition = new Vector3(
+      table.center.x,
+      table.bounds.bottom + 10,
+      -70
+    );
   }
 
   onAdd(game: Game) {
-    game.camera.position.copy(NORMAL_POS);
+    game.camera.position.copy(this.normalPosition);
   }
 
   onRender() {
     if (!this.game) return;
 
     const camera = this.game.camera as PerspectiveCamera;
+
+    this.manualMode(camera);
     this.zoomControls(camera);
 
     switch (this.mode) {
       case "normal":
-        return this.normalMode(camera);
+        this.normalMode(camera);
+        break;
       case "top":
-        return this.topMode(camera);
+        this.topMode(camera);
+        break;
       case "manual":
-        return this.manualMode(camera);
+        this.manualMode(camera);
+        break;
     }
+    camera.position.add(this.nudgeOffset);
   }
 
   onKeyDown(keyCode: KeyCode) {
-    if (keyCode === "KeyY") {
+    if (keyCode === getBinding("CAMERA_TOGGLE")) {
       switch (this.mode) {
         case "top":
           this.mode = "normal";
@@ -59,73 +73,68 @@ export default class CameraController extends BaseEntity implements Entity {
     }
   }
 
-  normalMode(camera: Camera) {
+  normalMode(camera: PerspectiveCamera) {
     const game = this.game!;
+    camera.position.sub(this.nudgeOffset);
 
     if (!game.paused) {
-      game.camera.position.lerp(NORMAL_POS, 0.1);
-
-      // TODO: Why can't this be a constant?
-      const UP = new Vector3(0, 0, -1).applyAxisAngle(
-        new Vector3(-1, 0, 0),
-        TABLE_ANGLE
+      game.camera.position.lerp(this.normalPosition, 0.1);
+      camera.up.copy(
+        new Vector3(0, 0, -1).applyAxisAngle(
+          new Vector3(-1, 0, 0),
+          this.table.incline
+        )
       );
-      camera.up.copy(UP);
-      this.zoomControls(camera as PerspectiveCamera);
 
-      const ball = game.entities.getTagged("ball")[0];
-      const t = this.tableCenter;
-      if (isBall(ball)) {
-        const b = ball.getPosition();
-        const l = new Vector3();
-        l.x = lerp(t.x, b.x, 0.3);
-        l.y = lerp(t.y, b.y, 0.3);
-        this.lookTarget.lerp(l, 0.1);
-      } else {
-        this.lookTarget.lerp(this.tableCenter, 0.01);
+      const balls = game.entities.getTagged("ball").filter(isBall);
+      const weightedCenter = this.table.center.clone();
+      for (const ball of balls) {
+        weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
       }
+      const speed = balls.length > 0 ? 0.1 : 0.01;
+      this.lookTarget.lerp(weightedCenter, speed);
 
       camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
     }
+
+    camera.position.add(this.nudgeOffset);
   }
 
   topMode(camera: PerspectiveCamera) {
-    if (camera.fov < 56) {
-      camera.fov = Math.min(camera.fov + 1, 56);
-      camera.updateProjectionMatrix();
-    }
+    camera.position.sub(this.nudgeOffset);
     const UP = new Vector3(0, 0, -1).applyAxisAngle(
       new Vector3(-1, 0, 0),
-      TABLE_ANGLE
+      this.table.incline
     );
     camera.up.copy(UP);
     camera.position.lerp(
-      new Vector3(this.tableCenter.x, this.tableCenter.y, -100),
+      new Vector3(this.table.center.x, this.table.center.y, -100),
       0.2
     );
-    camera.lookAt(this.tableCenter);
+    camera.lookAt(this.table.center);
+    camera.position.add(this.nudgeOffset);
   }
 
   manualMode(camera: PerspectiveCamera) {
     const io = this.game!.io;
-    if (io.keyIsDown("KeyP")) {
-      camera.position.add(camera.up);
+    if (io.keyIsDown("KeyO")) {
+      camera.position.add(camera.up.clone().multiplyScalar(5));
     }
     if (io.keyIsDown("KeyU")) {
-      camera.position.add(camera.up.clone().multiplyScalar(-1));
+      camera.position.add(camera.up.clone().multiplyScalar(-5));
     }
 
     if (io.keyIsDown("KeyI")) {
-      camera.position.y -= 1.0;
+      camera.position.y -= 5.0;
     }
     if (io.keyIsDown("KeyK")) {
-      camera.position.y += 1.0;
+      camera.position.y += 5.0;
     }
     if (io.keyIsDown("KeyJ")) {
-      camera.position.x -= 1.0;
+      camera.position.x -= 5.0;
     }
     if (io.keyIsDown("KeyL")) {
-      camera.position.x += 1.0;
+      camera.position.x += 5.0;
     }
 
     camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
@@ -142,4 +151,19 @@ export default class CameraController extends BaseEntity implements Entity {
       camera.updateProjectionMatrix();
     }
   }
+
+  handlers = {
+    nudge: async ({ impulse, duration }: NudgeEvent) => {
+      const camera = this.game!.camera;
+      const [dx, dy] = impulse.mul(NUDGE_SCALE);
+      await this.wait((duration / 2) * NUDGE_DURATION_SCALE, (dt) => {
+        this.nudgeOffset.x += dx * dt;
+        this.nudgeOffset.y += dy * dt;
+      });
+      await this.wait((duration / 2) * NUDGE_DURATION_SCALE, (dt) => {
+        this.nudgeOffset.x -= dx * dt;
+        this.nudgeOffset.y -= dy * dt;
+      });
+    },
+  };
 }

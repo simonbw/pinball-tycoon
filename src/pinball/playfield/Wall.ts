@@ -3,7 +3,7 @@ import { BoxBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { colorFade } from "../../core/util/ColorUtils";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
@@ -14,7 +14,7 @@ import { P2Materials } from "./Materials";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
   color: 0x111111,
-  roughness: 2.0,
+  roughness: 5.0,
   metalness: 0.0,
   roughnessMap: TEXTURES.IronScuffedRoughness,
   flatShading: true,
@@ -26,8 +26,8 @@ export default class Wall extends BaseEntity
   ballCollisionInfo: BallCollisionInfo;
 
   constructor(
-    start: Vector,
-    end: Vector,
+    start: V2d,
+    end: V2d,
     width: number = 1.0,
     color: number = 0x3355ff,
     renderSelf: boolean = true
@@ -36,7 +36,6 @@ export default class Wall extends BaseEntity
 
     const delta = end.sub(start);
     const length = delta.magnitude;
-    const angle = delta.angle;
     const center = start.add(delta.mul(0.5));
 
     this.body = new Body({
@@ -55,7 +54,7 @@ export default class Wall extends BaseEntity
     this.body.addShape(shape);
 
     this.ballCollisionInfo = {
-      beginContactSound: "wallHit1",
+      beginContactSound: "wallHit2",
       sparkInfo: {
         color: colorFade(color, 0xffffff, 0.5),
         maxBegin: 3,
@@ -71,9 +70,8 @@ export default class Wall extends BaseEntity
       this.mesh = new Mesh(geometry, WALL_MATERIAL);
       this.mesh.position.set(center.x, center.y, -width);
       this.mesh.rotateZ(delta.angle);
-
       this.mesh.castShadow = true;
-      this.mesh.receiveShadow = true;
+      this.mesh.receiveShadow = false;
     }
   }
 }

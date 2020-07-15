@@ -2,6 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { getBinding } from "../ui/KeyboardBindings";
+import Game from "../../core/Game";
 
 type GraphicsQuality = "low" | "medium" | "high";
 
@@ -14,11 +15,22 @@ function graphicsQualityEvent(quality: GraphicsQuality): GraphicsQualityEvent {
   return { type: "setQuality", quality };
 }
 
+/** It's easier to just have this be global */
+let CURRENT_QUALITY: GraphicsQuality = "low";
+
 export default class GraphicsQualityController extends BaseEntity
   implements Entity {
-  quality: GraphicsQuality = "high";
-
   onKeyDown(keycode: KeyCode) {
+    if (keycode === getBinding("QUALITY_TOGGLE")) {
+      if (CURRENT_QUALITY === "low") {
+        this.setHigh();
+      } else if (CURRENT_QUALITY === "medium") {
+        this.setHigh();
+      } else {
+        this.setLow();
+      }
+    }
+
     switch (keycode) {
       case getBinding("QUALITY_LOW"):
         return this.setLow();
@@ -34,17 +46,24 @@ export default class GraphicsQualityController extends BaseEntity
   }
 
   setLow() {
+    CURRENT_QUALITY = "low";
     this.renderer.shadowMap.enabled = false;
     this.game!.dispatch(graphicsQualityEvent("low"));
   }
 
   setMedium() {
-    this.renderer.shadowMap.enabled = false;
+    CURRENT_QUALITY = "medium";
+    this.renderer.shadowMap.enabled = true;
     this.game!.dispatch(graphicsQualityEvent("medium"));
   }
 
   setHigh() {
+    CURRENT_QUALITY = "high";
     this.renderer.shadowMap.enabled = true;
     this.game!.dispatch(graphicsQualityEvent("high"));
   }
+}
+
+export function getGraphicsQuality(): GraphicsQuality {
+  return CURRENT_QUALITY;
 }

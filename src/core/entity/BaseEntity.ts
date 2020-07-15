@@ -1,40 +1,40 @@
 import p2, { Constraint, Spring } from "p2";
 import * as Three from "three";
 import Game from "../Game";
-import { V, Vector } from "../Vector";
-import Entity from "./Entity";
+import { V, V2d } from "../Vector";
+import Entity, { Disposable } from "./Entity";
 import { CustomHandlersMap } from "./GameEventHandler";
 
 /**
  * Base class for lots of stuff in the game.
  */
 export default abstract class BaseEntity implements Entity {
-  game: Game | null = null;
-  mesh?: Three.Mesh;
-  object3ds?: Three.Object3D[];
-  body?: p2.Body;
   bodies?: p2.Body[];
+  body?: p2.Body;
+  children: Entity[] = [];
+  constraints?: Constraint[];
+  disposeables?: ReadonlyArray<Disposable>;
+  game: Game | null = null;
+  handlers: CustomHandlersMap = {};
+  mesh?: Three.Mesh;
+  object3ds: Three.Object3D[] = [];
+  parent?: Entity;
   pausable: boolean = true;
   persistent: boolean = false;
   springs?: Spring[];
-  constraints?: Constraint[];
-  handlers: CustomHandlersMap = {};
-
-  children?: Entity[];
-  parent?: Entity;
 
   // Convert local coordinates to world coordinates.
   // Requires a body
-  localToWorld(worldPoint: [number, number]): Vector {
+  localToWorld(worldPoint: [number, number]): V2d {
     if (this.body) {
-      const result: Vector = V(0, 0);
+      const result: V2d = V(0, 0);
       this.body.toWorldFrame(result, worldPoint);
       return result;
     }
     return V(0, 0);
   }
 
-  getPosition(): Vector {
+  getPosition(): V2d {
     if (this.body) {
       return V(this.body.position);
     }
@@ -87,11 +87,7 @@ export default abstract class BaseEntity implements Entity {
   wait(delay: number = 0, onTick?: (dt: number) => void): Promise<void> {
     return new Promise((resolve) => {
       const timer = new Timer(delay, () => resolve(), onTick);
-      try {
-        this.addChild(timer);
-      } catch (e) {
-        console.warn(e);
-      }
+      this.addChild(timer);
     });
   }
 

@@ -1,16 +1,18 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
-import { Vector, V } from "../../core/Vector";
+import { V2d, V } from "../../core/Vector";
 import { getBinding } from "../ui/KeyboardBindings";
+import { playSoundEvent } from "../system/Soundboard";
+import { clamp } from "../../core/util/MathUtil";
 
 export interface NudgeEvent {
   type: "nudge";
-  impulse: Vector;
+  impulse: V2d;
   duration: number;
 }
 
-function nudgeEvent(impulse: Vector, duration: number = 0.05): NudgeEvent {
+function nudgeEvent(impulse: V2d, duration: number = 0.06): NudgeEvent {
   return {
     type: "nudge",
     impulse,
@@ -26,18 +28,24 @@ export default class NudgeController extends BaseEntity implements Entity {
   async onKeyDown(key: KeyCode) {
     const power = 40;
     switch (key) {
-      case getBinding("NUDGE_LEFT"):
-        this.game!.dispatch(nudgeEvent(V(-power, 0)));
-        break;
-      case getBinding("NUDGE_RIGHT"):
-        this.game!.dispatch(nudgeEvent(V(power, 0)));
-        break;
+      // case getBinding("NUDGE_LEFT"):
+      //   this.game!.dispatch(nudgeEvent(V(-power, 0)));
+      //   break;
+      // case getBinding("NUDGE_RIGHT"):
+      //   this.game!.dispatch(nudgeEvent(V(power, 0)));
+      //   break;
       case getBinding("NUDGE_UP_LEFT"):
-        this.game!.dispatch(nudgeEvent(V(-power, power)));
+        this.nudge(V(-power, power));
         break;
       case getBinding("NUDGE_UP_RIGHT"):
-        this.game!.dispatch(nudgeEvent(V(power, power)));
+        this.nudge(V(power, power));
         break;
     }
+  }
+
+  nudge(impulse: V2d, duration?: number) {
+    this.game!.dispatch(nudgeEvent(impulse, duration));
+    const pan = clamp(0.02 * impulse.x, -0.3, 0.3);
+    this.game!.dispatch(playSoundEvent("nudge1", { pan }));
   }
 }

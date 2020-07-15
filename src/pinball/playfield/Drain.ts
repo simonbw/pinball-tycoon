@@ -1,12 +1,12 @@
 import { Body, Box } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { Vector } from "../../core/Vector";
+import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
 
 export default class Drain extends BaseEntity implements Entity {
-  constructor(left: Vector, right: Vector) {
+  constructor(left: V2d, right: V2d) {
     super();
     const center = left.add(right).imul(0.5);
     const width = right.x - left.x;

@@ -3,7 +3,7 @@ import { ControllerAxis, ControllerButton } from "./Gamepad";
 import IOHandlerList from "./IOHandlerList";
 import * as MouseButtons from "./MouseButtons";
 import { KeyCode } from "./Keys";
-import { Vector, V } from "../Vector";
+import { V2d, V } from "../Vector";
 
 const GAMEPAD_MINIMUM = 0.2;
 const GAMEPAD_MAXIMUM = 0.95;
@@ -16,7 +16,7 @@ export class IOManager {
   // buttons pressed last frame. Used for checking differences in state.
   private lastButtons: boolean[] = [];
   mouseButtons = [false, false, false, false, false, false];
-  mousePosition: Vector = V(0, 0);
+  mousePosition: V2d = V(0, 0);
   usingGamepad: boolean = false; // True if the gamepad is the main input device
   view: HTMLElement;
 

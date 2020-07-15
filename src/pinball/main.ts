@@ -1,14 +1,12 @@
 import AutoPauser from "../core/AutoPauser";
 import Game from "../core/Game";
-import { waitForFontsLoaded } from "../core/resources/fonts";
-import { loadAllSounds } from "../core/resources/sounds";
-import PauseController from "./controllers/PauseController";
-import { initializeFilters } from "./graphics/postprocessing";
-import { ContactMaterials } from "./playfield/Materials";
-import Table from "./tables/HockeyTable";
-import { waitForTexturesLoaded } from "./graphics/textures";
 import GraphicsQualityController from "./controllers/GraphicsQualityController";
+import PauseController from "./controllers/PauseController";
+import { ContactMaterials } from "./playfield/Materials";
 import Preloader from "./Preloader";
+import HockeyTable from "./tables/HockeyTable";
+import hockeyTable from "../../resources/tables/hockey-table.svg";
+import { makeSVGTable } from "./tables/SvgTable";
 
 declare global {
   interface Window {
@@ -17,9 +15,8 @@ declare global {
 }
 
 export async function main() {
-  // TODO: Font loading somewhere else
-
   await new Promise((resolve) => window.addEventListener("load", resolve));
+
   const audioContext = new AudioContext();
 
   const game = new Game(audioContext, ContactMaterials, 20);
@@ -34,5 +31,8 @@ export async function main() {
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
-  game.addEntity(new Table());
+  game.addEntity(new HockeyTable());
+
+  // game.addEntity(await makeSVGTable(hockeyTable));
+  preloader.destroy();
 }
