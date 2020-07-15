@@ -1,12 +1,10 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { clamp } from "../../core/util/MathUtil";
-import { SoundInstance } from "../system/SoundInstance";
-import Ball from "./Ball";
-import { V } from "../../core/Vector";
-import { rBool } from "../../core/util/Random";
 import { SoundName } from "../../core/resources/sounds";
+import { clamp } from "../../core/util/MathUtil";
+import { V } from "../../core/Vector";
 import { PositionalSoundInstance } from "../system/PositionalSoundInstance";
+import Ball from "./Ball";
 
 const MAX_SPEED = 100.0;
 
@@ -23,8 +21,8 @@ export default class BallSoundController extends BaseEntity implements Entity {
   }
 
   onTick() {
-    this.rollingSound.setPosition(this.ball.getPosition());
-
+    const position = this.ball.getPosition();
+    this.rollingSound.setPosition(position);
     const v = V(this.ball.body.velocity);
     const speed = v.magnitude / MAX_SPEED; // approximately [0,1]
     this.rollingSound.speed = 0.8 + speed * 2.0;

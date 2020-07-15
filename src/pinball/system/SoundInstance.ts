@@ -21,19 +21,35 @@ export class SoundInstance extends BaseEntity implements Entity {
   private paused: boolean = false;
 
   set pan(value: number) {
-    this.panNode.pan.value = value;
-  }
-
-  set gain(value: number) {
-    this.gainNode.gain.value = value;
+    if (!this.game) {
+      this.options.pan = value;
+    } else {
+      this.panNode.pan.value = value;
+    }
   }
 
   get pan(): number {
-    return this.panNode.pan.value;
+    if (!this.game) {
+      return this.options.pan ?? 0;
+    } else {
+      return this.panNode.pan.value;
+    }
+  }
+
+  set gain(value: number) {
+    if (!this.game) {
+      this.options.gain = value;
+    } else {
+      this.gainNode.gain.value = value;
+    }
   }
 
   get gain(): number {
-    return this.gainNode.gain.value;
+    if (!this.game) {
+      return this.options.gain ?? 1;
+    } else {
+      return this.gainNode.gain.value;
+    }
   }
 
   constructor(
@@ -45,7 +61,21 @@ export class SoundInstance extends BaseEntity implements Entity {
     this.continuous = options.continuous ?? false;
   }
 
-  onAdd({ audio, slowMo, masterGain }: Game) {
+  onAdd(game: Game) {
+    this.makeChain(game).connect(game.masterGain);
+
+    this.sourceNode.onended = () => {
+      if (!this.paused) {
+        this.destroy();
+      }
+    };
+
+    this.lastTick = game.audio.currentTime;
+
+    this.sourceNode.start();
+  }
+
+  makeChain({ audio, slowMo, masterGain }: Game): AudioNode {
     this.sourceNode = audio.createBufferSource();
     this.sourceNode.buffer = SOUNDS.get(this.soundName)!;
     this.sourceNode.playbackRate.value = this.speed * slowMo;
@@ -59,17 +89,7 @@ export class SoundInstance extends BaseEntity implements Entity {
 
     this.sourceNode.connect(this.panNode);
     this.panNode.connect(this.gainNode);
-    this.gainNode.connect(masterGain);
-
-    this.sourceNode.onended = () => {
-      if (!this.paused) {
-        this.destroy();
-      }
-    };
-
-    this.lastTick = audio.currentTime;
-
-    this.sourceNode.start();
+    return this.gainNode;
   }
 
   onTick() {
