@@ -7,12 +7,12 @@ export default class Reflector extends BaseEntity implements Entity {
   public parentMesh?: Object3D;
   public getCameraPosition?: () => Vector3;
 
-  constructor(quality: number = 32) {
+  constructor(quality: number = 32, distance: number = 10) {
     super();
     const renderTarget = new WebGLCubeRenderTarget(quality);
-    this.cubeCamera = new CubeCamera(0.1, 10, renderTarget);
+    this.cubeCamera = new CubeCamera(0.1, distance, renderTarget);
     this.object3ds.push(this.cubeCamera);
-
+    this.cubeCamera.up.set(0, 0, -1);
     this.disposeables = [renderTarget];
   }
 

@@ -1,7 +1,7 @@
 import { Body, Capsule } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { clamp, radToDeg } from "../../core/util/MathUtil";
+import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import Ball from "../ball/Ball";
 import { CollisionGroups } from "./Collision";
@@ -11,8 +11,10 @@ import Post from "./Post";
 import { PositionalSound } from "../system/PositionalSound";
 
 const DEAD_SPACE = 0.02;
-const STRENGTH = 400;
+const MAX_STRENGTH = 350;
+const MIN_STRENGTH = 200;
 const WIDTH = 0.5;
+const ANGLE_DELTA = degToRad(20);
 
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
@@ -59,25 +61,31 @@ export default class Slingshot extends BaseEntity implements Entity {
     const B = this.end;
     const AB = B.sub(A);
     const AC = C.sub(A);
-
     const a = AC.dot(AB.normalize());
-    const p = a / AB.magnitude;
-
-    return p;
+    return a / AB.magnitude;
   }
 
   onImpact(ball: Ball) {
     // TODO: This should respond to continued contact probably
     const impactLocation = this.getPercentAcross(ball.getPosition());
+    const mid = this.middlePercent;
+    const denominator = impactLocation < mid ? mid : 1.0 - mid;
+    const midOffset = (impactLocation - mid) / denominator;
+    const strenghtPercent = 1.0 - Math.abs(midOffset);
+    const strength = lerp(MIN_STRENGTH, MAX_STRENGTH, strenghtPercent);
+    const angle =
+      -ANGLE_DELTA * Math.abs(midOffset) ** 0.4 * Math.sign(midOffset);
 
     if (impactLocation > DEAD_SPACE && impactLocation < 1 - DEAD_SPACE) {
       const impulse = this.end
         .sub(this.start)
         .irotate90ccw()
         .inormalize()
-        .imul(STRENGTH);
-      // TODO: Rotate impulse based on location
-      // TODO: Random impulse
+        .rotate(angle)
+        .imul(strength);
+
+      ball.capture();
+      ball.release();
       ball.body.applyImpulse(impulse);
 
       this.game!.dispatch({ type: "score", points: 45 });

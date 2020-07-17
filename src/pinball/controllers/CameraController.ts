@@ -9,7 +9,7 @@ import Table from "../tables/Table";
 import { NudgeEvent } from "./NudgeController";
 import { getBinding } from "../ui/KeyboardBindings";
 
-const NUDGE_SCALE = 1 / 2.3;
+const NUDGE_SCALE = 1 / 2.8;
 const NUDGE_DURATION_SCALE = 1.3;
 
 export default class CameraController extends BaseEntity implements Entity {
@@ -119,11 +119,11 @@ export default class CameraController extends BaseEntity implements Entity {
     const io = this.game!.io;
     if (io.keyIsDown("KeyO")) {
       this.mode = "manual";
-      camera.position.add(camera.up.clone().multiplyScalar(5));
+      camera.position.add(camera.up.clone().multiplyScalar(1));
     }
     if (io.keyIsDown("KeyU")) {
       this.mode = "manual";
-      camera.position.add(camera.up.clone().multiplyScalar(-5));
+      camera.position.add(camera.up.clone().multiplyScalar(-1));
     }
 
     if (io.keyIsDown("KeyI")) {

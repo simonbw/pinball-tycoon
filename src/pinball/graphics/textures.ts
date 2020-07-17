@@ -33,8 +33,8 @@ export const TEXTURES = {
 
 for (const texture of Object.values(TEXTURES)) {
   texture.anisotropy = 4;
-  // texture.wrapS = RepeatWrapping;
-  // texture.wrapT = RepeatWrapping;
+  texture.wrapS = RepeatWrapping;
+  texture.wrapT = RepeatWrapping;
 }
 
 // TEXTURES.Bumper.flipY = false;

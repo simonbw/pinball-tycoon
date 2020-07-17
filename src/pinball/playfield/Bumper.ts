@@ -2,7 +2,7 @@ import { Body, Circle } from "p2";
 import { CylinderBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { clamp } from "../../core/util/MathUtil";
+import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { scoreEvent } from "../system/LogicBoard";
@@ -10,9 +10,9 @@ import { PositionalSound } from "../system/PositionalSound";
 import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
 import BumperMesh from "./BumperMesh";
+import { rNormal } from "../../core/util/Random";
 
 const STRENGTH = 250;
-const VELOCITY_MULTIPLIER = 0.2;
 
 export default class Bumper extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
@@ -43,13 +43,14 @@ export default class Bumper extends BaseEntity implements Entity {
         .getPosition()
         .sub(this.getPosition())
         .inormalize()
+        .irotate(rNormal(0.0, degToRad(5)))
         .mul(STRENGTH);
       ball.capture();
       this.lastHit = this.game!.elapsedTime;
 
-      await this.wait(0.05);
-      ball.body.applyImpulse(impulse);
+      await this.wait(0.016);
       ball.release();
+      ball.body.applyImpulse(impulse);
     }
   }
 }
