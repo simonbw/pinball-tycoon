@@ -8,6 +8,7 @@ import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
 import SlingshotMesh from "./SlingshotMesh";
 import Post from "./Post";
+import { PositionalSound } from "../system/PositionalSound";
 
 const DEAD_SPACE = 0.02;
 const STRENGTH = 400;
@@ -80,11 +81,10 @@ export default class Slingshot extends BaseEntity implements Entity {
       ball.body.applyImpulse(impulse);
 
       this.game!.dispatch({ type: "score", points: 45 });
-      this.game!.dispatch({
-        type: "playSound",
-        sound: "boing1",
-        pan: clamp(this.body!.position[0] / 40, -0.5, 0.5),
-      });
+
+      this.addChild(
+        new PositionalSound("boing1", this.getPosition(), { gain: 0.5 })
+      );
 
       this.slingshotMesh.animationStartTime = this.game!.elapsedTime;
     }

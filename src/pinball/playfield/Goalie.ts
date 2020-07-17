@@ -11,7 +11,7 @@ const MATERIAL = new MeshPhongMaterial({
   color: 0xff0000,
 });
 
-const DROP_FORCE = 100;
+const DROP_FORCE = 60;
 const RESET_TIME = 5;
 const WIDTH = 3.3;
 const HEIGHT = 4.5;
@@ -21,7 +21,7 @@ export default class Goalie extends DropTarget implements Entity {
   end: V2d;
   t: number = 0;
   reverse: boolean = false;
-  speed: number = 2.0;
+  speed: number = 1.0;
 
   constructor(start: V2d, end: V2d) {
     super(start, end.sub(start).angle, WIDTH, HEIGHT, DROP_FORCE, RESET_TIME);
@@ -33,6 +33,8 @@ export default class Goalie extends DropTarget implements Entity {
     this.handlers["goal"] = () => {
       this.clearTimers();
       this.lower();
+      this.speed = this.speed % 5;
+      this.speed = this.speed + 1;
     };
     this.handlers["resetDefenders"] = () => {
       this.raise();
@@ -42,16 +44,16 @@ export default class Goalie extends DropTarget implements Entity {
   onDrop() {
     const defenderUpCount = getDefenderUpCount(this.game!);
     if (defenderUpCount === 0) {
-      this.game!.dispatch(scoreEvent(5300));
+      this.game!.dispatch(scoreEvent(5300 * (this.speed + 1)));
       this.addChild(new SoundInstance("goalieDown"));
     } else {
-      this.game!.dispatch(scoreEvent(3450));
+      this.game!.dispatch(scoreEvent(3450 * (this.speed + 1)));
       this.addChild(new SoundInstance("goalieDown"));
     }
   }
 
   onTimeout() {
-    this.addChild(new SoundInstance("defenderDown2"));
+    this.addChild(new SoundInstance("defenderUp2"));
   }
 
   getMaterial() {
@@ -60,6 +62,7 @@ export default class Goalie extends DropTarget implements Entity {
 
   onTick(dt: number) {
     super.onTick.call(this, dt);
+
     if (this.up) {
       const change = (this.reverse ? -1 : 1) * dt * this.speed;
       this.t = clamp(this.t + change);

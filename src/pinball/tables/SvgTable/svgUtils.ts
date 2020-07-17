@@ -1,5 +1,6 @@
 import { V, V2d } from "../../../core/Vector";
 import { HastSvgRootNode, HastSvgNode, HastSvgChildNode } from "svg-parser";
+import { Matrix3, Vector2 } from "three";
 
 export async function fetchText(url: string): Promise<string> {
   const response = await fetch(url);
@@ -71,4 +72,15 @@ export function parsePointString(s: string): V2d[] {
     points.push(V(x, y));
   }
   return points;
+}
+
+/** Apply a 2d matrix transform to [x, y] */
+export function transformPoint(x: number, y: number, m: Matrix3): V2d {
+  return V(new Vector2(x, y).applyMatrix3(m).toArray());
+}
+
+export function getAngle(m: Matrix3): number {
+  const a = m.elements[0];
+  const b = m.elements[3];
+  return Math.atan2(-b, a);
 }

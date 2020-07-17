@@ -30,7 +30,6 @@ export default class BallMesh extends BaseEntity implements Entity {
     this.mesh.castShadow = true;
     this.reflector.parentMesh = this.mesh;
 
-    // this.mesh.add(new AxesHelper(3));
     this.mesh.rotateX(Math.PI);
 
     this.disposeables = [material, geometry];
@@ -47,7 +46,7 @@ export default class BallMesh extends BaseEntity implements Entity {
     const [x, y] = this.ball.getPosition();
     let z = -(this.ball.getHeight() + this.ball.radius);
     if (this.ball.captured) {
-      z += this.ball.radius * 0.5;
+      // z += this.ball.radius * 0.5;
     }
     this.mesh.position.set(x, y, z);
 

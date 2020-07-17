@@ -3,10 +3,9 @@ import Game from "../core/Game";
 import GraphicsQualityController from "./controllers/GraphicsQualityController";
 import PauseController from "./controllers/PauseController";
 import { ContactMaterials } from "./playfield/Materials";
+import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
 import HockeyTable from "./tables/HockeyTable";
-import hockeyTable from "../../resources/tables/hockey-table.svg";
-import { makeSVGTable } from "./tables/SvgTable";
 
 declare global {
   interface Window {
@@ -24,15 +23,17 @@ export async function main() {
   game.start();
 
   const preloader = game.addEntity(new Preloader());
-
   await preloader.waitTillLoaded();
+
+  initPostProcessing(game);
 
   game.world.frictionGravity = 10; // TODO: Tune this
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
   game.addEntity(new HockeyTable());
-
   // game.addEntity(await makeSVGTable(hockeyTable));
+
+  // So we don't remove the html from the screen until we've actually hopefully rendered the table
   preloader.destroy();
 }

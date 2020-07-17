@@ -10,6 +10,7 @@ import {
   SoundName,
 } from "../core/resources/sounds";
 import { waitForTexturesLoaded } from "./graphics/textures";
+import { loadModels } from "../core/resources/models";
 
 export default class Preloader extends BaseEntity implements Entity {
   private _resolve!: () => void;
@@ -28,6 +29,7 @@ export default class Preloader extends BaseEntity implements Entity {
       this.loadTextures(),
       this.loadFonts(),
       this.loadSounds(game.audio),
+      this.loadModels(),
     ]);
     this._resolve();
   }
@@ -76,6 +78,10 @@ export default class Preloader extends BaseEntity implements Entity {
         element.innerText = `${loaded} / ${total}`;
       })
     );
+  }
+
+  async loadModels() {
+    await loadModels();
   }
 
   onDestroy() {

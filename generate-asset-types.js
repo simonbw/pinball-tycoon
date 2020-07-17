@@ -28,6 +28,9 @@ const extensions = [
   // shaders
   "frag",
   "vert",
+  //models
+  "gltf",
+  "glb",
   //misc
   "txt",
 ];

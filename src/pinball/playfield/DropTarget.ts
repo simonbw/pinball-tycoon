@@ -3,7 +3,6 @@ import { BoxBufferGeometry, Mesh, MeshPhongMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
-import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import {
@@ -11,7 +10,7 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { scoreEvent } from "../system/LogicBoard";
-import { playSoundEvent } from "../system/Soundboard";
+import { PositionalSound } from "../system/PositionalSound";
 import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
 
@@ -126,8 +125,7 @@ export default class DropTarget extends BaseEntity
 
   onDrop() {
     this.game!.dispatch(scoreEvent(200));
-    const pan = clamp(this.getPosition()[0] / 30, -0.5, 0.5);
-    this.game!.dispatch(playSoundEvent("pop1", { pan }));
+    this.addChild(new PositionalSound("pop1", this.getPosition()));
   }
 
   onTimeout() {}

@@ -58,10 +58,10 @@ export default class HockeyTable extends Table implements Entity {
   setupUpperPlayfield() {
     // TOP RIGHT
     this.addChildren(
-      new Bumper(V(6, 20), 1.4),
-      new Bumper(V(10, 25), 1.4),
-      new Bumper(V(12, 17), 1.4),
-      new Bumper(V(16, 23), 1.4)
+      new Bumper(V(6, 20), 1.8),
+      new Bumper(V(10, 25), 1.8),
+      new Bumper(V(12, 17), 1.8),
+      new Bumper(V(16, 23), 1.8)
     );
     this.addChild(new Gate(V(28, 43.5), V(24.5, 46.5), -degToRad(180)));
 
@@ -93,7 +93,7 @@ export default class HockeyTable extends Table implements Entity {
       new CurveWall(new Bezier(bp(0, 0), bp(-24, 0), bp(-24, 24)), 40)
     );
 
-    this.addChild(new Bumper(V(-3, 6), 1.1));
+    this.addChild(new Bumper(V(-3, 6), 1.6));
 
     this.addChild(
       new MultiWall([V(-1, 17), V(3, 24), V(-1.5, 20), V(-1, 17)], 0.9)

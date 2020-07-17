@@ -1,6 +1,6 @@
 
 Today — Soundwork:
   [√] Refactor out sound stuff to make playing sound an entity
-  [ ] Add speed option to soundboard
-  [ ] Continuous ball sound
-  [ ] 
+  [√] Add speed option to soundboard
+  [√] Continuous ball sound
+

@@ -5,6 +5,8 @@ import { V2d, V } from "../../core/Vector";
 import { getBinding } from "../ui/KeyboardBindings";
 import { playSoundEvent } from "../system/Soundboard";
 import { clamp } from "../../core/util/MathUtil";
+import { SoundInstance } from "../system/SoundInstance";
+import { rNormal, rUniform } from "../../core/util/Random";
 
 export interface NudgeEvent {
   type: "nudge";
@@ -46,6 +48,8 @@ export default class NudgeController extends BaseEntity implements Entity {
   nudge(impulse: V2d, duration?: number) {
     this.game!.dispatch(nudgeEvent(impulse, duration));
     const pan = clamp(0.02 * impulse.x, -0.3, 0.3);
-    this.game!.dispatch(playSoundEvent("nudge1", { pan }));
+    this.addChild(
+      new SoundInstance("nudge1", { pan, speed: rUniform(0.95, 1.05) })
+    );
   }
 }

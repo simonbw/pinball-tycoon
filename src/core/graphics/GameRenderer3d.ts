@@ -35,7 +35,8 @@ export class GameRenderer3d {
     this.domElement = this.threeRenderer.domElement;
 
     this.composer = new EffectComposer(this.threeRenderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
   }
 
   render() {

@@ -1,13 +1,8 @@
 import { matches } from "hast-util-select";
 import { HastSvgElementNode, HastSvgNode } from "svg-parser";
-import { Matrix3 } from "three";
+import { Matrix3, Matrix } from "three";
 import Entity from "../../../core/entity/Entity";
-import { V } from "../../../core/Vector";
-import OverheadLight from "../../graphics/OverheadLight";
-import Bumper from "../../playfield/Bumper";
-import MultiWall from "../../playfield/MultiWall";
-import { getNumberProp, parsePointString, parseStyle } from "./svgUtils";
-import Plunger from "../../playfield/Plunger";
+import { getExtractors } from "./getExtrators";
 
 export function getChildrenFromHast(
   node: HastSvgNode,
@@ -19,7 +14,12 @@ export function getChildrenFromHast(
   }
 
   if (node.type === "element") {
-    for (const extractor of extractors) {
+    if (node.properties?.transform) {
+      const localMatrix = parseTransform(node.properties.transform);
+      transform = transform.clone().multiply(localMatrix);
+    }
+
+    for (const extractor of getExtractors()) {
       const entity = extractor(node, transform);
       if (entity != undefined) {
         entities.push(entity);
@@ -27,68 +27,21 @@ export function getChildrenFromHast(
     }
   }
 
-  const childTransform = transform;
-
   for (const child of node.children) {
     if (typeof child === "object") {
-      getChildrenFromHast(child, childTransform, entities);
+      getChildrenFromHast(child, transform, entities);
     }
   }
 
   return entities;
 }
 
-type Extractor = (
-  node: HastSvgElementNode,
-  transform: Matrix3
-) => Entity | undefined | void;
-
-const f: Extractor = (n, t) => {
-  return undefined;
-};
-
-const extractors: Extractor[] = [
-  // Wall
-  (node, transform) => {
-    if (matches("polyline", node)) {
-      const pointsStr = node.properties!.points! as string;
-      const points = parsePointString(pointsStr);
-      if (points.length < 2) {
-        console.warn("single point polyline:", node);
-        return;
-      }
-      const width = parseStyle(node.properties?.style).strokeWidth;
-      // TODO: Wall width
-      return new MultiWall(points);
-    }
-  },
-
-  // Bumper
-  (node, transform) => {
-    if (matches("circle.bumper", node)) {
-      const x = getNumberProp(node?.properties?.cx);
-      const y = getNumberProp(node?.properties?.cy);
-      const r = getNumberProp(node?.properties?.r, undefined);
-      return new Bumper(V(x, y), r);
-    }
-  },
-
-  // Lights
-  (node, transform) => {
-    if (matches("circle.light", node)) {
-      const x = getNumberProp(node?.properties?.cx);
-      const y = getNumberProp(node?.properties?.cy);
-      return new OverheadLight(V(x, y));
-    }
-  },
-
-  // plunger
-  (node, transform) => {
-    if (matches("circle.plunger", node)) {
-      const x = getNumberProp(node?.properties?.cx);
-      const y = getNumberProp(node?.properties?.cy);
-      const r = getNumberProp(node?.properties?.r);
-      return new Plunger(V(x, y), r * 2);
-    }
-  },
-];
+function parseTransform(s: string): Matrix3 {
+  const matrix = new Matrix3();
+  const [a, b, c, d, tx, ty] = s
+    .substring("matrix(".length, s.length - 1)
+    .split(", ")
+    .map((v) => parseFloat(v));
+  matrix.set(a, c, tx, b, d, ty, 0, 0, 1);
+  return matrix;
+}

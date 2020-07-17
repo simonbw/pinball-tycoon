@@ -7,13 +7,13 @@ import { SoundInstance } from "./SoundInstance";
 
 const LISTENER: V2d = V(0, 100);
 const SCALE_Y = 0.5;
-const FALL_OFF = 0.05;
+const FALL_OFF = 0.025;
 const SPREAD = 0.7;
 
 /**
  * Represents a currently playing sound.
  */
-export class PositionalSoundInstance extends SoundInstance implements Entity {
+export class PositionalSound extends SoundInstance implements Entity {
   private _distanceGain: number = 1.0;
   private distanceGainNode!: GainNode;
 

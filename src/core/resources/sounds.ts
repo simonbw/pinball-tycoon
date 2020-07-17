@@ -23,6 +23,7 @@ import postHit from "../../../resources/audio/post-hit.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 import goalieDown from "../../../resources/audio/goalie-down.flac";
+import upgrade from "../../../resources/audio/upgrade.flac";
 
 // TODO: Don't do this like this
 export const SOUND_URLS = {
@@ -49,6 +50,7 @@ export const SOUND_URLS = {
   plungerWind,
   pop1,
   postHit,
+  upgrade,
   wallHit1,
   wallHit2,
 };

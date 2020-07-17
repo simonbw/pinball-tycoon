@@ -4,7 +4,7 @@ import { KeyCode } from "../../core/io/Keys";
 import Ball from "../ball/Ball";
 import Table from "../tables/Table";
 import { getBinding } from "../ui/KeyboardBindings";
-import { playSoundEvent } from "./Soundboard";
+import { SoundInstance } from "./SoundInstance";
 
 export interface DrainEvent {
   type: "drain";
@@ -60,12 +60,12 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.gameStarted = true;
       this.game!.dispatch(updateScoreEvent(this.score));
 
-      this.game!.dispatch(playSoundEvent("gameStart", { gain: 0.5 }));
+      this.addChild(new SoundInstance("upgrade"));
       this.game!.dispatch({ type: "newBall", noSound: true });
     },
     newBall: (e: NewBallEvent) => {
       if (!e.noSound) {
-        this.game!.dispatch(playSoundEvent("newBall", { gain: 0.5 }));
+        this.addChild(new SoundInstance("upgrade"));
       }
       this.ballsRemaining -= 1;
       this.game!.addEntity(new Ball(this.table.ballDropPosition.clone()));
@@ -74,7 +74,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
       ball.destroy();
 
       if (this.ballsRemaining > 0) {
-        this.game!.dispatch(playSoundEvent("drain"));
+        this.addChild(new SoundInstance("drain"));
         await this.wait(1.0);
         this.game!.dispatch({ type: "newBall" });
       } else {
@@ -83,9 +83,10 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
     gameOver: () => {
       this.gameStarted = false;
-      this.game!.dispatch(playSoundEvent("gameOver", { gain: 0.5 }));
+      this.addChild(new SoundInstance("drain"));
     },
     score: ({ points }: ScoreEvent) => {
+      console.log("scored", points);
       this.score += points;
       this.game!.dispatch(updateScoreEvent(this.score));
     },
@@ -101,14 +102,14 @@ export default class LogicBoard extends BaseEntity implements Entity {
           break;
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperUp" });
-          this.game!.dispatch(
-            playSoundEvent("flipperUp", { gain: 0.3, pan: -0.4 })
+          this.addChild(
+            new SoundInstance("flipperUp", { gain: 0.3, pan: -0.4 })
           );
           break;
         case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperUp" });
-          this.game!.dispatch(
-            playSoundEvent("flipperUp", { gain: 0.3, pan: 0.4 })
+          this.addChild(
+            new SoundInstance("flipperUp", { gain: 0.3, pan: 0.4 })
           );
           break;
       }
@@ -120,14 +121,14 @@ export default class LogicBoard extends BaseEntity implements Entity {
       switch (key) {
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperDown" });
-          this.game!.dispatch(
-            playSoundEvent("flipperDown", { gain: 0.3, pan: -0.4 })
+          this.addChild(
+            new SoundInstance("flipperDown", { gain: 0.3, pan: -0.4 })
           );
           break;
         case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperDown" });
-          this.game!.dispatch(
-            playSoundEvent("flipperDown", { gain: 0.3, pan: 0.4 })
+          this.addChild(
+            new SoundInstance("flipperDown", { gain: 0.3, pan: 0.4 })
           );
           break;
       }

@@ -9,8 +9,8 @@ import Table from "../tables/Table";
 import { NudgeEvent } from "./NudgeController";
 import { getBinding } from "../ui/KeyboardBindings";
 
-const NUDGE_SCALE = 1 / 1.8;
-const NUDGE_DURATION_SCALE = 1.5;
+const NUDGE_SCALE = 1 / 2.3;
+const NUDGE_DURATION_SCALE = 1.3;
 
 export default class CameraController extends BaseEntity implements Entity {
   table: Table;
@@ -118,23 +118,29 @@ export default class CameraController extends BaseEntity implements Entity {
   manualMode(camera: PerspectiveCamera) {
     const io = this.game!.io;
     if (io.keyIsDown("KeyO")) {
+      this.mode = "manual";
       camera.position.add(camera.up.clone().multiplyScalar(5));
     }
     if (io.keyIsDown("KeyU")) {
+      this.mode = "manual";
       camera.position.add(camera.up.clone().multiplyScalar(-5));
     }
 
     if (io.keyIsDown("KeyI")) {
-      camera.position.y -= 5.0;
+      this.mode = "manual";
+      camera.position.y -= 1.0;
     }
     if (io.keyIsDown("KeyK")) {
-      camera.position.y += 5.0;
+      this.mode = "manual";
+      camera.position.y += 1.0;
     }
     if (io.keyIsDown("KeyJ")) {
-      camera.position.x -= 5.0;
+      this.mode = "manual";
+      camera.position.x -= 1.0;
     }
     if (io.keyIsDown("KeyL")) {
-      camera.position.x += 5.0;
+      this.mode = "manual";
+      camera.position.x += 1.0;
     }
 
     camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);

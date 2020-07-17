@@ -9,22 +9,22 @@
     <circle style="fill: rgb(255, 251, 0); stroke: rgb(0, 0, 0); stroke-width: 0.1px;" cx="-50" cy="40" r="1.168" classname="light" class="light"/>
     <circle style="fill: rgb(255, 251, 0); stroke: rgb(0, 0, 0); stroke-width: 0.1px;" cx="0" cy="110" r="1.168" classname="light" class="light"/>
   </g>
-  <g>
+  <g transform="matrix(0.520292, 0, 0, 0.524198, -8.482165, 32.068924)" style="">
     <polyline style="stroke: rgb(0, 0, 0); fill: none;" points="-15.902 75.65 -16.084 87.038 -12.193 90.645"/>
     <polyline style="stroke: rgb(0, 0, 0); stroke-width: 2; fill: none;" points="8.823 89.429 14.419 86.304 14.643 75.654"/>
     <polyline style="stroke: rgb(0, 0, 0); fill: none;" points="3.384 48.936 16.347 40.775 4.417 33.656"/>
     <polyline style="stroke: rgb(0, 0, 0); fill: none;" points="0.833 67.931 -8.964 62.648 -6.174 46.126 -13.701 35.059 -10.151 15.528 0.298 23.423"/>
   </g>
-  <g id="bumpers">
-    <circle style="fill: rgb(59, 230, 230);" cx="1.993" cy="9.486" r="4.177" class="bumper"/>
-    <circle style="fill: rgb(59, 230, 230);" cx="11.555" cy="16.821" r="4.109" class="bumper"/>
-    <circle style="fill: rgb(59, 230, 230);" cx="12.687" cy="6.651" r="2.443" class="bumper"/>
+  <g id="bumpers" transform="matrix(1, 0, 0, 1, 4.486448, 2.137723)">
+    <circle style="fill: rgb(59, 230, 230);" cx="1.993" cy="9.486" r="2" class="bumper"/>
+    <circle style="fill: rgb(59, 230, 230);" cx="11.555" cy="16.821" r="2" class="bumper"/>
+    <circle style="fill: rgb(59, 230, 230);" cx="12.687" cy="6.651" r="2" class="bumper"/>
   </g>
-  <g classname="ignore" style="visibility: hidden;" transform="matrix(0.68965, 0, 0, 0.783935, 118.483627, 3.398708)" classn="ignore" class="ignore">
-    <circle style="fill: rgb(216, 216, 216);" cx="-19.092" cy="38.024" r="5.127" classname="bumper" class="bumper"/>
-    <polyline style="stroke: rgb(0, 0, 0); fill: none;" points="-15.902 75.65 -16.084 87.038 -12.193 90.645" transform="matrix(1.450011, 0, 0, 1.275616, -107.650449, -11.430437)"/>
+  <g transform="matrix(0.885091, -0.465418, 0.465418, 0.885091, -20.426897, 21.473766)">
+    <rect width="10" height="5" style="fill: rgb(255, 0, 0);" class="goal"/>
+    <line style="stroke: rgb(0, 0, 0); stroke-width: 0.25px;" x1="0" y1="7" x2="2.5" y2="7" class="defender"/>
+    <line style="stroke: rgb(0, 0, 0); stroke-width: 0.25px;" x1="3.75" y1="7" x2="6.25" y2="7" class="defender"/>
+    <line style="stroke: rgb(0, 0, 0); stroke-width: 0.25px;" x1="7.5" y1="7" x2="10" y2="7" class="defender"/>
+    <line style="stroke: rgb(0, 0, 0); stroke-width: 0.25px;" x1="0" y1="6" x2="10" y2="6" class="goalie"/>
   </g>
-  <rect x="-19.675" y="22.958" width="8.207" height="4.987" style="fill: rgb(255, 0, 0);" transform="matrix(0.666502, -0.745503, 0.745503, 0.666502, -23.285769, -7.395868)" class="goal">
-    <title>goal</title>
-  </rect>
 </svg>

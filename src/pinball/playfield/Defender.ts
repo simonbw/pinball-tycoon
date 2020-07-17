@@ -1,10 +1,10 @@
 import { MeshPhongMaterial } from "three";
 import Entity from "../../core/entity/Entity";
+import Game from "../../core/Game";
 import { V2d } from "../../core/Vector";
 import { scoreEvent } from "../system/LogicBoard";
-import { playSoundEvent } from "../system/Soundboard";
+import { SoundInstance } from "../system/SoundInstance";
 import DropTarget from "./DropTarget";
-import Game from "../../core/Game";
 
 const MATERIAL = new MeshPhongMaterial({
   color: 0xffbb00,
@@ -43,22 +43,22 @@ export default class Defender extends DropTarget implements Entity {
     switch (upCount) {
       case 0:
         this.game!.dispatch(scoreEvent(10850));
-        this.game?.dispatch(playSoundEvent("defenderDown3"));
+        this.addChild(new SoundInstance("defenderDown3"));
         break;
       case 1:
         this.game!.dispatch(scoreEvent(3850));
-        this.game?.dispatch(playSoundEvent("defenderDown2"));
+        this.addChild(new SoundInstance("defenderDown2"));
         break;
       case 2:
       default:
         this.game!.dispatch(scoreEvent(1850));
-        this.game?.dispatch(playSoundEvent("defenderDown1"));
+        this.addChild(new SoundInstance("defenderDown1"));
         break;
     }
   }
 
   onTimeout() {
-    this.game?.dispatch(playSoundEvent("defenderUp1"));
+    this.addChild(new SoundInstance("defenderUp1"));
   }
 }
 

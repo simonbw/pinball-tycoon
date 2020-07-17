@@ -7,7 +7,7 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { scoreEvent } from "../system/LogicBoard";
-import { playSoundEvent } from "../system/Soundboard";
+import { SoundInstance } from "../system/SoundInstance";
 import { CollisionGroups } from "./Collision";
 import GoalMesh from "./GoalMesh";
 import Scoop from "./Scoop";
@@ -55,6 +55,8 @@ export default class Goal extends BaseEntity
 
     this.addChild(new GoalMesh(position, angle, width, depth));
 
+    let goalCount = 0;
+
     this.addChild(
       new Scoop(
         position.add(V(0, -0.2 * depth).irotate(angle)),
@@ -64,12 +66,13 @@ export default class Goal extends BaseEntity
         CAPTURE_DURATION,
         RELEASE_FORCE,
         () => {
-          this.game!.dispatch(scoreEvent(25000));
+          goalCount += 1;
+          this.game!.dispatch(scoreEvent(25000 * Math.min(goalCount, 4)));
           this.game!.dispatch({ type: "goal" });
-          this.game!.dispatch(playSoundEvent("goal"));
+          this.addChild(new SoundInstance("goal"));
         },
         async () => {
-          await this.wait(0.5);
+          await this.wait(0.3);
           this.game!.dispatch({ type: "resetDefenders" });
         }
       )
