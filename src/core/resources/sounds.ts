@@ -25,7 +25,7 @@ import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 import goalieDown from "../../../resources/audio/goalie-down.flac";
 import upgrade from "../../../resources/audio/upgrade.flac";
 
-// TODO: Don't do this like this
+// TODO: Don't do this like this. These shouln't be listed in core/
 export const SOUND_URLS = {
   ballRolling,
   boing1,

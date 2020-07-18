@@ -35,6 +35,10 @@ const extensions = [
   "txt",
 ];
 
+function log(...args) {
+  console.log(...args);
+}
+
 // The contents of the generated file
 function getContent(filename) {
   const varName = camelcase(path.basename(filename).split(".")[0]);
@@ -47,18 +51,18 @@ function getContent(filename) {
 // Removes old types
 function cleanTypes(assetsFolder, silent = false) {
   if (!silent) {
-    console.log(`removing old asset .d.ts files from "${assetsFolder}" . . .`);
+    log(`removing old asset .d.ts files from "${assetsFolder}" . . .`);
   }
   const pattern = `${assetsFolder}/**/*.@(${extensions.join("|")}).d.ts`;
   const fileNames = glob.sync(pattern, {});
   fileNames.forEach((fileName) => {
     if (!silent) {
-      console.log(" - removed " + fileName);
+      log(" - removed " + fileName);
     }
     fs.unlinkSync(fileName);
   });
   if (fileNames.length === 0 && !silent) {
-    console.log("No files to remove");
+    log("No files to remove");
   }
   return fileNames;
 }
@@ -66,24 +70,24 @@ function cleanTypes(assetsFolder, silent = false) {
 // Generates the new type files
 function generateTypes(assetsFolder, silent = false) {
   if (!silent) {
-    console.log(`generating new asset .d.ts files in "${assetsFolder}" . . .`);
+    log(`generating new asset .d.ts files in "${assetsFolder}" . . .`);
   }
   const pattern = `${assetsFolder}/**/*.@(${extensions.join("|")})`;
   const fileNames = glob.sync(pattern, {}).map((f) => f + ".d.ts");
   fileNames.forEach((fileName) => {
     fs.writeFileSync(fileName, getContent(fileName));
     if (!silent) {
-      console.log(" - created " + fileName);
+      log(" - created " + fileName);
     }
   });
   if (fileNames.length === 0 && !silent) {
-    console.log("No files to generate");
+    log("No files to generate");
   }
   return fileNames;
 }
 
 function cleanAndGenerate(assetsFolder) {
-  console.log(`Updating asset types in "${assetsFolder}" . . .`);
+  log(`Updating asset types in "${assetsFolder}" . . .`);
   const removed = new Set(cleanTypes(assetsFolder, true));
   const generated = new Set(generateTypes(assetsFolder, true));
   const newFiles = [];
@@ -99,13 +103,13 @@ function cleanAndGenerate(assetsFolder) {
     }
   }
   if (deletedFiles.length) {
-    console.log(deletedFiles.map((f) => ` - removed ${f}`).join("\n"));
+    log(deletedFiles.map((f) => ` - removed ${f}`).join("\n"));
   }
   if (newFiles.length) {
-    console.log(newFiles.map((f) => ` - created ${f}`).join("\n"));
+    log(newFiles.map((f) => ` - created ${f}`).join("\n"));
   }
   if (newFiles.length === 0 && deletedFiles.length === 0) {
-    console.log("Nothing has changed");
+    log("Nothing has changed");
   }
 }
 

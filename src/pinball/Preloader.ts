@@ -81,7 +81,10 @@ export default class Preloader extends BaseEntity implements Entity {
   }
 
   async loadModels() {
-    await loadModels();
+    const element = document.getElementById("model-count")!;
+    await loadModels((loaded, total) => {
+      element.innerText = `${loaded} / ${total}`;
+    });
   }
 
   onDestroy() {

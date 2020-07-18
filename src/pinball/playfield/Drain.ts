@@ -26,7 +26,7 @@ export default class Drain extends BaseEntity implements Entity {
     this.body.addShape(shape);
   }
 
-  onImpact(other: Entity) {
+  async onBeginContact(other: Entity) {
     if (isBall(other)) {
       const ball = other;
       this.game!.dispatch({ type: "drain", ball });

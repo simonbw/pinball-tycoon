@@ -7,7 +7,7 @@ import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
 export default class OverheadLight extends BaseEntity implements Entity {
   light: SpotLight;
 
-  constructor([x, y]: V2d, color: number = 0xfafcff, intensity: number = 50) {
+  constructor([x, y]: V2d, color: number = 0xfafcff, intensity: number = 30) {
     super();
 
     this.light = new SpotLight(color, intensity);

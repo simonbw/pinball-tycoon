@@ -23,7 +23,11 @@ export class GameRenderer3d {
     const aspect = window.innerWidth / window.innerHeight;
     this.camera = new PerspectiveCamera(60, aspect, 0.1, 1000);
 
-    this.threeRenderer = new WebGLRenderer({ alpha: false, antialias: true });
+    this.threeRenderer = new WebGLRenderer({
+      alpha: false,
+      antialias: false,
+      powerPreference: "high-performance",
+    });
     this.threeRenderer.domElement.style.pointerEvents = "none";
     this.threeRenderer.domElement.style.cursor = "none";
     this.threeRenderer.shadowMap.enabled = true;

@@ -16,7 +16,7 @@ async function loadModel(
     loader.load(
       url,
       (gltf) => resolve(gltf),
-      (progressEvent) => console.log(progressEvent),
+      undefined,
       (error) => reject(error)
     );
   });
@@ -33,11 +33,20 @@ async function loadModel(
   if (obj3d.material.emissiveMap) {
     obj3d.material.emissiveMap.anistropy = anistropy;
   }
-  console.log(obj3d.material);
   return obj3d;
 }
 
-export async function loadModels() {
-  console.log("loading models");
-  await Promise.all([loadModel(bumperModel)]);
+export async function loadModels(
+  onProgress?: (loaded: number, total: number) => void
+) {
+  let loaded = 0;
+  const promises = [loadModel(bumperModel)];
+  onProgress?.(0, promises.length);
+  await Promise.all(
+    promises.map(async (p) => {
+      await p;
+      loaded += 1;
+      onProgress?.(loaded, promises.length);
+    })
+  );
 }

@@ -66,7 +66,6 @@ export default class Slingshot extends BaseEntity implements Entity {
   }
 
   onImpact(ball: Ball) {
-    // TODO: This should respond to continued contact probably
     const impactLocation = this.getPercentAcross(ball.getPosition());
     const mid = this.middlePercent;
     const denominator = impactLocation < mid ? mid : 1.0 - mid;

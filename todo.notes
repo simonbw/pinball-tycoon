@@ -1,5 +1,19 @@
 
-Today — Soundwork:
+July 18
+  [ ] Ball remaining lights
+  [ ] Ball Saves
+  [ ] 
+  [ ] Performance?
+
+July 17 — Playfield:
+  [√] Spinner
+    [√] Mesh & Animation
+    [√] Sounds
+    [√] Points
+  [√] Top Glass
+
+
+July 15 — Soundwork:
   [√] Refactor out sound stuff to make playing sound an entity
   [√] Add speed option to soundboard
   [√] Continuous ball sound

@@ -2,7 +2,6 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import { getBinding } from "../ui/KeyboardBindings";
-import Game from "../../core/Game";
 
 type GraphicsQuality = "low" | "medium" | "high";
 
@@ -23,9 +22,9 @@ export default class GraphicsQualityController extends BaseEntity
   onKeyDown(keycode: KeyCode) {
     if (keycode === getBinding("QUALITY_TOGGLE")) {
       if (CURRENT_QUALITY === "low") {
-        this.setHigh();
+        this.setMedium();
       } else if (CURRENT_QUALITY === "medium") {
-        this.setHigh();
+        this.setLow();
       } else {
         this.setLow();
       }
@@ -48,18 +47,21 @@ export default class GraphicsQualityController extends BaseEntity
   setLow() {
     CURRENT_QUALITY = "low";
     this.renderer.shadowMap.enabled = false;
+    this.renderer.setPixelRatio(1);
     this.game!.dispatch(graphicsQualityEvent("low"));
   }
 
   setMedium() {
     CURRENT_QUALITY = "medium";
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = false;
+    this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("medium"));
   }
 
   setHigh() {
     CURRENT_QUALITY = "high";
     this.renderer.shadowMap.enabled = true;
+    this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("high"));
   }
 }

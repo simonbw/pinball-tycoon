@@ -86,7 +86,6 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.addChild(new SoundInstance("drain"));
     },
     score: ({ points }: ScoreEvent) => {
-      console.log("scored", points);
       this.score += points;
       this.game!.dispatch(updateScoreEvent(this.score));
     },

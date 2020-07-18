@@ -21,6 +21,8 @@ import Wall from "../playfield/Wall";
 import Backglass from "../ui/Backglass";
 import { Rect } from "../util/Rect";
 import Table from "./Table";
+import Spinner from "../playfield/Spinner";
+import Topglass from "./Topglass";
 
 const BOUNDS: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
 const INCLINE = degToRad(15);
@@ -43,6 +45,7 @@ export default class HockeyTable extends Table implements Entity {
   setupPlayfield() {
     // Playfield
     this.addChild(new Playfield(BOUNDS));
+    this.addChild(new Topglass(BOUNDS, -6));
     this.addChild(new Plunger(V(26, 96)));
 
     this.setupUpperPlayfield();
@@ -80,19 +83,22 @@ export default class HockeyTable extends Table implements Entity {
       new Defender(fm.add(d.mul(0.4)).add(n.mul(2)), angle)
     );
 
-    // triangles
+    this.addChild(new Spinner(V(-22, 27), degToRad(-3), 3.5));
 
+    // Trapezoids
     this.addChildren(
       new MultiWall([V(-24, 40), V(-20, 50), V(-20, 53), V(-24, 56)]),
       new MultiWall([V(24, 47), V(20, 50), V(20, 53), V(24, 56)]),
       new Flipper(V(22, 48.5), "right", 3.6, degToRad(-20), degToRad(50))
     );
 
+    //
     this.addChildren(
       new CurveWall(new Bezier(bp(0, 0), bp(28, 0), bp(28, 24)), 40),
       new CurveWall(new Bezier(bp(0, 0), bp(-24, 0), bp(-24, 24)), 40)
     );
 
+    // Upperer stuff
     this.addChild(new Bumper(V(-3, 6), 1.6));
 
     this.addChild(
@@ -100,27 +106,15 @@ export default class HockeyTable extends Table implements Entity {
     );
 
     this.addChild(
-      new CurveWall(
-        new Bezier({ x: -2, y: 12 }, { x: -22, y: 2 }, { x: -20, y: 28 }),
-        40,
-        0.6
-      )
+      new CurveWall(new Bezier(bp(-2, 12), bp(-22, 2), bp(-20, 28)), 40, 0.6)
     );
 
-    this.addChild(new Gate(V(4, 4), V(0, 0), degToRad(90)));
+    this.addChild(new Gate(V(4, 4), V(0, 0), degToRad(110)));
     this.addChild(
-      new CurveWall(
-        new Bezier({ x: 4, y: 4 }, { x: 26, y: 4 }, { x: 24, y: 30 }),
-        40,
-        0.8
-      )
+      new CurveWall(new Bezier(bp(4, 4), bp(26, 4), bp(24, 30)), 40, 0.8)
     );
     this.addChild(
-      new CurveWall(
-        new Bezier({ x: 6, y: 11 }, { x: 20, y: 0 }, { x: 24, y: 30 }),
-        40,
-        0.8
-      )
+      new CurveWall(new Bezier(bp(6, 11), bp(20, 0), bp(24, 30)), 40, 0.8)
     );
     this.addChild(new Wall(V(4, 4), V(6, 11), 0.8));
   }
@@ -147,7 +141,7 @@ export default class HockeyTable extends Table implements Entity {
     this.addChild(new Wall(V(-24, 88), V(-4, 100)));
     this.addChild(new Wall(V(24, 88), V(4, 100)));
 
-    this.addChild(new Drain(V(-4, 100), V(4, 100)));
+    this.addChild(new Drain(V(-4, 100.4), V(4, 100.4)));
 
     this.addChild(new Flipper(V(-8, 30.25 + LO), "left", 6.2));
     this.addChild(new Flipper(V(8, 30.25 + LO), "right", 6.2));

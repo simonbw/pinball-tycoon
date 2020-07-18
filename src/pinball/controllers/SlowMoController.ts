@@ -3,7 +3,7 @@ import Entity from "../../core/entity/Entity";
 import { getBindings } from "../ui/KeyboardBindings";
 import { setFocusAmount } from "../postprocessing";
 
-const SLOW_SPEED = 0.4;
+const SLOW_SPEED = 0.35;
 const RAMP_DOWN_SPEED = 0.01;
 const RAMP_UP_SPEED = 0.005;
 const COOLDOWN_POINT = 0.8;

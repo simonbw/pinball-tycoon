@@ -26,9 +26,9 @@ export default class Playfield extends BaseEntity implements Entity {
     this.body.addShape(makeP2Plane(), [left, 0], -Math.PI / 2); // Left
     this.body.addShape(makeP2Plane(), [right, 0], Math.PI / 2); // Right
 
-    const MATERIAL = new MeshPhysicalMaterial({
+    const material = new MeshPhysicalMaterial({
       color: 0xffffff,
-      emissive: 0x000011,
+      emissive: 0x111126,
 
       map: TEXTURES.HockeyPlayfield,
       roughness: 0.8,
@@ -41,15 +41,17 @@ export default class Playfield extends BaseEntity implements Entity {
 
     const width = right - left;
     const height = bottom - top;
-    const geometry = new PlaneBufferGeometry(width, height, 200, 200);
+    const geometry = new PlaneBufferGeometry(width, height, 1, 1);
 
     geometry.rotateX(Math.PI);
 
     const [cx, cy] = V(left, top).iadd([right, bottom]).imul(0.5);
-    this.mesh = new Mesh(geometry, MATERIAL);
+    this.mesh = new Mesh(geometry, material);
     this.mesh.position.set(cx, cy, 0);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
+
+    this.disposeables = [material, geometry];
   }
 }
 

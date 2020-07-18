@@ -16,11 +16,11 @@ import {
 import BallMesh from "./BallMesh";
 import BallSoundController from "./BallSoundController";
 
-const RADIUS = 1.0625; // Radius in half inches
+const RADIUS = 1.0625; // Radius in 1/2 inches
 const MASS = 2.8; // In ounces
 const FRICTION = 0.005; // rolling friction
-const TABLE_ANGLE = degToRad(7); // amount of tilt in the table
-const GRAVITY = 386.0 * Math.sin(TABLE_ANGLE); // inches/s^2
+const TABLE_ANGLE = degToRad(4); // amount of tilt in the table
+const GRAVITY = 2.0 * 386.0 * Math.sin(TABLE_ANGLE); // 1/2 inches/s^2
 
 export default class Ball extends BaseEntity
   implements Entity, WithBallCollisionInfo {
