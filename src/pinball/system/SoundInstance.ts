@@ -8,6 +8,7 @@ import { SoundOptions } from "./Soundboard";
  * Represents a currently playing sound.
  */
 export class SoundInstance extends BaseEntity implements Entity {
+  tags = ["sound"];
   public speed: number;
   public readonly continuous: boolean;
 
@@ -114,6 +115,7 @@ export class SoundInstance extends BaseEntity implements Entity {
 
     const newNode = this.game!.audio.createBufferSource();
     newNode.buffer = this.sourceNode.buffer;
+    newNode.loop = this.sourceNode.loop;
     this.sourceNode = newNode;
     this.sourceNode.connect(this.panNode);
     const startTime = this.elapsed % bufferDuration;
