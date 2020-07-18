@@ -2,8 +2,7 @@ import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import { SoundName } from "../../core/resources/sounds";
 import { V, V2d } from "../../core/Vector";
-import { SoundOptions } from "./Soundboard";
-import { SoundInstance } from "./SoundInstance";
+import { SoundInstance, SoundOptions } from "./SoundInstance";
 
 const LISTENER: V2d = V(0, 100);
 const SCALE_Y = 0.5;

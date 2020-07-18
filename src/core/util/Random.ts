@@ -41,6 +41,10 @@ export function rInteger(min: number, max: number): number {
   return Math.floor(rUniform(min, max));
 }
 
+export function rByte(): number {
+  return rInteger(0, 256);
+}
+
 /**
  * Probabilistically round x to a nearby integer.
  */

@@ -14,9 +14,10 @@ export default class Topglass extends BaseEntity implements Entity {
     const material = new MeshPhysicalMaterial({
       // color: new Color(),
       transparent: true,
-      roughness: 0.02,
+      roughness: 0.01,
       reflectivity: 1,
-      opacity: 0.3,
+      metalness: 0.5,
+      opacity: 0.5,
     });
     material.transparency = 0.88;
 
@@ -32,6 +33,8 @@ export default class Topglass extends BaseEntity implements Entity {
     this.mesh.position.set(cx, cy, z);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
+
+    this.mesh = undefined;
 
     this.disposeables = [material, geometry];
   }

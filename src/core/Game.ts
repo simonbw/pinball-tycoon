@@ -144,7 +144,7 @@ export default class Game {
   }
 
   /** Dispatch a custom event. */
-  dispatch(event: any) {
+  dispatch<T extends { type: string }>(event: T) {
     const type: string = event.type;
     for (const entity of this.entities.getHandlers(type)) {
       entity.handlers![type](event);
@@ -218,7 +218,12 @@ export default class Game {
    * This is because there are times when it's not safe to remove an entity, like in the middle of a physics step.
    */
   removeEntity(entity: Entity) {
-    this.entitiesToRemove.add(entity);
+    entity.game = null;
+    if (this.world.stepping) {
+      this.entitiesToRemove.add(entity);
+    } else {
+      this.cleanupEntity(entity);
+    }
     return entity;
   }
 
@@ -259,48 +264,52 @@ export default class Game {
   /** Actually remove all the entities slated for removal from the game. */
   private cleanupEntities() {
     for (const entity of this.entitiesToRemove) {
-      this.entities.remove(entity);
-      this.io.removeHandler(entity);
-
-      if (entity.mesh) {
-        this.renderer.scene.remove(entity.mesh);
-      }
-      if (entity.object3ds) {
-        for (const mesh of entity.object3ds) {
-          this.renderer.scene.remove(mesh);
-        }
-      }
-      if (entity.disposeables) {
-        for (const disposeable of entity.disposeables) {
-          disposeable.dispose();
-        }
-      }
-      if (entity.body) {
-        this.world.removeBody(entity.body);
-      }
-      if (entity.bodies) {
-        for (const body of entity.bodies) {
-          this.world.removeBody(body);
-          body.owner = entity;
-        }
-      }
-      if (entity.springs) {
-        for (const spring of entity.springs) {
-          this.world.removeSpring(spring);
-        }
-      }
-      if (entity.constraints) {
-        for (const constraint of entity.constraints) {
-          this.world.removeConstraint(constraint);
-        }
-      }
-
-      if (entity.onDestroy) {
-        entity.onDestroy(this);
-      }
-      entity.game = null;
+      this.cleanupEntity(entity);
     }
     this.entitiesToRemove.clear();
+  }
+
+  private cleanupEntity(entity: Entity) {
+    entity.game = null; // This should be done by `removeEntity`, but better safe than sorry
+    this.entities.remove(entity);
+    this.io.removeHandler(entity);
+
+    if (entity.mesh) {
+      this.renderer.scene.remove(entity.mesh);
+    }
+    if (entity.object3ds) {
+      for (const mesh of entity.object3ds) {
+        this.renderer.scene.remove(mesh);
+      }
+    }
+    if (entity.disposeables) {
+      for (const disposeable of entity.disposeables) {
+        disposeable.dispose();
+      }
+    }
+    if (entity.body) {
+      this.world.removeBody(entity.body);
+    }
+    if (entity.bodies) {
+      for (const body of entity.bodies) {
+        this.world.removeBody(body);
+        body.owner = entity;
+      }
+    }
+    if (entity.springs) {
+      for (const spring of entity.springs) {
+        this.world.removeSpring(spring);
+      }
+    }
+    if (entity.constraints) {
+      for (const constraint of entity.constraints) {
+        this.world.removeConstraint(constraint);
+      }
+    }
+
+    if (entity.onDestroy) {
+      entity.onDestroy(this);
+    }
   }
 
   /** Called before physics. */
@@ -308,13 +317,13 @@ export default class Game {
     this.ticknumber += 1;
     this.cleanupEntities();
     for (const entity of this.entities.filtered.beforeTick) {
-      if (!(this.paused && entity.pausable)) {
+      if (entity.game && !(this.paused && entity.pausable)) {
         entity.beforeTick!();
       }
     }
     this.cleanupEntities();
     for (const entity of this.entities.filtered.onTick) {
-      if (!(this.paused && entity.pausable)) {
+      if (entity.game && !(this.paused && entity.pausable)) {
         entity.onTick!(dt);
       }
     }
@@ -325,7 +334,7 @@ export default class Game {
   private afterPhysics() {
     this.cleanupEntities();
     for (const entity of this.entities.filtered.afterPhysics) {
-      if (!(this.paused && entity.pausable)) {
+      if (entity.game && !(this.paused && entity.pausable)) {
         entity.afterPhysics!();
       }
     }
@@ -335,7 +344,9 @@ export default class Game {
   private render() {
     this.cleanupEntities();
     for (const entity of this.entities.filtered.onRender) {
-      entity.onRender!();
+      if (entity.game) {
+        entity.onRender!();
+      }
     }
     // this.renderer2d?.render();
     this.renderer.render();

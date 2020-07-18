@@ -3,7 +3,7 @@ import Entity from "../../core/entity/Entity";
 import { V2d, V } from "../../core/Vector";
 import Wall, { WALL_MATERIAL } from "./Wall";
 import { Shape, ExtrudeBufferGeometry, Mesh } from "three";
-import { makeOutlineShape } from "../util/OutlineShape";
+import { makeOutlineShape } from "../graphics/OutlineShape";
 
 export default class MultiWall extends BaseEntity implements Entity {
   constructor(

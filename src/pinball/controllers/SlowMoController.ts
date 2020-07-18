@@ -2,6 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { getBindings } from "../ui/KeyboardBindings";
 import { setFocusAmount } from "../postprocessing";
+import gameOver from "../../../resources/audio/game-over.flac";
 
 const SLOW_SPEED = 0.35;
 const RAMP_DOWN_SPEED = 0.01;
@@ -22,6 +23,8 @@ export default class SlowMoController extends BaseEntity implements Entity {
 
   onTick(dt: number) {
     const game = this.game!;
+    const oldSlowMo = game.slowMo;
+
     const keys = getBindings("SLO_MO", "SLO_MO2");
     const keyDown = game.io.anyKeyIsDown(keys);
 
@@ -42,6 +45,10 @@ export default class SlowMoController extends BaseEntity implements Entity {
         this.cooldown = false;
       }
       game.slowMo = Math.min(game.slowMo + RAMP_UP_SPEED, 1);
+    }
+
+    if (game.slowMo !== oldSlowMo) {
+      game.dispatch({ type: "slowMoChanged" });
     }
   }
 }

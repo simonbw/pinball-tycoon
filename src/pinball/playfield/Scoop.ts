@@ -5,7 +5,7 @@ import { SoundName } from "../../core/resources/sounds";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { scoreEvent } from "../system/LogicBoard";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 
 interface ScoopOptions {
   position: V2d;

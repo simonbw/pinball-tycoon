@@ -6,9 +6,9 @@ import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
+import { CollisionGroups } from "../Collision";
+import { SoundInstance } from "../sound/SoundInstance";
 import { scoreEvent } from "../system/LogicBoard";
-import { SoundInstance } from "../system/SoundInstance";
-import { CollisionGroups } from "./Collision";
 import GoalMesh from "./GoalMesh";
 import Scoop from "./Scoop";
 

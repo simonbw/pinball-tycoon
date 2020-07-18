@@ -3,7 +3,7 @@ import Entity from "../../core/entity/Entity";
 import { SoundName } from "../../core/resources/sounds";
 import { clamp } from "../../core/util/MathUtil";
 import { V } from "../../core/Vector";
-import { PositionalSound } from "../system/PositionalSound";
+import { PositionalSound } from "../sound/PositionalSound";
 import Ball from "./Ball";
 import { rNormal } from "../../core/util/Random";
 

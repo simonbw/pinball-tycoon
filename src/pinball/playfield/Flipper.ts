@@ -17,7 +17,7 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { getBinding } from "../ui/KeyboardBindings";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 
 const MATERIAL = new MeshStandardMaterial({

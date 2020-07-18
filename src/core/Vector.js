@@ -2,7 +2,7 @@ import { lerp } from "./util/MathUtil";
 
 export function V(x, y) {
   if (x instanceof V2d) {
-    return x;
+    return x.clone();
   } else if (x instanceof Array) {
     return new V2d(x[0], x[1]);
   }

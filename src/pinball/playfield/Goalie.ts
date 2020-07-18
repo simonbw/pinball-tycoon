@@ -2,8 +2,8 @@ import { MeshPhongMaterial } from "three";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
+import { SoundInstance } from "../sound/SoundInstance";
 import { scoreEvent } from "../system/LogicBoard";
-import { SoundInstance } from "../system/SoundInstance";
 import { getDefenderUpCount } from "./Defender";
 import DropTarget from "./DropTarget";
 

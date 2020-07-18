@@ -16,6 +16,8 @@ export default class CameraController extends BaseEntity implements Entity {
   table: Table;
   lookTarget: Vector3;
   normalPosition: Vector3;
+  topPosition: Vector3;
+  up: Vector3;
   nudgeOffset: Vector3 = new Vector3(0, 0, 0);
 
   mode: "normal" | "top" | "manual" | "ball" = "normal";
@@ -29,10 +31,20 @@ export default class CameraController extends BaseEntity implements Entity {
       table.bounds.bottom + 10,
       -70
     );
+    this.topPosition = new Vector3(
+      this.table.center.x,
+      this.table.center.y + 1, // Avoids flickering for some reason
+      -100
+    );
+    this.up = new Vector3(0, 0, -1).applyAxisAngle(
+      new Vector3(-1, 0, 0),
+      this.table.incline
+    );
   }
 
   onAdd(game: Game) {
     game.camera.position.copy(this.normalPosition);
+    game.camera.up.copy(this.up);
   }
 
   onRender() {
@@ -54,7 +66,6 @@ export default class CameraController extends BaseEntity implements Entity {
         this.manualMode(camera);
         break;
     }
-    camera.position.add(this.nudgeOffset);
   }
 
   onKeyDown(keyCode: KeyCode) {
@@ -77,53 +88,40 @@ export default class CameraController extends BaseEntity implements Entity {
     const game = this.game!;
     camera.position.sub(this.nudgeOffset);
 
-    if (!game.paused) {
-      game.camera.position.lerp(this.normalPosition, 0.1);
-      camera.up.copy(
-        new Vector3(0, 0, -1).applyAxisAngle(
-          new Vector3(-1, 0, 0),
-          this.table.incline
-        )
-      );
+    lerpOrJump(camera.position, this.normalPosition, 0.1);
 
-      const balls = game.entities.getTagged("ball").filter(isBall);
-      const weightedCenter = this.table.center.clone();
-      for (const ball of balls) {
-        weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
-      }
-      const speed = balls.length > 0 ? 0.1 : 0.01;
-      this.lookTarget.lerp(weightedCenter, speed);
-
-      camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
+    const balls = game.entities.getTagged("ball").filter(isBall);
+    const weightedCenter = this.table.center.clone();
+    for (const ball of balls) {
+      weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
     }
+    const speed = balls.length > 0 ? 0.1 : 0.01;
+    this.lookTarget.lerp(weightedCenter, speed);
+
+    camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
 
     camera.position.add(this.nudgeOffset);
   }
 
   topMode(camera: PerspectiveCamera) {
     camera.position.sub(this.nudgeOffset);
-    const UP = new Vector3(0, 0, -1).applyAxisAngle(
-      new Vector3(-1, 0, 0),
-      this.table.incline
-    );
-    camera.up.copy(UP);
-    camera.position.lerp(
-      new Vector3(this.table.center.x, this.table.center.y, -100),
-      0.2
-    );
+
+    lerpOrJump(camera.position, this.topPosition, 0.2);
     camera.lookAt(this.table.center);
     camera.position.add(this.nudgeOffset);
   }
 
   manualMode(camera: PerspectiveCamera) {
+    camera.position.sub(this.nudgeOffset);
+
     const io = this.game!.io;
     if (io.keyIsDown("KeyO")) {
       this.mode = "manual";
-      camera.position.add(camera.up.clone().multiplyScalar(1));
+      camera.position.add(this.up.clone().multiplyScalar(1));
     }
     if (io.keyIsDown("KeyU")) {
       this.mode = "manual";
-      camera.position.add(camera.up.clone().multiplyScalar(-1));
+      camera.position.add(this.up.clone().multiplyScalar(-1));
     }
 
     if (io.keyIsDown("KeyI")) {
@@ -144,6 +142,7 @@ export default class CameraController extends BaseEntity implements Entity {
     }
 
     camera.lookAt(this.lookTarget.x, this.lookTarget.y, 0);
+    camera.position.add(this.nudgeOffset);
   }
 
   zoomControls(camera: PerspectiveCamera) {
@@ -172,4 +171,16 @@ export default class CameraController extends BaseEntity implements Entity {
       });
     },
   };
+}
+
+function lerpOrJump(
+  position: Vector3,
+  target: Vector3,
+  t: number,
+  jumpDist: number = 0.05
+) {
+  position.lerp(target, t);
+  if (position.distanceTo(target) < jumpDist) {
+    position.copy(target);
+  }
 }

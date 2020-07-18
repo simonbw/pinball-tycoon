@@ -9,7 +9,6 @@ import MagicBallController from "../controllers/MagicBallController";
 import NudgeController from "../controllers/NudgeController";
 import SlowMoController from "../controllers/SlowMoController";
 import LogicBoard from "../system/LogicBoard";
-import Soundboard from "../system/Soundboard";
 import { Rect } from "../util/Rect";
 
 export default class Table extends BaseEntity implements Entity {
@@ -46,8 +45,7 @@ export default class Table extends BaseEntity implements Entity {
       new LogicBoard(this),
       new MagicBallController(),
       new NudgeController(),
-      new SlowMoController(),
-      new Soundboard()
+      new SlowMoController()
     );
   }
 

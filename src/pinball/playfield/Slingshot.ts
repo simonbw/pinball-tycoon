@@ -4,11 +4,11 @@ import Entity from "../../core/entity/Entity";
 import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import Ball from "../ball/Ball";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 import SlingshotMesh from "./SlingshotMesh";
 import Post from "./Post";
-import { PositionalSound } from "../system/PositionalSound";
+import { PositionalSound } from "../sound/PositionalSound";
 
 const DEAD_SPACE = 0.02;
 const MAX_STRENGTH = 350;

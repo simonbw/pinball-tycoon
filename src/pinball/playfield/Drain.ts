@@ -3,7 +3,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 
 export default class Drain extends BaseEntity implements Entity {
   constructor(left: V2d, right: V2d) {

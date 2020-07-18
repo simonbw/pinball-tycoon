@@ -1,18 +1,17 @@
 import { Body, Box, LinearSpring, Spring } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
+import { CollisionGroups } from "../Collision";
+import { PositionalSound } from "../sound/PositionalSound";
 import { getBinding } from "../ui/KeyboardBindings";
-import { CollisionGroups } from "./Collision";
 import { P2Materials } from "./Materials";
 import PlungerMesh from "./PlungerMesh";
-import { KeyCode } from "../../core/io/Keys";
-import { playSoundEvent, stopSoundEvent } from "../system/Soundboard";
-import { clamp } from "../../core/util/MathUtil";
 
 const WIDTH = 2;
 const HEIGHT = 1.5;
@@ -83,7 +82,7 @@ export default class Plunger extends BaseEntity
       if (dy < MAX_PULL_DISTANCE) {
         this.pullSpring!.stiffness += PULL_SPEED;
       } else {
-        this.game!.dispatch(stopSoundEvent("plungerWind"));
+        this.stopWindSound();
       }
     } else {
       if (this.game?.io.keyIsDown(getBinding("PLUNGE"))) {
@@ -96,15 +95,26 @@ export default class Plunger extends BaseEntity
   startPlunge() {
     this.plunging = true;
     const pan = clamp(this.body.position[0] / 40, -0.6, 0.6);
-    this.game!.dispatch(playSoundEvent("plungerWind", { pan }));
+    this.addChild(new PositionalSound("plungerWind", this.getPosition()));
   }
 
   endPlunge() {
     this.plunging = false;
-    this.game!.dispatch(stopSoundEvent("plungerWind"));
+    this.stopWindSound();
     const pan = clamp(this.body.position[0] / 40, -0.6, 0.6);
     const gain = this.getPercentDown() ** 1.5;
-    this.game!.dispatch(playSoundEvent("boing2", { gain, pan }));
+    this.addChild(new PositionalSound("boing2", this.getPosition(), { gain }));
+  }
+
+  stopWindSound() {
+    for (const child of this.children) {
+      if (
+        child instanceof PositionalSound &&
+        child.soundName === "plungerWind"
+      ) {
+        child.destroy();
+      }
+    }
   }
 }
 

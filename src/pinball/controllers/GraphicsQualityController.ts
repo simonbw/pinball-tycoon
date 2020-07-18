@@ -19,6 +19,10 @@ let CURRENT_QUALITY: GraphicsQuality = "low";
 
 export default class GraphicsQualityController extends BaseEntity
   implements Entity {
+  onAdd() {
+    this.setMedium();
+  }
+
   onKeyDown(keycode: KeyCode) {
     if (keycode === getBinding("QUALITY_TOGGLE")) {
       if (CURRENT_QUALITY === "low") {
@@ -44,10 +48,15 @@ export default class GraphicsQualityController extends BaseEntity
     return this.game!.renderer.threeRenderer;
   }
 
+  get composer() {
+    return this.game!.renderer.composer;
+  }
+
   setLow() {
     CURRENT_QUALITY = "low";
     this.renderer.shadowMap.enabled = false;
     this.renderer.setPixelRatio(1);
+    this.composer.setPixelRatio(1);
     this.game!.dispatch(graphicsQualityEvent("low"));
   }
 
@@ -55,6 +64,7 @@ export default class GraphicsQualityController extends BaseEntity
     CURRENT_QUALITY = "medium";
     this.renderer.shadowMap.enabled = false;
     this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
+    this.composer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("medium"));
   }
 
@@ -62,6 +72,7 @@ export default class GraphicsQualityController extends BaseEntity
     CURRENT_QUALITY = "high";
     this.renderer.shadowMap.enabled = true;
     this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
+    this.composer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("high"));
   }
 }

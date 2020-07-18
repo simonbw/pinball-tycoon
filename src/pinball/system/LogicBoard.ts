@@ -2,9 +2,9 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
 import Ball from "../ball/Ball";
+import { SoundInstance } from "../sound/SoundInstance";
 import Table from "../tables/Table";
 import { getBinding } from "../ui/KeyboardBindings";
-import { SoundInstance } from "./SoundInstance";
 
 export interface DrainEvent {
   type: "drain";
@@ -29,9 +29,21 @@ export function updateScoreEvent(score: number): UpdateScoreEvent {
   return { type: "updateScore", score };
 }
 
-interface NewBallEvent {
+export interface NewBallEvent {
   type: "newBall";
   noSound?: boolean;
+}
+
+export interface BallsRemainingEvent {
+  type: "ballsRemaining";
+  ballsRemaining: number;
+}
+
+function ballsRemainingEvent(ballsRemaining: number): BallsRemainingEvent {
+  return {
+    type: "ballsRemaining",
+    ballsRemaining,
+  };
 }
 
 /**
@@ -48,7 +60,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
   }
 
   handlers = {
-    gameStart: () => {
+    gameStart: async () => {
       // Clear the table
       this.clearTimers();
       for (const ball of [...this.game!.entities.getTagged("ball")]) {
@@ -59,15 +71,20 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.score = 0;
       this.gameStarted = true;
       this.game!.dispatch(updateScoreEvent(this.score));
+      this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
 
-      this.addChild(new SoundInstance("upgrade"));
-      this.game!.dispatch({ type: "newBall", noSound: true });
+      // this.addChild(new SoundInstance("upgrade"));
+
+      await this.wait(0.3);
+
+      this.game!.dispatch({ type: "newBall" });
     },
-    newBall: (e: NewBallEvent) => {
+    newBall: async (e: NewBallEvent) => {
       if (!e.noSound) {
         this.addChild(new SoundInstance("upgrade"));
       }
       this.ballsRemaining -= 1;
+      this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
       this.game!.addEntity(new Ball(this.table.ballDropPosition.clone()));
     },
     drain: async ({ ball }: DrainEvent) => {

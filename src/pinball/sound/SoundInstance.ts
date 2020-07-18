@@ -2,24 +2,39 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import { SoundName, SOUNDS } from "../../core/resources/sounds";
-import { SoundOptions } from "./Soundboard";
+
+export interface SoundOptions {
+  pan?: number;
+  gain?: number;
+  speed?: number;
+  continuous?: boolean;
+}
 
 /**
  * Represents a currently playing sound.
  */
 export class SoundInstance extends BaseEntity implements Entity {
   tags = ["sound"];
-  public speed: number;
   public readonly continuous: boolean;
 
   private sourceNode!: AudioBufferSourceNode;
   private panNode!: StereoPannerNode;
   private gainNode!: GainNode;
+  private _speed: number = 1.0;
 
   private elapsed: number = 0;
   private lastTick: number = 0;
 
   private paused: boolean = false;
+
+  set speed(value: number) {
+    this._speed = value;
+    this.updatePlaybackRate();
+  }
+
+  get speed(): number {
+    return this._speed;
+  }
 
   set pan(value: number) {
     if (!this.game) {
@@ -79,7 +94,7 @@ export class SoundInstance extends BaseEntity implements Entity {
   makeChain({ audio, slowMo, masterGain }: Game): AudioNode {
     this.sourceNode = audio.createBufferSource();
     this.sourceNode.buffer = SOUNDS.get(this.soundName)!;
-    this.sourceNode.playbackRate.value = this.speed * slowMo;
+    this.sourceNode.playbackRate.value = this._speed * slowMo;
     this.sourceNode.loop = this.continuous;
 
     this.panNode = audio.createStereoPanner();
@@ -96,12 +111,27 @@ export class SoundInstance extends BaseEntity implements Entity {
   onTick() {
     const now = this.game!.audio.currentTime;
     this.elapsed += (now - this.lastTick) * this.sourceNode.playbackRate.value;
+    if (this.continuous) {
+      this.elapsed = this.elapsed % this.sourceNode.buffer!.duration;
+    }
     this.lastTick = now;
-    this.sourceNode.playbackRate.value = this.speed * this.game!.slowMo;
   }
+
+  updatePlaybackRate() {
+    if (this.sourceNode && this.game) {
+      this.sourceNode.playbackRate.value = this._speed * this.game.slowMo;
+    }
+  }
+
+  handlers = {
+    slowMoChanged: () => {
+      this.updatePlaybackRate();
+    },
+  };
 
   pause() {
     this.paused = true;
+    this.sourceNode.onended = null;
     this.sourceNode.stop();
   }
 
@@ -119,7 +149,7 @@ export class SoundInstance extends BaseEntity implements Entity {
     this.sourceNode = newNode;
     this.sourceNode.connect(this.panNode);
     const startTime = this.elapsed % bufferDuration;
-    this.sourceNode.start(undefined, startTime);
+    this.sourceNode.start(this.game!.audio.currentTime, startTime);
   }
 
   onPause() {

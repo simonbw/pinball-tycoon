@@ -5,7 +5,7 @@ import Entity from "../../core/entity/Entity";
 import { V } from "../../core/Vector";
 import { TEXTURES } from "../graphics/textures";
 import { Rect } from "../util/Rect";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 
 /**
@@ -33,6 +33,8 @@ export default class Playfield extends BaseEntity implements Entity {
       map: TEXTURES.HockeyPlayfield,
       roughness: 0.8,
       normalMap: TEXTURES.PlasticScuffedNormal,
+
+      depthWrite: false, // Helps with glowing lights
 
       clearcoat: 0.5,
       clearcoatRoughness: 0.8,

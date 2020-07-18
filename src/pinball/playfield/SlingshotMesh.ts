@@ -8,7 +8,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
-import { makeOutlineShape } from "../util/OutlineShape";
+import { makeOutlineShape } from "../graphics/OutlineShape";
 
 const EXPAND_AMOUNT = 1.2;
 const DURATION = 0.07;

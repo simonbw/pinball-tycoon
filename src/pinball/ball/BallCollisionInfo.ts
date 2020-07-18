@@ -6,23 +6,7 @@ export interface BallCollisionInfo {
   beginContactSound?: SoundName;
   duringContactSound?: SoundName;
   endContactSound?: SoundName;
-  sparkInfo?: SparkInfo;
-}
-
-export interface CollisionSoundInfo {
-  soundName: SoundName;
-  minGain: number;
-  maxGain: number;
-}
-
-export interface SparkInfo {
-  color: number;
-  size?: number;
-  maxBegin?: number;
-  minBegin?: number;
-  maxDuring?: number;
-  minDuring?: number;
-  impactMultiplier?: number;
+  scaleImpact?: (impact: number) => number;
 }
 
 export interface WithBallCollisionInfo {

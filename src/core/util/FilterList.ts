@@ -1,23 +1,18 @@
 // A list that will only inlcude things that match the filter
 export default class FilterList<T> implements Iterable<T> {
-  private predicate: (item: T) => boolean;
-  private _items: T[];
+  private _items: Set<T> = new Set();
 
-  constructor(predicate: (item: T) => boolean) {
-    this.predicate = predicate;
-    this._items = [];
-  }
+  constructor(private predicate: (item: T) => boolean) {}
 
   addIfValid(item: T) {
     if (this.predicate(item)) {
-      this._items.push(item);
+      this._items.add(item);
     }
   }
 
   remove(item: T) {
     if (this.predicate(item)) {
-      const index = this._items.indexOf(item);
-      this._items.splice(index, 1);
+      this._items.delete(item);
     }
   }
 

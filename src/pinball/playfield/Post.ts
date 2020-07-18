@@ -9,7 +9,7 @@ import {
 } from "../ball/BallCollisionInfo";
 import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 
 export default class Post extends BaseEntity

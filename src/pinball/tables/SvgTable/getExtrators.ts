@@ -2,7 +2,7 @@ import { matches } from "hast-util-select";
 import { HastSvgElementNode } from "svg-parser";
 import { Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
-import OverheadLight from "../../graphics/OverheadLight";
+import OverheadLight from "../../playfield/OverheadLight";
 import Bumper from "../../playfield/Bumper";
 import MultiWall from "../../playfield/MultiWall";
 import Plunger from "../../playfield/Plunger";

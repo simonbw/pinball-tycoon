@@ -9,7 +9,7 @@ import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import GateMesh from "./GateMesh";
 import { P2Materials } from "./Materials";
 

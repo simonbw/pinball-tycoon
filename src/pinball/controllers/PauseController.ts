@@ -24,6 +24,9 @@ export default class PauseController extends BaseEntity implements Entity {
   onKeyDown(key: Keys.KeyCode) {
     if (key === getBinding("PAUSE")) {
       this.game!.togglePause();
+    } else if (key === "KeyV") {
+      this.game!.pause();
+      this.game!.unpause();
     }
   }
 }

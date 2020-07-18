@@ -6,7 +6,7 @@ import CCDBody from "../../core/physics/CCDBody";
 import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V, V2d } from "../../core/Vector";
 import { NudgeEvent } from "../controllers/NudgeController";
-import { CollisionGroups } from "../playfield/Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "../playfield/Materials";
 import {
   BallCollisionInfo,
@@ -39,8 +39,8 @@ export default class Ball extends BaseEntity
 
     this.body = new CCDBody({
       mass: MASS,
-      ccdSpeedThreshold: 0,
-      ccdIterations: 15,
+      ccdSpeedThreshold: 30, // I think this can help performance a lot
+      ccdIterations: 5,
     });
     this.body.position = position;
     this.body.velocity = velocity;
@@ -77,7 +77,7 @@ export default class Ball extends BaseEntity
 
       // Spin
       const spinForce = V(this.body.velocity)
-        .normalize()
+        .inormalize()
         .irotate90cw()
         .imul(this.body.angularVelocity * 0.05);
       this.body.applyForce(spinForce);

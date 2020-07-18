@@ -4,7 +4,7 @@ import Entity from "../../core/entity/Entity";
 import { degToRad } from "../../core/util/MathUtil";
 import { V } from "../../core/Vector";
 import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
-import OverheadLight from "../graphics/OverheadLight";
+import OverheadLight from "../playfield/OverheadLight";
 import Bumper from "../playfield/Bumper";
 import CurveWall from "../playfield/CurveWall";
 import Defender from "../playfield/Defender";
@@ -23,6 +23,7 @@ import { Rect } from "../util/Rect";
 import Table from "./Table";
 import Spinner from "../playfield/Spinner";
 import Topglass from "./Topglass";
+import BallRemainingLights from "../playfield/BallRemainingLights";
 
 const BOUNDS: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
 const INCLINE = degToRad(15);
@@ -44,9 +45,12 @@ export default class HockeyTable extends Table implements Entity {
 
   setupPlayfield() {
     // Playfield
-    this.addChild(new Playfield(BOUNDS));
+    const playfield = this.addChild(new Playfield(BOUNDS));
     this.addChild(new Topglass(BOUNDS, -6));
     this.addChild(new Plunger(V(26, 96)));
+    this.addChild(new BallRemainingLights(playfield, V(26, 94), 1));
+    this.addChild(new BallRemainingLights(playfield, V(26, 92), 2));
+    this.addChild(new BallRemainingLights(playfield, V(26, 90), 3));
 
     this.setupUpperPlayfield();
     this.setupLowerPlayfield();

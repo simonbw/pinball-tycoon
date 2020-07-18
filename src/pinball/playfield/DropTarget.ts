@@ -10,8 +10,8 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { scoreEvent } from "../system/LogicBoard";
-import { PositionalSound } from "../system/PositionalSound";
-import { CollisionGroups } from "./Collision";
+import { PositionalSound } from "../sound/PositionalSound";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 
 const UP_SPEED = 15.0;

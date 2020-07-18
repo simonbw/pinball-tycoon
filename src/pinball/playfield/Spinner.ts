@@ -1,36 +1,40 @@
 import { Body, Box } from "p2";
 import {
   BoxBufferGeometry,
+  LinearFilter,
   Mesh,
-  MeshPhongMaterial,
-  Vector3,
   MeshStandardMaterial,
+  NearestFilter,
+  Vector2,
+  Vector3,
 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { CollisionGroups } from "./Collision";
-import { scoreEvent } from "../system/LogicBoard";
-import { PositionalSound } from "../system/PositionalSound";
-import { rNormal } from "../../core/util/Random";
-import { clamp } from "../../core/util/MathUtil";
 import {
-  WithBallCollisionInfo,
   BallCollisionInfo,
+  WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
+import { CollisionGroups } from "../Collision";
+import { createNoiseNormalMap } from "../graphics/proceduralTextures";
 import Reflector from "../graphics/Reflector";
+import { PositionalSound } from "../sound/PositionalSound";
+import { scoreEvent } from "../system/LogicBoard";
+import { lerp } from "../../core/util/MathUtil";
 
-const FRICTION = 1.2;
-const SPEED_MULTI = 0.2;
+const FRICTION = 0.9;
+const HEIGHT = 1.9;
+const SPEED_MULTI = 1.0 / (0.5 * HEIGHT * 2 * Math.PI);
 
 export default class Spinner extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   spinVelocity: number = 0;
-  spinAngle: number = 0;
+  rotations: number = 0.25;
   body: Body;
   ballCollisionInfo: BallCollisionInfo = {
     beginContactSound: "gateHit",
+    scaleImpact: (impact) => impact * this.getContactAmount(),
   };
 
   constructor(position: V2d, angle: number = 0, public width: number = 2.0) {
@@ -47,26 +51,43 @@ export default class Spinner extends BaseEntity
   onContacting(ball: Entity) {
     if (isBall(ball)) {
       const relativeVelocity = this.getNormal().dot(ball.body.velocity);
-      this.spinVelocity = relativeVelocity * SPEED_MULTI;
+      const contactAmount = Math.abs(Math.cos(this.getAngle()));
+      this.spinVelocity = lerp(
+        this.spinVelocity,
+        relativeVelocity * SPEED_MULTI,
+        contactAmount
+      );
     }
+  }
+
+  getContactAmount() {
+    return Math.abs(Math.cos(this.getAngle()));
   }
 
   getNormal() {
     return V(0, 1).irotate(this.body!.angle);
   }
 
+  getAngle() {
+    return ((this.rotations + 0.25) % 1.0) * 2 * Math.PI;
+  }
+
   onTick(dt: number) {
     this.spinVelocity *= 1.0 - FRICTION * dt;
-    const oldSpinCount = Math.floor(this.spinAngle * 2);
-    this.spinAngle += this.spinVelocity * dt;
-    const newSpinCount = Math.floor(this.spinAngle * 2);
+    const oldRotationCount = Math.floor(this.rotations * 2);
+    this.rotations += this.spinVelocity * dt;
+    const newRotationCount = Math.floor(this.rotations * 2);
 
-    for (let i = oldSpinCount; i < newSpinCount; i++) {
+    for (let i = oldRotationCount; i < newRotationCount; i++) {
       this.onSpin(true);
     }
-    for (let i = oldSpinCount; i > newSpinCount; i--) {
+    for (let i = oldRotationCount; i > newRotationCount; i--) {
       this.onSpin(false);
     }
+
+    // Gravity
+    const gravity = Math.sin(this.getAngle());
+    this.spinVelocity += gravity * dt;
   }
 
   onSpin(forward: boolean) {
@@ -81,6 +102,10 @@ export default class Spinner extends BaseEntity
   }
 }
 
+const TEXTURE = createNoiseNormalMap(32);
+TEXTURE.magFilter = LinearFilter;
+TEXTURE.minFilter = NearestFilter;
+
 class SpinnerMesh extends BaseEntity implements Entity {
   reflector: Reflector;
   constructor(private spinner: Spinner) {
@@ -88,14 +113,16 @@ class SpinnerMesh extends BaseEntity implements Entity {
 
     this.reflector = this.addChild(new Reflector(16, 8));
 
-    const height = 1.6;
+    const height = 1.9;
     const material = new MeshStandardMaterial({
       color: 0xffffff,
       envMap: this.reflector.envMap,
       metalness: 0.8,
       roughness: 0.0,
+      normalMap: TEXTURE,
+      normalScale: new Vector2(0.01, 0.01),
     });
-    const geometry = new BoxBufferGeometry(spinner.width, height, 0.2);
+    const geometry = new BoxBufferGeometry(spinner.width, 0.1, height);
     geometry.rotateZ(spinner.body.angle);
     this.mesh = new Mesh(geometry, material);
 
@@ -109,9 +136,9 @@ class SpinnerMesh extends BaseEntity implements Entity {
   }
 
   onRender() {
-    const [nx, ny] = this.spinner.getNormal().irotate90cw();
+    const [nx, ny] = this.spinner.getNormal().irotate90ccw();
     const axis = new Vector3(nx, ny, 0);
-    const angle = -this.spinner.spinAngle * Math.PI * 2 + Math.PI / 2;
+    const angle = this.spinner.getAngle();
     this.mesh!.setRotationFromAxisAngle(axis, angle);
 
     // this.reflector.update();

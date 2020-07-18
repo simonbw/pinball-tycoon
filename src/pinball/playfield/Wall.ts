@@ -9,7 +9,7 @@ import {
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
 import { TEXTURES } from "../graphics/textures";
-import { CollisionGroups } from "./Collision";
+import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
@@ -23,7 +23,9 @@ export const WALL_MATERIAL = new MeshStandardMaterial({
 export default class Wall extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   tags = ["wall"];
-  ballCollisionInfo: BallCollisionInfo;
+  ballCollisionInfo: BallCollisionInfo = {
+    beginContactSound: "wallHit2",
+  };
 
   constructor(
     start: V2d,
@@ -52,18 +54,6 @@ export default class Wall extends BaseEntity
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
-
-    this.ballCollisionInfo = {
-      beginContactSound: "wallHit2",
-      sparkInfo: {
-        color: colorFade(color, 0xffffff, 0.5),
-        maxBegin: 3,
-        maxDuring: 1,
-        minDuring: 0,
-        impactMultiplier: 1,
-        size: 0.15,
-      },
-    };
 
     if (renderSelf) {
       const geometry = new BoxBufferGeometry(length, width, 1 + 2 * width);

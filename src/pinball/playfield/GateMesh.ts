@@ -1,14 +1,13 @@
 import {
-  ExtrudeBufferGeometry,
+  BoxBufferGeometry,
   Mesh,
   MeshPhongMaterial,
   MixOperation,
-  Shape as ThreeShape,
   Vector3,
-  BoxBufferGeometry,
 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { rInteger } from "../../core/util/Random";
 import { V2d } from "../../core/Vector";
 import Reflector from "../graphics/Reflector";
 import Gate from "./Gate";
@@ -50,11 +49,12 @@ export default class GateMesh extends BaseEntity implements Entity {
     this.disposeables = [material, geometry];
   }
 
+  private frameNumber = rInteger(0, 10);
   onRender() {
     this.mesh!.rotation.z = this.gate.body.angle;
     const gateSpeed = Math.abs(this.gate.body.angularVelocity);
 
-    if (gateSpeed > 0.01) {
+    if (gateSpeed > 0.01 && this.game!.framenumber % 10 == this.frameNumber) {
       this.reflector.cubeCamera.rotation.z = this.gate.body.angle;
       this.reflector.update();
     }
