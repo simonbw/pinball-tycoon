@@ -6,8 +6,8 @@ import { KeyCode } from "../../core/io/Keys";
 import { lerp } from "../../core/util/MathUtil";
 import { isBall } from "../ball/Ball";
 import Table from "../tables/Table";
-import { NudgeEvent } from "./NudgeController";
 import { getBinding } from "../ui/KeyboardBindings";
+import { NudgeEvent } from "./NudgeController";
 
 const NUDGE_SCALE = 1 / 2.8;
 const NUDGE_DURATION_SCALE = 1.3;
@@ -88,7 +88,12 @@ export default class CameraController extends BaseEntity implements Entity {
     const game = this.game!;
     camera.position.sub(this.nudgeOffset);
 
-    lerpOrJump(camera.position, this.normalPosition, 0.1);
+    smoothStepTowards(
+      camera.position,
+      this.normalPosition,
+      0.2 * game.slowMo ** 1.5,
+      0.01 * game.slowMo ** 1.5
+    );
 
     const balls = game.entities.getTagged("ball").filter(isBall);
     const weightedCenter = this.table.center.clone();
@@ -104,9 +109,15 @@ export default class CameraController extends BaseEntity implements Entity {
   }
 
   topMode(camera: PerspectiveCamera) {
+    const game = this.game!;
     camera.position.sub(this.nudgeOffset);
 
-    lerpOrJump(camera.position, this.topPosition, 0.2);
+    smoothStepTowards(
+      camera.position,
+      this.topPosition,
+      0.2 * game.slowMo ** 1.5,
+      0.01 * game.slowMo ** 1.5
+    );
     camera.lookAt(this.table.center);
     camera.position.add(this.nudgeOffset);
   }
@@ -173,12 +184,19 @@ export default class CameraController extends BaseEntity implements Entity {
   };
 }
 
-function lerpOrJump(
+function smoothStepTowards(
   position: Vector3,
   target: Vector3,
   t: number,
-  jumpDist: number = 0.05
+  jumpDist: number = 0.05,
+  maxDist?: number
 ) {
+  if (maxDist !== undefined) {
+    const d = position.distanceTo(target);
+    if (d * t > maxDist) {
+      t = maxDist / d;
+    }
+  }
   position.lerp(target, t);
   if (position.distanceTo(target) < jumpDist) {
     position.copy(target);

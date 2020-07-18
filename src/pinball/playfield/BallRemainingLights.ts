@@ -68,6 +68,7 @@ export default class BallRemainingLights extends BaseEntity implements Entity {
   }
 
   light() {
+    // TODO: Animate on/off
     this.material.emissive = LIT_EMISSIVE;
     this.material.needsUpdate = true;
     this.glow.visible = true;
