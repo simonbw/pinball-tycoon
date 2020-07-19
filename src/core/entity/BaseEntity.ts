@@ -1,6 +1,7 @@
 import p2, { Constraint, Spring } from "p2";
 import * as Three from "three";
 import Game from "../Game";
+import { clamp } from "../util/MathUtil";
 import { V, V2d } from "../Vector";
 import Entity, { Disposable } from "./Entity";
 import { CustomHandlersMap } from "./GameEventHandler";
@@ -13,7 +14,7 @@ export default abstract class BaseEntity implements Entity {
   body?: p2.Body;
   children: Entity[] = [];
   constraints?: Constraint[];
-  disposeables?: ReadonlyArray<Disposable>;
+  disposeables: Disposable[] = [];
   game: Game | null = null;
   handlers: CustomHandlersMap = {};
   mesh?: Three.Mesh;
@@ -84,7 +85,10 @@ export default abstract class BaseEntity implements Entity {
    * Use with delay=0 to wait until the next tick.
    * @param onTick  Do something every tick while waiting
    */
-  wait(delay: number = 0, onTick?: (dt: number) => void): Promise<void> {
+  wait(
+    delay: number = 0,
+    onTick?: (dt: number, t: number) => void
+  ): Promise<void> {
     return new Promise((resolve) => {
       const timer = new Timer(delay, () => resolve(), onTick);
       this.addChild(timer);
@@ -108,12 +112,12 @@ export default abstract class BaseEntity implements Entity {
 class Timer extends BaseEntity implements Entity {
   timeRemaining: number = 0;
   endEffect?: () => void;
-  duringEffect?: (dt: number) => void;
+  duringEffect?: (dt: number, t: number) => void;
 
   constructor(
-    delay: number,
+    private delay: number,
     endEffect?: () => void,
-    duringEffect?: (dt: number) => void
+    duringEffect?: (dt: number, t: number) => void
   ) {
     super();
     this.timeRemaining = delay;
@@ -123,7 +127,8 @@ class Timer extends BaseEntity implements Entity {
 
   onTick(dt: number) {
     this.timeRemaining -= dt;
-    this.duringEffect?.(dt);
+    const t = clamp(1.0 - this.timeRemaining / this.delay);
+    this.duringEffect?.(dt, t);
     if (this.timeRemaining <= 0) {
       this.endEffect?.();
       this.destroy();

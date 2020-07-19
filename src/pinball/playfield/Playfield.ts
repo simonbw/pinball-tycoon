@@ -34,7 +34,7 @@ export default class Playfield extends BaseEntity implements Entity {
       roughness: 0.8,
       normalMap: TEXTURES.PlasticScuffedNormal,
 
-      depthWrite: false, // Helps with glowing lights
+      // depthWrite: false, // Helps with glowing lights
 
       clearcoat: 0.5,
       clearcoatRoughness: 0.8,
@@ -53,7 +53,7 @@ export default class Playfield extends BaseEntity implements Entity {
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
-    this.disposeables = [material, geometry];
+    this.disposeables.push(material, geometry);
   }
 }
 

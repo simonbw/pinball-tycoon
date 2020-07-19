@@ -32,8 +32,11 @@ export default class MultiWall extends BaseEntity implements Entity {
       });
       geometry.translate(0, 0, -2 * width);
       this.mesh = new Mesh(geometry, WALL_MATERIAL);
-      this.mesh.receiveShadow = false;
       this.mesh.castShadow = true;
+      this.mesh.receiveShadow = false;
+
+      this.mesh.updateMatrix();
+      this.mesh.matrixAutoUpdate = false;
     }
   }
 }

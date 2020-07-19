@@ -41,12 +41,13 @@ export function createNoiseNormalMap(size: number) {
   return texture;
 }
 
-export function createRadialGradient(size: number) {
+export function createRadialGradient(size: number, falloff: number = 1.0) {
   const data = generateTextureData(size, size, 4, (x, y, c) => {
     const r = V(x, y)
       .imul(2 / size)
       .isub(V(1, 1)).magnitude;
-    return clamp((1 - r) * 256, 0, 255);
+    const p = (1 - r) ** falloff;
+    return clamp(p * 256, 0, 255);
   });
   const texture = new DataTexture(data, size, size, RGBAFormat);
   texture.wrapS = ClampToEdgeWrapping;

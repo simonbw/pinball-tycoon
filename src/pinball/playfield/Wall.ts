@@ -62,6 +62,11 @@ export default class Wall extends BaseEntity
       this.mesh.rotateZ(delta.angle);
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = false;
+
+      this.mesh.updateMatrix();
+      this.mesh.matrixAutoUpdate = false;
+
+      this.disposeables.push(geometry);
     }
   }
 }

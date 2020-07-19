@@ -13,6 +13,8 @@ declare global {
   }
 }
 
+// Object3D.DefaultUp.set(0, 0, -1);
+
 export async function main() {
   await new Promise((resolve) => window.addEventListener("load", resolve));
 

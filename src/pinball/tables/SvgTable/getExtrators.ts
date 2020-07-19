@@ -16,6 +16,7 @@ import {
 import Goal from "../../playfield/Goal";
 import Defender from "../../playfield/Defender";
 import Goalie from "../../playfield/Goalie";
+import Post from "../../playfield/Post";
 
 export type Extractor = (
   node: HastSvgElementNode,
@@ -41,7 +42,8 @@ export function getExtractors() {
       }
     },
 
-    // Curve walls
+    // TODO: Curve walls
+
     // Bumper
     (node, m) => {
       if (matches("circle.bumper", node)) {
@@ -50,6 +52,17 @@ export function getExtractors() {
         const r = getNumberProp(node?.properties?.r, undefined);
 
         return new Bumper(transformPoint(x, y, m), r);
+      }
+    },
+
+    // Post
+    (node, m) => {
+      if (matches("circle.post", node)) {
+        const x = getNumberProp(node?.properties?.cx);
+        const y = getNumberProp(node?.properties?.cy);
+        const r = getNumberProp(node?.properties?.r, undefined);
+
+        return new Post(transformPoint(x, y, m), r);
       }
     },
 

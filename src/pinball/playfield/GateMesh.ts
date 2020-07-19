@@ -46,7 +46,7 @@ export default class GateMesh extends BaseEntity implements Entity {
 
     this.reflector.parentMesh = this.mesh;
 
-    this.disposeables = [material, geometry];
+    this.disposeables.push(material, geometry);
   }
 
   private frameNumber = rInteger(0, 10);

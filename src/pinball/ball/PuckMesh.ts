@@ -45,7 +45,7 @@ export default class PuckMesh extends BaseEntity implements Entity {
     this.mesh.castShadow = true;
     this.reflector.parentMesh = this.mesh;
 
-    this.disposeables = [top, sides];
+    this.disposeables.push(top, sides);
   }
 
   onRender() {

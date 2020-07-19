@@ -32,7 +32,7 @@ export default class BallMesh extends BaseEntity implements Entity {
 
     this.mesh.rotateX(Math.PI);
 
-    this.disposeables = [material, geometry];
+    this.disposeables.push(material, geometry);
   }
 
   onTick(dt: number) {

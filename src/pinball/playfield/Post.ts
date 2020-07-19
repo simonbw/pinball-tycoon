@@ -54,6 +54,6 @@ export default class Post extends BaseEntity
 
     this.reflector.parentMesh = this.mesh;
 
-    this.disposeables = [material, geometry];
+    this.disposeables.push(material, geometry);
   }
 }

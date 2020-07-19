@@ -23,7 +23,7 @@ export default class BumperMesh extends BaseEntity implements Entity {
 
     // Each bumper needs to have its own copy of the material
     this.mesh.material = (this.mesh.material as MeshStandardMaterial).clone();
-    this.disposeables = [this.mesh.material];
+    this.disposeables.push(this.mesh.material);
   }
 
   onRender() {

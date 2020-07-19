@@ -4,7 +4,7 @@ import Entity from "../../core/entity/Entity";
 import { degToRad } from "../../core/util/MathUtil";
 import { V } from "../../core/Vector";
 import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
-import OverheadLight from "../playfield/OverheadLight";
+import BallRemainingLamp from "../playfield/BallRemainingLamp";
 import Bumper from "../playfield/Bumper";
 import CurveWall from "../playfield/CurveWall";
 import Defender from "../playfield/Defender";
@@ -14,16 +14,17 @@ import Gate from "../playfield/Gate";
 import Goal from "../playfield/Goal";
 import Goalie from "../playfield/Goalie";
 import MultiWall from "../playfield/MultiWall";
+import OverheadLight from "../playfield/OverheadLight";
 import Playfield from "../playfield/Playfield";
 import Plunger from "../playfield/Plunger";
 import Slingshot from "../playfield/Slingshot";
+import Spinner from "../playfield/Spinner";
 import Wall from "../playfield/Wall";
 import Backglass from "../ui/Backglass";
 import { Rect } from "../util/Rect";
 import Table from "./Table";
-import Spinner from "../playfield/Spinner";
 import Topglass from "./Topglass";
-import BallRemainingLights from "../playfield/BallRemainingLights";
+import BallSaveLamp from "../playfield/BallSaveLamp";
 
 const BOUNDS: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
 const INCLINE = degToRad(15);
@@ -45,21 +46,25 @@ export default class HockeyTable extends Table implements Entity {
 
   setupPlayfield() {
     // Playfield
-    const playfield = this.addChild(new Playfield(BOUNDS));
-    this.addChild(new Topglass(BOUNDS, -6));
-    this.addChild(new Plunger(V(26, 96)));
-    this.addChild(new BallRemainingLights(playfield, V(26, 94), 1));
-    this.addChild(new BallRemainingLights(playfield, V(26, 92), 2));
-    this.addChild(new BallRemainingLights(playfield, V(26, 90), 3));
+    this.addChildren(
+      new Playfield(BOUNDS),
+      new Topglass(BOUNDS, -6),
+      new Plunger(V(26, 96)),
+      new BallRemainingLamp(V(26, 94), 1),
+      new BallRemainingLamp(V(26, 92), 2),
+      new BallRemainingLamp(V(26, 90), 3)
+    );
 
     this.setupUpperPlayfield();
     this.setupLowerPlayfield();
 
     // outer walls
-    this.addChild(new Wall(V(-24, 0), V(-24, 100)));
-    this.addChild(new Wall(V(24, 30), V(24, 42), 0.8));
-    this.addChild(new Wall(V(24, 47), V(24, 100)));
-    this.addChild(new Wall(V(28, 24), V(28, 100)));
+    this.addChildren(
+      new Wall(V(-24, 0), V(-24, 100)),
+      new Wall(V(24, 30), V(24, 42), 0.8),
+      new Wall(V(24, 47), V(24, 100)),
+      new Wall(V(28, 24), V(28, 100))
+    );
   }
 
   setupUpperPlayfield() {
@@ -132,7 +137,10 @@ export default class HockeyTable extends Table implements Entity {
       new Slingshot(V(13, 10 + LO), V(9, 24 + LO), 0.7),
       new Slingshot(V(-13, 10 + LO), V(-9, 24 + LO), 0.7, true),
       new MultiWall([V(13, 10 + LO), V(13, 21 + LO), V(9, 24 + LO)], 0.9),
-      new MultiWall([V(-13, 10 + LO), V(-13, 21 + LO), V(-9, 24 + LO)], 0.9)
+      new MultiWall([V(-13, 10 + LO), V(-13, 21 + LO), V(-9, 24 + LO)], 0.9),
+      new Flipper(V(-8, 30.25 + LO), "left", 6.2),
+      new Flipper(V(8, 30.25 + LO), "right", 6.2),
+      new BallSaveLamp(V(0, LO + 30.5))
     );
 
     // Outlanes
@@ -146,9 +154,6 @@ export default class HockeyTable extends Table implements Entity {
     this.addChild(new Wall(V(24, 88), V(4, 100)));
 
     this.addChild(new Drain(V(-4, 100.4), V(4, 100.4)));
-
-    this.addChild(new Flipper(V(-8, 30.25 + LO), "left", 6.2));
-    this.addChild(new Flipper(V(8, 30.25 + LO), "right", 6.2));
   }
 
   setupLights() {

@@ -13,7 +13,7 @@ export default class Reflector extends BaseEntity implements Entity {
     this.cubeCamera = new CubeCamera(0.1, distance, renderTarget);
     this.object3ds.push(this.cubeCamera);
     this.cubeCamera.up.set(0, 0, -1);
-    this.disposeables = [renderTarget];
+    this.disposeables.push(renderTarget);
   }
 
   handlers = {

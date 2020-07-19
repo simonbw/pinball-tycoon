@@ -1,4 +1,4 @@
-import { Body, Capsule } from "p2";
+import { Body, Capsule, ContactEquation, Shape } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
@@ -65,7 +65,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     return a / AB.magnitude;
   }
 
-  onImpact(ball: Ball) {
+  onBeginContact(ball: Ball, _: Shape, __: Shape, eqs: ContactEquation[]) {
     const impactLocation = this.getPercentAcross(ball.getPosition());
     const mid = this.middlePercent;
     const denominator = impactLocation < mid ? mid : 1.0 - mid;
