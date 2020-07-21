@@ -11,11 +11,14 @@ import { CollisionGroups } from "../../Collision";
 import { TEXTURES } from "../../graphics/textures";
 import { P2Materials } from "../Materials";
 
-export const WALL_MATERIAL = new MeshStandardMaterial({
-  color: 0x6666ff,
-  roughness: 5.0,
-  metalness: 0.0,
-  flatShading: true,
+export const WALL_TOP_MATERIAL = new MeshStandardMaterial({
+  color: 0x333333,
+  roughness: 0.0,
+  metalness: 1.0,
+});
+export const WALL_SIDE_MATERIAL = new MeshStandardMaterial({
+  color: 0xffffff,
+  roughness: 0.1,
 });
 
 export default class Wall extends BaseEntity
@@ -55,7 +58,7 @@ export default class Wall extends BaseEntity
 
     if (renderSelf) {
       const geometry = new BoxBufferGeometry(length, width, 1 + 2 * width);
-      this.mesh = new Mesh(geometry, WALL_MATERIAL);
+      this.mesh = new Mesh(geometry, [WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL]);
       this.mesh.position.set(center.x, center.y, -width);
       this.mesh.rotateZ(delta.angle);
       this.mesh.castShadow = true;

@@ -359,11 +359,15 @@ export default class Game {
     const { shapeA, shapeB, bodyA, bodyB, contactEquations } = contactInfo;
     const ownerA = shapeA.owner || bodyA.owner;
     const ownerB = shapeB.owner || bodyB.owner;
-    if (ownerA?.onBeginContact) {
-      ownerA.onBeginContact(ownerB, shapeA, shapeB, contactEquations);
-    }
-    if (ownerB?.onBeginContact) {
-      ownerB.onBeginContact(ownerA, shapeB, shapeA, contactEquations);
+
+    // If either owner has been removed from the game, we shouldn't do the contact
+    if (!(ownerA && !ownerA.game) || (ownerB && !ownerB.game)) {
+      if (ownerA?.onBeginContact) {
+        ownerA.onBeginContact(ownerB, shapeA, shapeB, contactEquations);
+      }
+      if (ownerB?.onBeginContact) {
+        ownerB.onBeginContact(ownerA, shapeB, shapeA, contactEquations);
+      }
     }
   };
 
@@ -374,11 +378,15 @@ export default class Game {
     const { shapeA, shapeB, bodyA, bodyB } = contactInfo;
     const ownerA = shapeA.owner || bodyA.owner;
     const ownerB = shapeB.owner || bodyB.owner;
-    if (ownerA?.onEndContact) {
-      ownerA.onEndContact(ownerB, shapeA, shapeB);
-    }
-    if (ownerB?.onEndContact) {
-      ownerB.onEndContact(ownerA, shapeB, shapeA);
+
+    // If either owner has been removed from the game, we shouldn't do the contact
+    if (!(ownerA && !ownerA.game) || (ownerB && !ownerB.game)) {
+      if (ownerA?.onEndContact) {
+        ownerA.onEndContact(ownerB, shapeA, shapeB);
+      }
+      if (ownerB?.onEndContact) {
+        ownerB.onEndContact(ownerA, shapeB, shapeA);
+      }
     }
   };
 
@@ -404,11 +412,14 @@ export default class Game {
   }) => {
     const ownerA = e.bodyA.owner;
     const ownerB = e.bodyB.owner;
-    if (ownerA?.onImpact) {
-      ownerA.onImpact(ownerB);
-    }
-    if (ownerB?.onImpact) {
-      ownerB.onImpact(ownerA);
+    // If either owner has been removed from the game, we shouldn't do the contact
+    if (!(ownerA && !ownerA.game) || (ownerB && !ownerB.game)) {
+      if (ownerA?.onImpact) {
+        ownerA.onImpact(ownerB);
+      }
+      if (ownerB?.onImpact) {
+        ownerB.onImpact(ownerA);
+      }
     }
   };
 }

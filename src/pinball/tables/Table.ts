@@ -3,7 +3,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import { degToRad } from "../../core/util/MathUtil";
-import { V2d } from "../../core/Vector";
+import { V2d, V } from "../../core/Vector";
 import CameraController from "../controllers/CameraController";
 import MagicBallController from "../controllers/MagicBallController";
 import NudgeController from "../controllers/NudgeController";
@@ -13,6 +13,7 @@ import { Rect } from "../util/Rect";
 
 export default class Table extends BaseEntity implements Entity {
   readonly center: Vector3;
+  readonly coinSlotPos: V2d;
 
   constructor(
     public readonly bounds: Rect,
@@ -21,11 +22,8 @@ export default class Table extends BaseEntity implements Entity {
   ) {
     super();
 
-    this.center = new Vector3(
-      (bounds.left + bounds.right) / 2,
-      (bounds.top + bounds.bottom) / 2,
-      0
-    );
+    this.center = new Vector3(bounds.center.x, bounds.center.y, 0);
+    this.coinSlotPos = V((bounds.center.x + bounds.right) / 2, bounds.bottom);
 
     // Controllers
     this.addChildren(

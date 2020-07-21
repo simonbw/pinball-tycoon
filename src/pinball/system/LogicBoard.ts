@@ -5,6 +5,7 @@ import Ball from "../ball/Ball";
 import { SoundInstance } from "../sound/SoundInstance";
 import Table from "../tables/Table";
 import { getBinding } from "../ui/KeyboardBindings";
+import { PositionalSound } from "../sound/PositionalSound";
 
 export interface DrainEvent {
   type: "drain";
@@ -73,9 +74,11 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.game!.dispatch(updateScoreEvent(this.score));
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
 
-      // this.addChild(new SoundInstance("upgrade"));
+      this.addChild(
+        new PositionalSound("quarterDrop1", this.table.coinSlotPos)
+      );
 
-      await this.wait(0.3);
+      await this.wait(0.9);
 
       this.game!.dispatch({ type: "newBall" });
     },
@@ -84,6 +87,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
         this.addChild(new SoundInstance("upgrade"));
       }
       this.ballsRemaining -= 1;
+      await this.wait(0.7);
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
       this.game!.addEntity(new Ball(this.table.ballDropPosition.clone(), 6));
     },

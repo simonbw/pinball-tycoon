@@ -152,7 +152,7 @@ export default class HockeyTable extends Table implements Entity {
   }
 
   setupLights() {
-    const hemisphereLight = new HemisphereLight(0xffffff, 0x333333, 1);
+    const hemisphereLight = new HemisphereLight(0x333333, 0xffffff, 1);
     hemisphereLight.position.set(0, 0, -2);
     this.object3ds.push(hemisphereLight);
 

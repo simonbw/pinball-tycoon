@@ -44,6 +44,7 @@ const circleMaterialTemplate = new MeshStandardMaterial({
 });
 
 export default class Lamp extends BaseEntity implements Entity {
+  tags = ["lamp"];
   emissiveColor: number;
   glowColor: number;
 

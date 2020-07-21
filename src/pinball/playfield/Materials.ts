@@ -40,7 +40,7 @@ export const ContactMaterials = [
     friction: 1,
   }),
   new ContactMaterial(P2Materials.ball, P2Materials.post, {
-    restitution: 0.4,
+    restitution: 1.0,
     friction: 0.5,
   }),
   new ContactMaterial(P2Materials.ball, P2Materials.slingshot, {

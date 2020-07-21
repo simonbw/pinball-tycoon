@@ -29,7 +29,7 @@ export default class FPSMeter extends BaseEntity implements Entity {
     return {
       fps: Math.ceil(1000 / this.averageDuration),
       objCount: renderer?.scene.children.length ?? 0,
-      renderCount: renderer?.threeRenderer.info.render.calls ?? 0,
+      renderCount: renderer?.lastRendererInfo.render.calls ?? 0,
       bodyCount: this.game?.world.bodies.length ?? 0,
       entityCount: this.game?.entities.all.size ?? 0,
     };

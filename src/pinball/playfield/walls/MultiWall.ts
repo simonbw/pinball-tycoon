@@ -1,9 +1,9 @@
+import { ExtrudeBufferGeometry, Mesh } from "three";
 import BaseEntity from "../../../core/entity/BaseEntity";
 import Entity from "../../../core/entity/Entity";
-import { V2d, V } from "../../../core/Vector";
-import Wall, { WALL_MATERIAL } from "./Wall";
-import { Shape, ExtrudeBufferGeometry, Mesh } from "three";
+import { V2d } from "../../../core/Vector";
 import { makeOutlineShape } from "../../graphics/OutlineShape";
+import Wall, { WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL } from "./Wall";
 
 export default class MultiWall extends BaseEntity implements Entity {
   constructor(
@@ -28,10 +28,10 @@ export default class MultiWall extends BaseEntity implements Entity {
 
       const geometry = new ExtrudeBufferGeometry(shape, {
         bevelEnabled: false,
-        depth: 0.02, //2.0 * width,
+        depth: 2.0 * width,
       });
-      geometry.translate(0, 0, -0.02); // -2 * width);
-      this.mesh = new Mesh(geometry, WALL_MATERIAL);
+      geometry.translate(0, 0, -2 * width);
+      this.mesh = new Mesh(geometry, [WALL_TOP_MATERIAL, WALL_SIDE_MATERIAL]);
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = false;
 

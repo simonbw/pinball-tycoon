@@ -1,4 +1,10 @@
-import { Color, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import {
+  Color,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+  WebGLInfo,
+} from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
@@ -31,11 +37,15 @@ export class GameRenderer3d {
     this.composer = new EffectComposer(this.threeRenderer);
     this.composer.addPass(this.renderPass);
 
+    this.lastRendererInfo = { ...this.threeRenderer.info };
+
     window.addEventListener("resize", () => this.resize());
     document.body.appendChild(this.threeRenderer.domElement);
   }
 
+  lastRendererInfo!: Omit<WebGLInfo, "update" | "reset">;
   render() {
+    this.lastRendererInfo = { ...this.threeRenderer.info };
     this.threeRenderer.info.reset();
     this.composer.render();
   }

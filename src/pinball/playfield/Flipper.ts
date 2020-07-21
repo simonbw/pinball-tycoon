@@ -19,10 +19,12 @@ import {
 import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
+import { TEXTURES } from "../graphics/textures";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000cc,
   roughness: 0.7,
+  // map: TEXTURES.Wood,
 });
 
 const DOWN_ANGLE = degToRad(30);

@@ -22,8 +22,8 @@ export async function makeSVGTable(url: string) {
   );
 
   // Default light
-  const hemisphereLight = new HemisphereLight(0xffffff, 0x333333, 1);
-  hemisphereLight.position.set(0, 0, -2);
+  const hemisphereLight = new HemisphereLight(0xffffff, 0x555555, 1);
+  hemisphereLight.position.set(0, 0, -1);
   table.object3ds.push(hemisphereLight);
 
   // Backglass

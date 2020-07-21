@@ -1,3 +1,4 @@
+import ballDrop1 from "../../../resources/audio/ball-drop-1.flac";
 import ballRolling2 from "../../../resources/audio/ball-rolling-2.flac";
 import ballRolling from "../../../resources/audio/ball-rolling.flac";
 import boing1 from "../../../resources/audio/boing-1.flac";
@@ -22,10 +23,10 @@ import plungerHit from "../../../resources/audio/plunger-hit.flac";
 import plungerWind from "../../../resources/audio/plunger-wind.flac";
 import pop1 from "../../../resources/audio/pop1.flac";
 import postHit from "../../../resources/audio/post-hit.flac";
+import quarterDrop1 from "../../../resources/audio/quarter-drop-1.flac";
 import upgrade from "../../../resources/audio/upgrade.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
-import ballDrop1 from "../../../resources/audio/ball-drop-1.flac";
 
 // TODO: Don't do this like this. These shouln't be listed in core/
 export const SOUND_URLS = {
@@ -54,6 +55,7 @@ export const SOUND_URLS = {
   plungerWind,
   pop1,
   postHit,
+  quarterDrop1,
   upgrade,
   wallHit1,
   wallHit2,

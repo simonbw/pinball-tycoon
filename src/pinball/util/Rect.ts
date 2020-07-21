@@ -9,6 +9,22 @@ export class Rect {
   readonly height: number;
   readonly center: V2d;
 
+  get topLeft(): V2d {
+    return V(this.left, this.top);
+  }
+
+  get topRight(): V2d {
+    return V(this.right, this.top);
+  }
+
+  get bottomLeft(): V2d {
+    return V(this.left, this.bottom);
+  }
+
+  get bottomRight(): V2d {
+    return V(this.right, this.bottom);
+  }
+
   private constructor(
     top: number,
     bottom: number,
