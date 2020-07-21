@@ -38,7 +38,9 @@ export default class Bumper extends BaseEntity implements Entity {
   async onImpact(ball: Entity) {
     if (isBall(ball)) {
       this.game!.dispatch(scoreEvent(700));
-      this.addChild(new PositionalSound("pop1", this.getPosition()));
+      this.addChild(
+        new PositionalSound("pop1", this.getPosition(), { gain: 1.5 })
+      );
       const impulse = ball
         .getPosition()
         .sub(this.getPosition())

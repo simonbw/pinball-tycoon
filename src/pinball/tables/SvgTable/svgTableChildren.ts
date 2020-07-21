@@ -1,22 +1,28 @@
-import { matches } from "hast-util-select";
-import { HastSvgElementNode, HastSvgNode } from "svg-parser";
-import { Matrix3, Matrix } from "three";
+import { Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { getExtractors } from "./getExtrators";
 
-export function getChildrenFromHast(
-  node: HastSvgNode,
+export function getChildrenFromDoc(doc: Document) {
+  return getChildrenFromNode(doc.getRootNode());
+}
+
+function getChildrenFromNode(
+  node: Node,
   transform: Matrix3 = new Matrix3(),
   entities: Entity[] = []
-): Entity[] {
-  if (node.type === "text" || matches(".ignore", node)) {
+) {
+  if (isTextNode(node)) {
     return entities;
   }
 
-  if (node.type === "element") {
-    if (node.properties?.transform) {
-      const localMatrix = parseTransform(node.properties.transform);
-      transform = transform.clone().multiply(localMatrix);
+  if (isSVGElement(node)) {
+    if (node.matches(".ignore")) {
+      return entities;
+    }
+
+    const localTransform = node.getAttribute("transform");
+    if (localTransform) {
+      transform = transform.clone().multiply(parseTransform(localTransform));
     }
 
     for (const extractor of getExtractors()) {
@@ -27,11 +33,9 @@ export function getChildrenFromHast(
     }
   }
 
-  for (const child of node.children) {
-    if (typeof child === "object") {
-      getChildrenFromHast(child, transform, entities);
-    }
-  }
+  node.childNodes.forEach((child) =>
+    getChildrenFromNode(child, transform, entities)
+  );
 
   return entities;
 }
@@ -44,4 +48,16 @@ function parseTransform(s: string): Matrix3 {
     .map((v) => parseFloat(v));
   matrix.set(a, c, tx, b, d, ty, 0, 0, 1);
   return matrix;
+}
+
+function isTextNode(node: Node): node is Text {
+  return node.nodeType === Node.TEXT_NODE;
+}
+
+function isElement(node: Node): node is Element {
+  return node.nodeType === Node.ELEMENT_NODE;
+}
+
+function isSVGElement(node: Node): node is SVGElement {
+  return isElement(node);
 }

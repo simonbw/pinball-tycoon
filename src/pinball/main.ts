@@ -1,3 +1,4 @@
+import hockeyTable from "../../resources/tables/hockey-table.svg";
 import AutoPauser from "../core/AutoPauser";
 import Game from "../core/Game";
 import GraphicsQualityController from "./controllers/GraphicsQualityController";
@@ -5,6 +6,7 @@ import PauseController from "./controllers/PauseController";
 import { ContactMaterials } from "./playfield/Materials";
 import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
+import { makeSVGTable } from "./tables/SvgTable/SVGTable";
 import HockeyTable from "./tables/HockeyTable";
 
 declare global {
@@ -33,8 +35,8 @@ export async function main() {
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
-  game.addEntity(new HockeyTable());
-  // game.addEntity(await makeSVGTable(hockeyTable));
+  // game.addEntity(new HockeyTable());
+  game.addEntity(await makeSVGTable(hockeyTable));
 
   // So we don't remove the html from the screen until we've actually hopefully rendered the table
   preloader.destroy();

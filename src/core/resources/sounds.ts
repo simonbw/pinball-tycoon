@@ -1,3 +1,4 @@
+import ballRolling2 from "../../../resources/audio/ball-rolling-2.flac";
 import ballRolling from "../../../resources/audio/ball-rolling.flac";
 import boing1 from "../../../resources/audio/boing-1.flac";
 import boing2 from "../../../resources/audio/boing-2.flac";
@@ -14,20 +15,23 @@ import gameOver from "../../../resources/audio/game-over.flac";
 import gameStart from "../../../resources/audio/game-start.flac";
 import gateHit from "../../../resources/audio/gate-hit.flac";
 import goal from "../../../resources/audio/goal.flac";
+import goalieDown from "../../../resources/audio/goalie-down.flac";
 import newBall from "../../../resources/audio/new-ball.flac";
 import nudge1 from "../../../resources/audio/nudge-1.flac";
 import plungerHit from "../../../resources/audio/plunger-hit.flac";
 import plungerWind from "../../../resources/audio/plunger-wind.flac";
 import pop1 from "../../../resources/audio/pop1.flac";
 import postHit from "../../../resources/audio/post-hit.flac";
+import upgrade from "../../../resources/audio/upgrade.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
-import goalieDown from "../../../resources/audio/goalie-down.flac";
-import upgrade from "../../../resources/audio/upgrade.flac";
+import ballDrop1 from "../../../resources/audio/ball-drop-1.flac";
 
 // TODO: Don't do this like this. These shouln't be listed in core/
 export const SOUND_URLS = {
+  ballDrop1,
   ballRolling,
+  ballRolling2,
   boing1,
   boing2,
   defenderDown1,

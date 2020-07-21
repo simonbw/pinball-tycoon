@@ -2,6 +2,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import Game from "../../core/Game";
 import { SoundName, SOUNDS } from "../../core/resources/sounds";
+import { rUniform } from "../../core/util/Random";
 
 export interface SoundOptions {
   pan?: number;
@@ -140,16 +141,23 @@ export class SoundInstance extends BaseEntity implements Entity {
     const bufferDuration = this.sourceNode.buffer!.duration;
     if (!this.continuous && this.elapsed >= bufferDuration) {
       this.destroy();
-      return;
+    } else {
+      this.restartSound(this.elapsed % bufferDuration);
     }
+  }
 
+  restartSound(startTime: number) {
+    this.sourceNode.disconnect();
     const newNode = this.game!.audio.createBufferSource();
     newNode.buffer = this.sourceNode.buffer;
     newNode.loop = this.sourceNode.loop;
     this.sourceNode = newNode;
     this.sourceNode.connect(this.panNode);
-    const startTime = this.elapsed % bufferDuration;
     this.sourceNode.start(this.game!.audio.currentTime, startTime);
+  }
+
+  jumpToRandom() {
+    this.restartSound(rUniform(0, this.sourceNode.buffer!.duration * 0.99));
   }
 
   onPause() {

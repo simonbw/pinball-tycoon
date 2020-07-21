@@ -1,8 +1,8 @@
-import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { BallsRemainingEvent } from "../system/LogicBoard";
+import BaseEntity from "../../../core/entity/BaseEntity";
+import Entity from "../../../core/entity/Entity";
+import { BallsRemainingEvent } from "../../system/LogicBoard";
 import Lamp from "./Lamp";
-import { KeyCode } from "../../core/io/Keys";
+import { KeyCode } from "../../../core/io/Keys";
 
 export default class BallSaveLamp extends BaseEntity implements Entity {
   lamp: Lamp;

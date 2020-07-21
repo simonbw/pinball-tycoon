@@ -1,24 +1,18 @@
 import { Body, Box } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import { V2d } from "../../core/Vector";
+import { V } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
+import { Rect } from "../util/Rect";
 
 export default class Drain extends BaseEntity implements Entity {
-  constructor(left: V2d, right: V2d) {
+  constructor({ width, height, center }: Rect) {
     super();
-    const center = left.add(right).imul(0.5);
-    const width = right.x - left.x;
-    const height = 1;
-
-    // const graphics = new Graphics();
-    // graphics.beginFill(0x000000);
-    // graphics.drawRect(left.x, left.y, width, height);
 
     this.body = new Body({
       collisionResponse: false,
-      position: center,
+      position: center.clone(),
     });
     const shape = new Box({ width, height });
     shape.collisionGroup = CollisionGroups.Table;

@@ -1,13 +1,25 @@
+July 21
+  [ ] Gamepad
+  [ ] More lamps
+  [ ] Ball Saves
+  [ ] Performance?
+  [ ] Jackpot?
+  [ ] Stanley Cup
+
+
+July 20
+  [√] Make table in SVG
+  [√] Ball Drop Sound
+  [ ] Quarter Drop Sound
+  [√] Fix Multiwall offset proble
 
 July 19
-  [ ] Animate light on/off
-  [ ] More lights
+  [√] Animate lamps on/off
+  [√] Make table in SVG
 
 July 18
   [√] Tune Spinner
   [√] Ball remaining lights
-  [ ] Ball Saves
-  [ ] Performance?
 
 July 17 — Playfield:
   [√] Spinner

@@ -125,7 +125,6 @@ class SpinnerMesh extends BaseEntity implements Entity {
     const geometry = new BoxBufferGeometry(spinner.width, 0.1, height);
     geometry.rotateZ(spinner.body.angle);
     this.mesh = new Mesh(geometry, material);
-
     const [x, y] = spinner.body.position;
     this.mesh.position.set(x, y, -height - 0.2);
     this.mesh.up.set(0, 0, -1);
@@ -133,6 +132,8 @@ class SpinnerMesh extends BaseEntity implements Entity {
     this.mesh.receiveShadow = false;
 
     this.reflector.parentMesh = this.mesh;
+
+    this.disposeables.push(geometry, material);
   }
 
   onRender() {

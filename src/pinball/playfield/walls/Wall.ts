@@ -1,22 +1,20 @@
 import { Body, Capsule } from "p2";
 import { BoxBufferGeometry, Mesh, MeshStandardMaterial } from "three";
-import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { colorFade } from "../../core/util/ColorUtils";
-import { V2d } from "../../core/Vector";
+import BaseEntity from "../../../core/entity/BaseEntity";
+import Entity from "../../../core/entity/Entity";
+import { V2d } from "../../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
-} from "../ball/BallCollisionInfo";
-import { TEXTURES } from "../graphics/textures";
-import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+} from "../../ball/BallCollisionInfo";
+import { CollisionGroups } from "../../Collision";
+import { TEXTURES } from "../../graphics/textures";
+import { P2Materials } from "../Materials";
 
 export const WALL_MATERIAL = new MeshStandardMaterial({
-  color: 0x111111,
+  color: 0x6666ff,
   roughness: 5.0,
   metalness: 0.0,
-  roughnessMap: TEXTURES.IronScuffedRoughness,
   flatShading: true,
 });
 

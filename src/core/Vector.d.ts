@@ -1,5 +1,6 @@
 type ArrayLen2 = [number, number];
 
+/** Simple function to always return a new V2d */
 export function V(a: ArrayLen2): V2d;
 export function V(x: number, y: number): V2d;
 

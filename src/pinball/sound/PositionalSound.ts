@@ -4,7 +4,7 @@ import { SoundName } from "../../core/resources/sounds";
 import { V, V2d } from "../../core/Vector";
 import { SoundInstance, SoundOptions } from "./SoundInstance";
 
-const LISTENER: V2d = V(0, 100);
+const LISTENER: V2d = V(0, 120);
 const SCALE_Y = 0.5;
 const FALL_OFF = 0.025;
 const SPREAD = 0.7;

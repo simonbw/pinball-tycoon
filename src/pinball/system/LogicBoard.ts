@@ -85,7 +85,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
       }
       this.ballsRemaining -= 1;
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
-      this.game!.addEntity(new Ball(this.table.ballDropPosition.clone()));
+      this.game!.addEntity(new Ball(this.table.ballDropPosition.clone(), 6));
     },
     drain: async ({ ball }: DrainEvent) => {
       ball.destroy();

@@ -43,12 +43,7 @@ export default class BallMesh extends BaseEntity implements Entity {
   }
 
   onRender() {
-    const [x, y] = this.ball.getPosition();
-    let z = -(this.ball.getHeight() + this.ball.radius);
-    if (this.ball.captured) {
-      // z += this.ball.radius * 0.5;
-    }
-    this.mesh.position.set(x, y, z);
+    this.mesh.position.copy(this.ball.getPosition3());
 
     if (this.game!.framenumber % 4 === 1) {
       this.reflector.update();

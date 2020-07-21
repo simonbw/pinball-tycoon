@@ -1,6 +1,6 @@
-import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { BallsRemainingEvent } from "../system/LogicBoard";
+import BaseEntity from "../../../core/entity/BaseEntity";
+import Entity from "../../../core/entity/Entity";
+import { BallsRemainingEvent } from "../../system/LogicBoard";
 import Lamp from "./Lamp";
 
 export default class BallRemainingLamp extends BaseEntity implements Entity {

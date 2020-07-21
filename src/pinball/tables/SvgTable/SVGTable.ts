@@ -1,24 +1,24 @@
-import { parse as parseSvgText } from "svg-parser";
 import { HemisphereLight } from "three";
 import Playfield from "../../playfield/Playfield";
+import Backglass from "../../ui/Backglass";
 import Table from "../Table";
 import {
   getBallDropPosition,
   getIncline,
   getTableBounds,
 } from "./svgTableAttributes";
-import { getChildrenFromHast } from "./svgTableChildren";
-import { cleanupTree, fetchText } from "./svgUtils";
-import Backglass from "../../ui/Backglass";
+import { getChildrenFromDoc } from "./svgTableChildren";
+import { fetchText } from "./svgUtils";
 
 export async function makeSVGTable(url: string) {
   const svgText = await fetchText(url);
-  const hastTree = cleanupTree(parseSvgText(svgText));
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgText, "image/svg+xml");
 
   const table = new Table(
-    getTableBounds(hastTree),
-    getIncline(hastTree),
-    getBallDropPosition(hastTree)
+    getTableBounds(doc),
+    getIncline(doc),
+    getBallDropPosition(doc)
   );
 
   // Default light
@@ -34,7 +34,7 @@ export async function makeSVGTable(url: string) {
   table.addChild(new Playfield(table.bounds));
 
   // Load everything else up
-  table.addChildren(...getChildrenFromHast(hastTree));
+  table.addChildren(...getChildrenFromDoc(doc));
 
   return table;
 }

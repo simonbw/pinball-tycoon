@@ -22,7 +22,7 @@ export default class Playfield extends BaseEntity implements Entity {
     // Bound the ball to the playfield
     // Maybe not actually necessary, but helps avoid rare cases
     this.body.addShape(makeP2Plane(), [0, top]); // Top
-    this.body.addShape(makeP2Plane(), [0, bottom], Math.PI); // Bottom
+    // this.body.addShape(makeP2Plane(), [0, bottom], Math.PI); // Bottom
     this.body.addShape(makeP2Plane(), [left, 0], -Math.PI / 2); // Left
     this.body.addShape(makeP2Plane(), [right, 0], Math.PI / 2); // Right
 

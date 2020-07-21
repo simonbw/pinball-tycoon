@@ -15,12 +15,11 @@ import {
 } from "./BallCollisionInfo";
 import BallMesh from "./BallMesh";
 import BallSoundController from "./BallSoundController";
+import Table from "../tables/Table";
 
 const RADIUS = 1.0625; // Radius in 1/2 inches
-const MASS = 2.8; // In ounces
-const FRICTION = 0.005; // rolling friction
-const TABLE_ANGLE = degToRad(4); // amount of tilt in the table
-const GRAVITY = 2.0 * 386.0 * Math.sin(TABLE_ANGLE); // 1/2 inches/s^2
+const FRICTION = 0.008; // rolling friction
+const GRAVITY = 2.0 * 386.0; // 1/2 inches/s^2
 
 export default class Ball extends BaseEntity
   implements Entity, WithBallCollisionInfo {
@@ -33,17 +32,21 @@ export default class Ball extends BaseEntity
   ballCollisionInfo: BallCollisionInfo = {
     beginContactSound: "postHit",
   };
+  z: number; // Height above the table
+  vz: number = 0;
 
-  constructor(position: V2d, velocity: V2d = V(0, 0)) {
+  constructor(position: V2d, z: number = 1, velocity: V2d = V(0, 0)) {
     super();
 
+    this.z = z;
+
     this.body = new CCDBody({
-      mass: MASS,
+      mass: 2.8,
       ccdSpeedThreshold: 30, // I think this can help performance a lot
       ccdIterations: 5,
+      position: position.clone(),
+      velocity: velocity.clone(),
     });
-    this.body.position = position;
-    this.body.velocity = velocity;
 
     const shape = new Circle({ radius: this.radius });
     shape.material = P2Materials.ball;
@@ -58,37 +61,64 @@ export default class Ball extends BaseEntity
 
   /** The height of the bottom of the ball above the playfield */
   getHeight(): number {
-    if (this.captured) {
-      return -this.radius / 3;
-    }
-    return 0;
+    return this.z;
   }
 
   getPosition3() {
     const [x, y] = this.getPosition();
-    const z = this.getHeight() + this.radius;
+    const z = -(this.z + this.radius);
     return new Vector3(x, y, z);
+  }
+
+  getTable(): Table | undefined {
+    if (this.parent instanceof Table) {
+      return this.parent;
+    }
+    return undefined;
+  }
+
+  getIncline() {
+    return this.getTable()?.incline ?? degToRad(4);
   }
 
   onTick(dt: number) {
     // Gravity
     if (!this.captured) {
-      this.body.applyForce([0, GRAVITY * MASS]);
+      // Even in the air horizontal gravity applies
+      const yGravity = GRAVITY * Math.sin(this.getIncline());
+      this.body.applyForce([0, yGravity * this.body.mass]);
 
-      // Spin
-      const spinForce = V(this.body.velocity)
-        .inormalize()
-        .irotate90cw()
-        .imul(this.body.angularVelocity * 0.05);
-      this.body.applyForce(spinForce);
+      // We're in the air
+      if (this.z > 0) {
+        const zGravity = -GRAVITY * Math.cos(this.getIncline());
+        this.vz += zGravity * dt * this.body.mass;
+        this.z += this.vz * dt;
 
-      // Friction
-      const frictionForce = V(this.body.velocity).mul(-FRICTION);
-      this.body.applyForce(frictionForce);
+        // We hit the ground
+        if (this.z <= 0) {
+          const gain = clamp(Math.abs(this.vz) * 0.2) * 0.5;
+          this.soundController.emitCollisionSound("ballDrop1", gain);
+          this.vz = 0;
+          this.z = 0;
+        }
+      } else {
+        // We're on the ground
 
-      // TODO: Better angular momentum
-      const n2d = V(this.body.velocity).rotate90cw().imul(RADIUS);
-      this.angularMomentum.set(n2d.x, n2d.y, 0);
+        // Spin
+        const spinForce = V(this.body.velocity)
+          .inormalize()
+          .irotate90cw()
+          .imul(this.body.angularVelocity * 0.05);
+        this.body.applyForce(spinForce);
+
+        // Friction
+        const frictionForce = V(this.body.velocity).imul(-FRICTION);
+        this.body.applyForce(frictionForce);
+
+        // TODO: Better angular momentum
+        const n2d = V(this.body.velocity).rotate90cw().imul(RADIUS);
+        this.angularMomentum.set(n2d.x, n2d.y, 0);
+      }
     }
   }
 
@@ -128,7 +158,7 @@ export default class Ball extends BaseEntity
       if (beginContactSound) {
         const impact = Math.abs(equations[0].getVelocityAlongNormal());
         const gain = clamp(impact / 50) ** 2;
-        this.soundController.emitSound(beginContactSound, gain);
+        this.soundController.emitCollisionSound(beginContactSound, gain);
       }
     }
   }
@@ -144,7 +174,7 @@ export default class Ball extends BaseEntity
       if (duringContactSound) {
         const impact = Math.abs(equations[0].getVelocityAlongNormal());
         const gain = clamp(impact / 50) ** 2;
-        this.soundController.emitSound(duringContactSound, gain);
+        this.soundController.emitCollisionSound(duringContactSound, gain);
       }
     }
   }

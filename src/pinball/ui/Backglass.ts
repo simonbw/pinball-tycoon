@@ -26,11 +26,11 @@ export default class Backglass extends BaseEntity implements Entity {
     super();
     this.fpsMeter = this.addChild(new FPSMeter());
 
-    const width = table.width;
+    const width = table.bounds.width;
     const height = 24;
 
     const canvas = document.createElement("canvas");
-    canvas.width = table.width * 16;
+    canvas.width = table.bounds.width * 16;
     canvas.height = height * 16;
 
     this.ctx = canvas.getContext("2d")!;
@@ -44,7 +44,7 @@ export default class Backglass extends BaseEntity implements Entity {
       emissiveMap: this.texture,
     });
 
-    const x = table.center.x;
+    const x = table.bounds.center.x;
     const geometry = new PlaneBufferGeometry(width, height);
     geometry.rotateX(-Math.PI / 2);
     geometry.translate(x, 0, -height / 2);

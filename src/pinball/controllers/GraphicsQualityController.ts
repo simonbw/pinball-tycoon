@@ -1,3 +1,4 @@
+import { PCFSoftShadowMap } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { KeyCode } from "../../core/io/Keys";
@@ -71,6 +72,7 @@ export default class GraphicsQualityController extends BaseEntity
   setHigh() {
     CURRENT_QUALITY = "high";
     this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
     this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.composer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("high"));

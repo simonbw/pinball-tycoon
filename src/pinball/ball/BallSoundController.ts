@@ -14,7 +14,7 @@ export default class BallSoundController extends BaseEntity implements Entity {
   constructor(public ball: Ball) {
     super();
     this.rollingSound = this.addChild(
-      new PositionalSound("ballRolling", ball.getPosition(), {
+      new PositionalSound("ballRolling2", ball.getPosition(), {
         continuous: true,
         gain: 0,
       })
@@ -22,17 +22,25 @@ export default class BallSoundController extends BaseEntity implements Entity {
   }
 
   onTick() {
-    const position = this.ball.getPosition();
-    this.rollingSound.setPosition(position);
-    const v = V(this.ball.body.velocity);
-    const speed = v.magnitude / MAX_SPEED; // approximately [0,1]
-    this.rollingSound.speed = 0.6 + speed * 2.3;
-    this.rollingSound.gain = clamp(speed, 0, 1.2);
+    if (this.ball.z > 0) {
+      this.rollingSound.gain = 0;
+    } else {
+      const position = this.ball.getPosition();
+      this.rollingSound.setPosition(position);
+      const v = V(this.ball.body.velocity);
+      const speed = v.magnitude / MAX_SPEED; // approximately [0,1]
+      this.rollingSound.speed = 0.6 + speed * 1.3;
+      this.rollingSound.gain = clamp(speed, 0, 1.2) * 0.9;
+    }
   }
 
-  emitSound(soundName: SoundName, gain: number = 1.0) {
+  emitCollisionSound(soundName: SoundName, gain: number = 1.0) {
     const position = this.ball.getPosition();
     const speed = rNormal(1.0, 0.8);
     this.addChild(new PositionalSound(soundName, position, { gain, speed }));
+
+    if (gain > 0.1) {
+      this.rollingSound.jumpToRandom();
+    }
   }
 }

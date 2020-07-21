@@ -14,21 +14,9 @@ import { Rect } from "../util/Rect";
 export default class Table extends BaseEntity implements Entity {
   readonly center: Vector3;
 
-  get width() {
-    return this.bounds.right - this.bounds.left;
-  }
-  get height() {
-    return this.bounds.bottom - this.bounds.top;
-  }
-
   constructor(
-    public readonly bounds: Rect = {
-      top: 0,
-      bottom: 100,
-      left: -24,
-      right: 28,
-    },
-    public readonly incline: number = degToRad(15),
+    public readonly bounds: Rect,
+    public readonly incline: number = degToRad(4),
     public readonly ballDropPosition: V2d
   ) {
     super();

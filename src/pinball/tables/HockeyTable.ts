@@ -4,29 +4,29 @@ import Entity from "../../core/entity/Entity";
 import { degToRad } from "../../core/util/MathUtil";
 import { V } from "../../core/Vector";
 import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
-import BallRemainingLamp from "../playfield/BallRemainingLamp";
 import Bumper from "../playfield/Bumper";
-import CurveWall from "../playfield/CurveWall";
 import Defender from "../playfield/Defender";
 import Drain from "../playfield/Drain";
 import Flipper from "../playfield/Flipper";
 import Gate from "../playfield/Gate";
 import Goal from "../playfield/Goal";
 import Goalie from "../playfield/Goalie";
-import MultiWall from "../playfield/MultiWall";
+import BallRemainingLamp from "../playfield/lamps/BallRemainingLamp";
+import BallSaveLamp from "../playfield/lamps/BallSaveLamp";
 import OverheadLight from "../playfield/OverheadLight";
 import Playfield from "../playfield/Playfield";
 import Plunger from "../playfield/Plunger";
 import Slingshot from "../playfield/Slingshot";
 import Spinner from "../playfield/Spinner";
-import Wall from "../playfield/Wall";
+import BezierWall from "../playfield/walls/BezierWall";
+import MultiWall from "../playfield/walls/MultiWall";
+import Wall from "../playfield/walls/Wall";
 import Backglass from "../ui/Backglass";
 import { Rect } from "../util/Rect";
 import Table from "./Table";
 import Topglass from "./Topglass";
-import BallSaveLamp from "../playfield/BallSaveLamp";
 
-const BOUNDS: Rect = { top: 0, bottom: 100, left: -24, right: 28 };
+const BOUNDS: Rect = Rect.fromCorners([-24, 0], [28, 100]);
 const INCLINE = degToRad(15);
 const BALL_DROP = V(26, 92);
 
@@ -101,10 +101,10 @@ export default class HockeyTable extends Table implements Entity {
       new Flipper(V(22, 48.5), "right", 3.6, degToRad(-20), degToRad(50))
     );
 
-    //
+    // Top curves?
     this.addChildren(
-      new CurveWall(new Bezier(bp(0, 0), bp(28, 0), bp(28, 24)), 40),
-      new CurveWall(new Bezier(bp(0, 0), bp(-24, 0), bp(-24, 24)), 40)
+      new BezierWall(new Bezier(bp(0, 0), bp(28, 0), bp(28, 24)), 40),
+      new BezierWall(new Bezier(bp(0, 0), bp(-24, 0), bp(-24, 24)), 40)
     );
 
     // Upperer stuff
@@ -115,15 +115,15 @@ export default class HockeyTable extends Table implements Entity {
     );
 
     this.addChild(
-      new CurveWall(new Bezier(bp(-2, 12), bp(-22, 2), bp(-20, 28)), 40, 0.6)
+      new BezierWall(new Bezier(bp(-2, 12), bp(-22, 2), bp(-20, 28)), 40, 0.6)
     );
 
     this.addChild(new Gate(V(4, 4), V(0, 0), degToRad(110)));
     this.addChild(
-      new CurveWall(new Bezier(bp(4, 4), bp(26, 4), bp(24, 30)), 40, 0.8)
+      new BezierWall(new Bezier(bp(4, 4), bp(26, 4), bp(24, 30)), 40, 0.8)
     );
     this.addChild(
-      new CurveWall(new Bezier(bp(6, 11), bp(20, 0), bp(24, 30)), 40, 0.8)
+      new BezierWall(new Bezier(bp(6, 11), bp(20, 0), bp(24, 30)), 40, 0.8)
     );
     this.addChild(new Wall(V(4, 4), V(6, 11), 0.8));
   }
@@ -140,20 +140,15 @@ export default class HockeyTable extends Table implements Entity {
       new MultiWall([V(-13, 10 + LO), V(-13, 21 + LO), V(-9, 24 + LO)], 0.9),
       new Flipper(V(-8, 30.25 + LO), "left", 6.2),
       new Flipper(V(8, 30.25 + LO), "right", 6.2),
-      new BallSaveLamp(V(0, LO + 30.5))
-    );
-
-    // Outlanes
-    this.addChildren(
+      new BallSaveLamp(V(0, LO + 30.5)),
+      // Outlanes
       new MultiWall([V(-20, LO - 2), V(-20, 22 + LO), V(-8, 30 + LO)]),
-      new MultiWall([V(20, LO - 2), V(20, 22 + LO), V(8, 30 + LO)])
+      new MultiWall([V(20, LO - 2), V(20, 22 + LO), V(8, 30 + LO)]),
+      // Bottom stuff
+      new Wall(V(-24, 88), V(-4, 100)),
+      new Drain(Rect.fromTopLeft([-9, BOUNDS.bottom], 18, 4)),
+      new Wall(V(24, 88), V(4, 100))
     );
-
-    // Bottom ramp to drain
-    this.addChild(new Wall(V(-24, 88), V(-4, 100)));
-    this.addChild(new Wall(V(24, 88), V(4, 100)));
-
-    this.addChild(new Drain(V(-4, 100.4), V(4, 100.4)));
   }
 
   setupLights() {

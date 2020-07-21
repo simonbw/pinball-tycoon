@@ -9,15 +9,15 @@ import {
   Object3D,
   PlaneBufferGeometry,
 } from "three";
-import BaseEntity from "../../core/entity/BaseEntity";
-import Entity from "../../core/entity/Entity";
-import { colorFade, darken, lighten } from "../../core/util/ColorUtils";
-import { lerp } from "../../core/util/MathUtil";
-import { createRadialGradient } from "../graphics/proceduralTextures";
+import BaseEntity from "../../../core/entity/BaseEntity";
+import Entity from "../../../core/entity/Entity";
+import { colorFade, darken, lighten } from "../../../core/util/ColorUtils";
+import { lerp } from "../../../core/util/MathUtil";
+import { createRadialGradient } from "../../graphics/proceduralTextures";
 
 const UNLIT_EMISSIVE = new Color(0x000000);
 
-const glowTexture = createRadialGradient(64, 1.5);
+const glowTexture = createRadialGradient(64, 1.4);
 glowTexture.magFilter = LinearFilter;
 glowTexture.minFilter = LinearFilter;
 const glowMaterialTemplate = new MeshBasicMaterial({
@@ -56,6 +56,7 @@ export default class Lamp extends BaseEntity implements Entity {
   constructor(
     [x, y]: [number, number],
     color: number,
+    size: number = 0.6,
     private toggleTime: number = 0.05
   ) {
     super();
@@ -64,7 +65,7 @@ export default class Lamp extends BaseEntity implements Entity {
     this.emissiveColor = lighten(color, 0.0);
     this.glowColor = darken(color, 0.3);
 
-    const geometry = new CircleBufferGeometry(0.6, 32);
+    const geometry = new CircleBufferGeometry(size, 32);
     this.material = circleMaterialTemplate.clone();
     this.material.color.set(materialColor);
     this.mesh = new Mesh(geometry, this.material);
@@ -78,8 +79,10 @@ export default class Lamp extends BaseEntity implements Entity {
     this.glowMaterial.color.set(0x000000);
     this.glow = new Mesh(glowGeometry, this.glowMaterial);
     this.glow.rotateX(Math.PI);
-    this.glow.scale.set(5, 5, 0);
+    this.glow.scale.set(size * 8, size * 8, 0);
     this.glow.position.set(x, y, -0.1);
+    this.glow.updateMatrix();
+    this.glow.matrixAutoUpdate = false;
     this.object3ds.push(this.glow);
 
     this.setPercentImmediate(0);
