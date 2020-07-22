@@ -36,7 +36,8 @@ const extensions = [
 ];
 
 function log(...args) {
-  console.log(...args);
+  // Just so this stops showing up in searches for console dot log
+  console["log"](...args);
 }
 
 // The contents of the generated file

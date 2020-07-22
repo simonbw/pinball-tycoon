@@ -1,35 +1,42 @@
 import { KeyCode } from "../../core/io/Keys";
 
+/** Used for editor hints */
+function K(k: KeyCode): KeyCode {
+  return k;
+}
+
 const DEFAULT_BINDINGS = {
-  START_GAME: "KeyS" as KeyCode,
+  START_GAME: K("KeyS"),
 
-  LEFT_FLIPPER: "KeyX" as KeyCode,
-  RIGHT_FLIPPER: "Period" as KeyCode,
-  PLUNGE: "Enter" as KeyCode,
+  LEFT_FLIPPER: K("KeyX"),
+  RIGHT_FLIPPER: K("Period"),
+  PLUNGE: K("Enter"),
 
-  NUDGE_RIGHT: "Slash" as KeyCode,
-  NUDGE_LEFT: "KeyZ" as KeyCode,
-  NUDGE_UP_LEFT: "KeyC" as KeyCode,
-  NUDGE_UP_RIGHT: "Comma" as KeyCode,
+  NUDGE_RIGHT: K("Slash"),
+  NUDGE_LEFT: K("KeyZ"),
+  NUDGE_UP_LEFT: K("KeyC"),
+  NUDGE_UP_RIGHT: K("Comma"),
 
-  PAUSE: "Escape" as KeyCode,
+  PAUSE: K("Escape"),
 
-  SLO_MO: "ShiftLeft" as KeyCode,
-  SLO_MO2: "ShiftRight" as KeyCode,
+  SLO_MO: K("ShiftLeft"),
+  SLO_MO2: K("ShiftRight"),
 
-  CAMERA_TOGGLE: "KeyY" as KeyCode,
+  CAMERA_TOGGLE: K("KeyY"),
 
-  QUALITY_TOGGLE: "KeyQ" as KeyCode,
-  QUALITY_LOW: "Digit1" as KeyCode,
-  QUALITY_MEDIUM: "Digit2" as KeyCode,
-  QUALITY_HIGH: "Digit3" as KeyCode,
+  QUALITY_TOGGLE: K("KeyQ"),
+  QUALITY_LOW: K("Digit1"),
+  QUALITY_MEDIUM: K("Digit2"),
+  QUALITY_HIGH: K("Digit3"),
 
-  MAGIC_MULTI: "KeyB" as KeyCode,
-  MAGIC_RESET: "KeyR" as KeyCode,
-  MAGIC_LEFT: "ArrowLeft" as KeyCode,
-  MAGIC_UP: "ArrowUp" as KeyCode,
-  MAGIC_RIGHT: "ArrowRight" as KeyCode,
-  MAGIC_DOWN: "ArrowDown" as KeyCode,
+  MAGIC_MULTI: K("KeyB"),
+  MAGIC_RESET: K("KeyR"),
+  MAGIC_LEFT: K("ArrowLeft"),
+  MAGIC_UP: K("ArrowUp"),
+  MAGIC_RIGHT: K("ArrowRight"),
+  MAGIC_DOWN: K("ArrowDown"),
+
+  TOGGLE_STATS: K("Backquote"),
 };
 
 let bindings = { ...DEFAULT_BINDINGS };

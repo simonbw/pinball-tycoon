@@ -83,7 +83,7 @@
     <title>First Gate</title>
   </line>
   <path d="M 19.321 71.916 L 23.933 69.078 L 23.933 62.469 L 19.321 59.469 L 19.321 71.916 Z" style="stroke: rgb(0, 0, 0); fill: none;" transform="matrix(-1, 0, 0, -1, 43.254, 128.360001)"/>
-  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" d="M -14.763 27.712 C -5.405 27.706 0.437 18.601 -4.245 11.32 C -6.847 7.275 -12.024 5.165 -17.124 6.07" transform="matrix(-0.232241, -0.972658, 0.972658, -0.232241, -28.477845, 11.09573)"/>
+  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" d="M -14.763 27.712 C -4.917 28.544 0.437 18.601 -4.245 11.32 C -6.847 7.275 -10.953 4.881 -17.124 6.07" transform="matrix(-0.157579, -0.987506, 0.987506, -0.157579, -27.990951, 9.695957)"/>
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-0.797" y2="0.073" class="gate" x3="24" y3="47" data-swing="150">
     <title>First Gate</title>
   </line>

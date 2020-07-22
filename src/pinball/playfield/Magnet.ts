@@ -26,8 +26,6 @@ export default class Magnet extends BaseEntity implements Entity {
     this.mesh = new Mesh(geometry, MATERIAL);
     this.mesh.rotateX(Math.PI);
     this.disposeables.push(geometry);
-
-    console.log("new magnet");
   }
 
   getPosition() {

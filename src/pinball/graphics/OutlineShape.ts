@@ -8,8 +8,7 @@ export function makeOutlineShape(points: readonly V2d[], width: number = 1.0) {
   shape.moveTo(points[0].x, points[0].y);
   const processPoint = (current: V2d, last?: V2d, next?: V2d) => {
     if (!next && !last) {
-      console.warn("this shouldn't be");
-      shape.lineTo(current.x, current.y);
+      throw new Error("Not enough points.");
     }
     const n1 = last ? current.sub(last).inormalize().irotate90ccw() : undefined;
     const n2 = next ? current.sub(next).inormalize().irotate90cw() : undefined;

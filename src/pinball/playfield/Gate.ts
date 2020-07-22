@@ -29,7 +29,6 @@ export default class Gate extends BaseEntity
   ) {
     super();
     this.swingAmount = swingAmount;
-    console.log("swingAmount", swingAmount);
     const delta = end.sub(pivot);
     const length = delta.magnitude;
     const position = pivot.add(delta.mul(0.5));

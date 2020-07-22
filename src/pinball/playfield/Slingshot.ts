@@ -3,37 +3,50 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
-import Ball from "../ball/Ball";
+import Ball, { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./Materials";
 import SlingshotMesh from "./SlingshotMesh";
 import Post from "./Post";
 import { PositionalSound } from "../sound/PositionalSound";
 
-const DEAD_SPACE = 0.02;
-const MAX_STRENGTH = 350;
-const MIN_STRENGTH = 200;
-const WIDTH = 0.5;
-const ANGLE_DELTA = degToRad(20);
-
+interface SlingshotOptions {
+  /** Percent along string where the kicker is  */
+  middlePercent?: number;
+  /** Impulse strength at the very ends  */
+  minStrength?: number;
+  /** Impulse strength at the kicker  */
+  maxStrength?: number;
+  /** Minimum relative speed to trigger kicker  */
+  triggerSpeed?: number;
+  /** Width of the band in 1/2 inches  */
+  width?: number;
+  /** Amount of angle variation of impulse due to midpoint offset  */
+  angleDelta?: number;
+}
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
   body: Body;
-  middlePercent: number;
-  start: V2d;
-  end: V2d;
   slingshotMesh: SlingshotMesh;
 
+  middlePercent: number;
+  minStrength: number;
+  maxStrength: number;
+  triggerSpeed: number;
+  angleSpread: number;
+
   constructor(
-    start: V2d,
-    end: V2d,
-    middlePercent: number = 0.5,
-    reverse: boolean = false
+    public start: V2d,
+    public end: V2d,
+    options: SlingshotOptions = {}
   ) {
     super();
-    this.start = reverse ? end : start;
-    this.end = reverse ? start : end;
-    this.middlePercent = reverse ? 1.0 - middlePercent : middlePercent;
+    this.middlePercent = options.middlePercent ?? 0.5;
+    this.minStrength = options.minStrength ?? 200;
+    this.maxStrength = options.maxStrength ?? 350;
+    this.triggerSpeed = options.triggerSpeed ?? 6.5;
+    this.angleSpread = options.angleDelta ?? degToRad(5);
+    const width = options.width ?? 0.5;
 
     const delta = this.end.sub(this.start);
     const center = this.start.add(delta.mul(0.5));
@@ -43,7 +56,7 @@ export default class Slingshot extends BaseEntity implements Entity {
       mass: 0,
     });
 
-    const shape = new Capsule({ length: delta.magnitude, radius: WIDTH / 2 });
+    const shape = new Capsule({ length: delta.magnitude, radius: width / 2 });
     shape.material = P2Materials.slingshot;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
@@ -53,7 +66,7 @@ export default class Slingshot extends BaseEntity implements Entity {
       new SlingshotMesh(this.start, this.end, this.middlePercent)
     );
 
-    this.addChildren(new Post(start, 0.6), new Post(end, 0.6));
+    this.addChildren(new Post(start, width * 1.0), new Post(end, width * 1.0));
   }
 
   getPercentAcross(C: V2d): number {
@@ -65,35 +78,47 @@ export default class Slingshot extends BaseEntity implements Entity {
     return a / AB.magnitude;
   }
 
-  onBeginContact(ball: Ball, _: Shape, __: Shape, eqs: ContactEquation[]) {
-    const impactLocation = this.getPercentAcross(ball.getPosition());
+  getMidOffset(position: V2d): number {
+    const impactLocation = this.getPercentAcross(position);
     const mid = this.middlePercent;
     const denominator = impactLocation < mid ? mid : 1.0 - mid;
-    const midOffset = (impactLocation - mid) / denominator;
-    const strenghtPercent = 1.0 - Math.abs(midOffset);
-    const strength = lerp(MIN_STRENGTH, MAX_STRENGTH, strenghtPercent);
-    const angle =
-      -ANGLE_DELTA * Math.abs(midOffset) ** 0.4 * Math.sign(midOffset);
+    return (impactLocation - mid) / denominator;
+  }
 
-    if (impactLocation > DEAD_SPACE && impactLocation < 1 - DEAD_SPACE) {
-      const impulse = this.end
-        .sub(this.start)
-        .irotate90ccw()
-        .inormalize()
-        .rotate(angle)
-        .imul(strength);
-
-      ball.capture();
-      ball.release();
-      ball.body.applyImpulse(impulse);
-
-      this.game!.dispatch({ type: "score", points: 45 });
-
-      this.addChild(
-        new PositionalSound("boing1", this.getPosition(), { gain: 0.5 })
+  onBeginContact(ball: Ball, _: Shape, __: Shape, eqs: ContactEquation[]) {
+    if (isBall(ball)) {
+      const midOffset = this.getMidOffset(ball.getPosition());
+      const strengthPercent = 1.0 - Math.abs(midOffset);
+      const strength = lerp(
+        this.minStrength,
+        this.maxStrength,
+        strengthPercent
       );
+      const angle =
+        -this.angleSpread * Math.abs(midOffset) ** 0.4 * Math.sign(midOffset);
+      const impactSpeed =
+        strengthPercent * Math.abs(eqs[0].getVelocityAlongNormal());
 
-      this.slingshotMesh.animationStartTime = this.game!.elapsedTime;
+      if (impactSpeed > this.triggerSpeed) {
+        const impulse = this.end
+          .sub(this.start)
+          .irotate90ccw()
+          .inormalize()
+          .rotate(angle)
+          .imul(strength);
+
+        ball.capture();
+        ball.release();
+        ball.body.applyImpulse(impulse);
+
+        this.game!.dispatch({ type: "score", points: 45 });
+
+        this.addChild(
+          new PositionalSound("boing1", this.getPosition(), { gain: 0.5 })
+        );
+
+        this.slingshotMesh.animationStartTime = this.game!.elapsedTime;
+      }
     }
   }
 }

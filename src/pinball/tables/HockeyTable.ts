@@ -134,8 +134,8 @@ export default class HockeyTable extends Table implements Entity {
     this.addChildren(
       new Wall(V(16.5, 8 + LO), V(16.5, 19 + LO), 0.4),
       new Wall(V(-16.5, 8 + LO), V(-16.5, 19 + LO), 0.4),
-      new Slingshot(V(13, 10 + LO), V(9, 24 + LO), 0.7),
-      new Slingshot(V(-13, 10 + LO), V(-9, 24 + LO), 0.7, true),
+      new Slingshot(V(13, 10 + LO), V(9, 24 + LO), { middlePercent: 0.7 }),
+      new Slingshot(V(-9, 24 + LO), V(-13, 10 + LO), { middlePercent: 0.3 }),
       new MultiWall([V(13, 10 + LO), V(13, 21 + LO), V(9, 24 + LO)], 0.9),
       new MultiWall([V(-13, 10 + LO), V(-13, 21 + LO), V(-9, 24 + LO)], 0.9),
       new Flipper(V(-8, 30.25 + LO), "left", 6.2),

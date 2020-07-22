@@ -9,7 +9,6 @@ import { transformPoint } from "../../tables/SvgTable/svgUtils";
 export default class PathWall extends BaseEntity implements Entity {
   constructor(
     path: Path,
-    segments: number = 50,
     width: number = 1.0,
     transform?: Matrix3,
     color?: number
@@ -21,12 +20,14 @@ export default class PathWall extends BaseEntity implements Entity {
     for (const curve of path.curves) {
     }
 
-    // TODO: Something better that gets all the corners exactly
-    for (let point of path.getPoints(segments)) {
-      if (transform) {
-        p2Points.push(transformPoint(point.x, point.y, transform));
-      } else {
-        p2Points.push(V(point.x, point.y));
+    for (const curve of path.curves) {
+      const segments = Math.ceil(curve.getLength()) * 2 + 2;
+      for (let point of curve.getPoints(segments)) {
+        if (transform) {
+          p2Points.push(transformPoint(point.x, point.y, transform));
+        } else {
+          p2Points.push(V(point.x, point.y));
+        }
       }
     }
 

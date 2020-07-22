@@ -29,12 +29,6 @@ export default class NudgeController extends BaseEntity implements Entity {
   async onKeyDown(key: KeyCode) {
     const power = 40;
     switch (key) {
-      // case getBinding("NUDGE_LEFT"):
-      //   this.game!.dispatch(nudgeEvent(V(-power, 0)));
-      //   break;
-      // case getBinding("NUDGE_RIGHT"):
-      //   this.game!.dispatch(nudgeEvent(V(power, 0)));
-      //   break;
       case getBinding("NUDGE_UP_LEFT"):
         this.nudge(V(-power, power));
         break;

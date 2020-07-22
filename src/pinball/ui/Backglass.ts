@@ -10,7 +10,7 @@ import Entity from "../../core/entity/Entity";
 import FPSMeter from "../../core/util/FPSMeter";
 import { UpdateScoreEvent } from "../system/LogicBoard";
 import { getBinding } from "./KeyboardBindings";
-import { keyCodeToName } from "../../core/io/Keys";
+import { keyCodeToName, KeyCode } from "../../core/io/Keys";
 import Table from "../tables/Table";
 
 type DisplayMode = "pre-game" | "midgame" | "post-game";
@@ -21,6 +21,7 @@ export default class Backglass extends BaseEntity implements Entity {
   texture: CanvasTexture;
   fpsMeter: FPSMeter;
   score: number = 0;
+  statsEnabled: boolean = false;
 
   constructor(table: Table) {
     super();
@@ -61,23 +62,39 @@ export default class Backglass extends BaseEntity implements Entity {
     gameOver: () => (this.displayMode = "post-game"),
   };
 
+  onKeyDown(keyCode: KeyCode) {
+    if (keyCode === getBinding("TOGGLE_STATS")) {
+      this.statsEnabled = !this.statsEnabled;
+    }
+  }
+
   onRender() {
     this.renderBack();
 
-    switch (this.displayMode) {
-      case "pre-game":
-        const startKey = keyCodeToName(getBinding("START_GAME"));
-        this.renderMiddleText(`Press ${startKey} to start`);
-        break;
-      case "midgame":
-        this.renderScore();
-        break;
-      case "post-game":
-        this.renderScore();
-        this.renderMiddleText("Game Over");
-        break;
+    // TODO: Make this event based instead of onRender
+
+    if (this.game!.paused) {
+      const pauseKeyName = keyCodeToName(getBinding("PAUSE"));
+      this.renderMiddleText(`Paused`);
+      this.renderSubMiddleText(`Press ${pauseKeyName} to unpause`);
+    } else {
+      switch (this.displayMode) {
+        case "pre-game":
+          const startKey = keyCodeToName(getBinding("START_GAME"));
+          this.renderMiddleText(`Press ${startKey} to start`);
+          break;
+        case "midgame":
+          this.renderScore();
+          break;
+        case "post-game":
+          this.renderScore();
+          this.renderMiddleText("Game Over");
+          break;
+      }
     }
-    this.renderStats();
+    if (this.statsEnabled) {
+      this.renderStats();
+    }
     this.texture.needsUpdate = true;
   }
 
@@ -91,9 +108,18 @@ export default class Backglass extends BaseEntity implements Entity {
     const { width: w, height: h } = this.ctx.canvas;
     this.ctx.fillStyle = "#f00";
     this.ctx.font = "64px DS Digital, sans-serif";
-    this.ctx.textBaseline = "middle";
+    this.ctx.textBaseline = "bottom";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(text, w / 2, h / 2, w - 20);
+    this.ctx.fillText(text, w / 2, h / 2 - 4, w - 20);
+  }
+
+  renderSubMiddleText(text: string) {
+    const { width: w, height: h } = this.ctx.canvas;
+    this.ctx.fillStyle = "#f00";
+    this.ctx.font = "48px DS Digital, sans-serif";
+    this.ctx.textBaseline = "top";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(text, w / 2, h / 2 + 4, w - 20);
   }
 
   renderScore() {

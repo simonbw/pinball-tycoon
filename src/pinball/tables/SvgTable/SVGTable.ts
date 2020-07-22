@@ -30,7 +30,6 @@ export async function makeSVGTable(url: string) {
   table.addChild(new Backglass(table));
 
   // Matching playfield
-  // TODO: Determine material
   table.addChild(new Playfield(table.bounds));
 
   // Load everything else up

@@ -66,10 +66,10 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
 
     const shape = makeOutlineShape([start, midpoint, end], width);
     const geometry = new ExtrudeGeometry(shape, {
-      depth: 1.2,
+      depth: 1.0,
       bevelEnabled: false,
     });
-    geometry.translate(0, 0, -0.8);
+    geometry.translate(0, 0, -1.5);
     return geometry;
   }
 

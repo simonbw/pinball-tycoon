@@ -99,7 +99,6 @@ export function getExtractors() {
               break;
             }
             case "A": {
-              console.warn("TODO: A curve");
               const [rx, ry, angle, largeFlag, sweepFlag, x, y] = args;
               svgArcToShapeArc(
                 shapePath,
@@ -120,11 +119,9 @@ export function getExtractors() {
           }
         }
         const width = getNumberProp(node.style.strokeWidth, 1.0);
-        return new PathWall(shapePath, 50, width, m);
+        return new PathWall(shapePath, width, m);
       }
     },
-
-    // TODO: Curve walls
 
     // Bumper
     (node, m) => {
@@ -264,7 +261,6 @@ export function getExtractors() {
     // spinner
     (node, m) => {
       if (node.matches("line.gate")) {
-        console.log("gate", node);
         const x1 = getNumberProp(node.getAttribute("x1"));
         const y1 = getNumberProp(node.getAttribute("y1"));
         const x2 = getNumberProp(node.getAttribute("x2"));

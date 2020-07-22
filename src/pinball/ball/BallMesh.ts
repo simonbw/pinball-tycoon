@@ -18,10 +18,12 @@ export default class BallMesh extends BaseEntity implements Entity {
     this.reflector = this.addChild(new Reflector());
 
     const material = new MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 1.5,
-      metalness: 0.83,
-      roughnessMap: TEXTURES.IronScuffedRoughness,
+      roughness: 1.0,
+      metalness: 1.0,
+      aoMap: TEXTURES.StreakedMetalAO,
+      metalnessMap: TEXTURES.StreakedMetalMetalness,
+      normalMap: TEXTURES.StreakedMetalNormal,
+      roughnessMap: TEXTURES.StreakedMetalRoughness,
       envMap: this.reflector.envMap,
     });
 

@@ -10,7 +10,7 @@ export function getBallDropPosition(doc: Document): V2d {
 }
 
 export function getIncline(doc: Document): number {
-  return degToRad(4.5);
+  return degToRad(5);
 }
 
 export function getTableBounds(doc: Document): Rect {

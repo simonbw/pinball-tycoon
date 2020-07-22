@@ -97,6 +97,25 @@ Sounds
 # Themes #
 #--------#
 
+Hockey:
+  - Graphics are probably pretty easy
+  - Defender targets that you knock down to unlock shot on Goal
+  - Moving goalie target in front of goal
+  - Backglass could look like a scoreboard
+  - Your drain could look like a goal
+  - There could be lines on the surface that look like lines on the ice
+  - Sounds
+    - GOAL buzzer
+    - Ref whistle
+  - Missions
+    - Score a goal
+    - Score a hat-trick (3 goals)
+    - Brawl (hit bumpers 10 times)
+    - Penalty box as lock for multiball
+    - Stanley cup — the jackpot, score enough goals to get it to tip over, then hit the ball into it
+    - Shootout — No defenders, make 5 goals in 60 seconds
+    - Pass — Tunnel/ramp to forward flipper
+
 Ancient Egypt Themed:
   - Main toy is a pyramid
   - Objectives revolve around building (or digging up?) the pyramid
@@ -140,17 +159,6 @@ Portal Themed:
 Steam Punk:
   - Could use a lot of really cool textures
   - Could probably make sound interesting sounds
-
-Hockey:
-  - Graphics are probably pretty easy
-  - Defender targets that you knock down to unlock shot on Goal
-  - Moving goalie target in front of goal
-  - Backglass could look like a scoreboard
-  - Your drain could look like a goal
-  - There could be lines on the surface that look like lines on the ice
-  - Sounds
-    - GOAL buzzer
-    - Ref whistle
 
 MultiSport:
   - Pretty complicated

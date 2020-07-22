@@ -28,7 +28,7 @@ import upgrade from "../../../resources/audio/upgrade.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 
-// TODO: Don't do this like this. These shouln't be listed in core/
+// TODO: These shouln't be listed in core/
 export const SOUND_URLS = {
   ballDrop1,
   ballRolling,
