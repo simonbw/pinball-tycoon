@@ -33,7 +33,7 @@ export default class Spinner extends BaseEntity
   rotations: number = 0.25;
   body: Body;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "gateHit",
+    beginContactSound: { name: "gateHit" },
     scaleImpact: (impact) => impact * this.getContactAmount(),
   };
 

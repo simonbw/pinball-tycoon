@@ -9,7 +9,7 @@
   <rect x="-24" y="0" width="52" height="100" style="fill: none;" id="bounds">
     <title>Bounds</title>
   </rect>
-  <circle style="fill: rgb(59, 59, 59);" cx="26" cy="86" r="1" data-type="ball-drop" id="ball-drop">
+  <circle style="fill: rgb(59, 59, 59);" cx="26" cy="86" r="1" id="ball-drop">
     <title>Ball Drop</title>
   </circle>
   <circle style="fill: rgb(255, 0, 0);" cx="26" cy="96" r="1" class="plunger">
@@ -87,4 +87,18 @@
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-0.797" y2="0.073" class="gate" x3="24" y3="47" data-swing="150">
     <title>First Gate</title>
   </line>
+  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="93" r="0.6" class="ball-remaining-lamp" data-min-balls="1">
+    <title>Ball Drop</title>
+  </circle>
+  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="91" r="0.6" class="ball-remaining-lamp" data-min-balls="2">
+    <title>Ball Drop</title>
+  </circle>
+  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="89" r="0.6" class="ball-remaining-lamp" data-min-balls="3">
+    <title>Ball Drop</title>
+  </circle>
+  <circle style="fill: rgb(216, 216, 216);" cx="18.844" cy="66.192" r="0.4" class="post"/>
+  <circle style="fill: rgb(216, 216, 216);" cx="19.967" cy="70.915" r="0.4" class="post"/>
+  <circle style="fill: rgb(0, 0, 170);" cx="0" cy="91" r="0.6" class="ball-save-lamp">
+    <title>Ball Drop</title>
+  </circle>
 </svg>

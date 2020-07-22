@@ -11,14 +11,14 @@ import {
 } from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "../Collision";
 import GateMesh from "./GateMesh";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 
 export default class Gate extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   body: Body;
   swingAmount: number;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "gateHit",
+    beginContactSound: { name: "gateHit" },
   };
 
   constructor(
@@ -42,7 +42,7 @@ export default class Gate extends BaseEntity
       length: length,
       radius: width / 2,
     });
-    p2Shape.material = P2Materials.wall;
+    p2Shape.material = P2Materials.metal;
     p2Shape.collisionGroup = CollisionGroups.Table;
     p2Shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(p2Shape, [0, 0], delta.angle);

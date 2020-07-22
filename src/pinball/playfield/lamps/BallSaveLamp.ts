@@ -1,8 +1,7 @@
 import BaseEntity from "../../../core/entity/BaseEntity";
 import Entity from "../../../core/entity/Entity";
-import { BallsRemainingEvent } from "../../system/LogicBoard";
+import { BallSaveChangeEvent } from "../../system/BallSaveSystem";
 import Lamp from "./Lamp";
-import { KeyCode } from "../../../core/io/Keys";
 
 export default class BallSaveLamp extends BaseEntity implements Entity {
   lamp: Lamp;
@@ -13,10 +12,10 @@ export default class BallSaveLamp extends BaseEntity implements Entity {
     this.lamp = this.addChild(new Lamp(position, 0x0000dd));
   }
 
-  onKeyDown(key: KeyCode) {
-    if (key === "KeyF") {
-      this.on = !this.on;
-      this.lamp.setLit(this.on);
-    }
-  }
+  handlers = {
+    ballSaveChange: async ({ active }: BallSaveChangeEvent) => {
+      await this.lamp.flash(3);
+      await this.lamp.setLit(active);
+    },
+  };
 }

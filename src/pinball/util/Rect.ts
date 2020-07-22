@@ -25,6 +25,22 @@ export class Rect {
     return V(this.right, this.bottom);
   }
 
+  get bottomMiddle(): V2d {
+    return V(this.center.x, this.bottom);
+  }
+
+  get topMiddle(): V2d {
+    return V(this.center.x, this.top);
+  }
+
+  get centerLeft(): V2d {
+    return V(this.left, this.center.y);
+  }
+
+  get centerRight(): V2d {
+    return V(this.right, this.center.y);
+  }
+
   private constructor(
     top: number,
     bottom: number,

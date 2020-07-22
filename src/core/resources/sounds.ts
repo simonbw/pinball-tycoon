@@ -1,8 +1,12 @@
 import ballDrop1 from "../../../resources/audio/ball-drop-1.flac";
+import ballOnBall1 from "../../../resources/audio/ball-on-ball-1.flac";
+import ballOnBall2 from "../../../resources/audio/ball-on-ball-2.flac";
 import ballRolling2 from "../../../resources/audio/ball-rolling-2.flac";
+import ballRolling3 from "../../../resources/audio/ball-rolling-3.flac";
 import ballRolling from "../../../resources/audio/ball-rolling.flac";
 import boing1 from "../../../resources/audio/boing-1.flac";
 import boing2 from "../../../resources/audio/boing-2.flac";
+import buzz from "../../../resources/audio/buzz.flac";
 import defenderDown1 from "../../../resources/audio/defender-down-1.flac";
 import defenderDown2 from "../../../resources/audio/defender-down-2.flac";
 import defenderDown3 from "../../../resources/audio/defender-down-3.flac";
@@ -24,6 +28,9 @@ import plungerWind from "../../../resources/audio/plunger-wind.flac";
 import pop1 from "../../../resources/audio/pop1.flac";
 import postHit from "../../../resources/audio/post-hit.flac";
 import quarterDrop1 from "../../../resources/audio/quarter-drop-1.flac";
+import rubberHit1 from "../../../resources/audio/rubber-hit-1.flac";
+import rubberHit2 from "../../../resources/audio/rubber-hit-2.flac";
+import rubberHit3 from "../../../resources/audio/rubber-hit-3.flac";
 import upgrade from "../../../resources/audio/upgrade.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
@@ -31,10 +38,14 @@ import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 // TODO: These shouln't be listed in core/
 export const SOUND_URLS = {
   ballDrop1,
+  ballOnBall1,
+  ballOnBall2,
   ballRolling,
   ballRolling2,
+  ballRolling3,
   boing1,
   boing2,
+  buzz,
   defenderDown1,
   defenderDown2,
   defenderDown3,
@@ -56,6 +67,9 @@ export const SOUND_URLS = {
   pop1,
   postHit,
   quarterDrop1,
+  rubberHit1,
+  rubberHit2,
+  rubberHit3,
   upgrade,
   wallHit1,
   wallHit2,
@@ -77,6 +91,10 @@ export async function loadSound(
       SOUNDS.set(name, buffer);
       return buffer;
     });
+}
+
+export function getSoundDuration(soundName: SoundName): number {
+  return SOUNDS.get(soundName)?.duration ?? -1;
 }
 
 export function loadAllSounds(audioContext: AudioContext) {

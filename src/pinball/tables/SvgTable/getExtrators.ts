@@ -1,35 +1,33 @@
-import { matches } from "hast-util-select";
-import { HastSvgElementNode } from "svg-parser";
+import { pathParse } from "svg-path-parse";
 import { Matrix3, Path, Vector2 } from "three";
 import Entity from "../../../core/entity/Entity";
-import OverheadLight from "../../playfield/OverheadLight";
+import { degToRad } from "../../../core/util/MathUtil";
 import Bumper from "../../playfield/Bumper";
-import MultiWall from "../../playfield/walls/MultiWall";
-import Plunger from "../../playfield/Plunger";
-import {
-  getNumberProp,
-  parsePointString,
-  parseStyle,
-  transformPoint,
-  getAngle,
-  svgArcToShapeArc,
-} from "./svgUtils";
-import Goal from "../../playfield/Goal";
 import Defender from "../../playfield/Defender";
+import Drain from "../../playfield/Drain";
+import Flipper from "../../playfield/Flipper";
+import Gate from "../../playfield/Gate";
+import Goal from "../../playfield/Goal";
 import Goalie from "../../playfield/Goalie";
+import BallRemainingLamp from "../../playfield/lamps/BallRemainingLamp";
+import BallSaveLamp from "../../playfield/lamps/BallSaveLamp";
+import Magnet from "../../playfield/Magnet";
+import MagnetOrbiter from "../../playfield/MagnetOrbiter";
+import OverheadLight from "../../playfield/OverheadLight";
+import Plunger from "../../playfield/Plunger";
 import Post from "../../playfield/Post";
 import Slingshot from "../../playfield/Slingshot";
 import Spinner from "../../playfield/Spinner";
-import Flipper from "../../playfield/Flipper";
-import Drain from "../../playfield/Drain";
-import { Rect } from "../../util/Rect";
-import Magnet from "../../playfield/Magnet";
-import MagnetOrbiter from "../../playfield/MagnetOrbiter";
-
-import { pathParse } from "svg-path-parse";
+import MultiWall from "../../playfield/walls/MultiWall";
 import PathWall from "../../playfield/walls/PathWall";
-import Gate from "../../playfield/Gate";
-import { degToRad } from "../../../core/util/MathUtil";
+import { Rect } from "../../util/Rect";
+import {
+  getAngle,
+  getNumberProp,
+  parsePointString,
+  svgArcToShapeArc,
+  transformPoint,
+} from "./svgUtils";
 
 export type Extractor = (
   node: SVGElement,
@@ -184,6 +182,24 @@ export function getExtractors() {
         const speed =
           getNumberProp(node.getAttribute("data-speed")) || undefined;
         return new MagnetOrbiter(transformPoint(x, y, m), r, speed);
+      }
+    },
+
+    // ball-remaining lamps
+    (node, m) => {
+      if (node.matches("circle.ball-remaining-lamp")) {
+        const x = getNumberProp(node.getAttribute("cx"));
+        const y = getNumberProp(node.getAttribute("cy"));
+        const minBalls = getNumberProp(node.getAttribute("data-min-balls"));
+        return new BallRemainingLamp(transformPoint(x, y, m), minBalls);
+      }
+    },
+    // ball-remaining lamps
+    (node, m) => {
+      if (node.matches("circle.ball-save-lamp")) {
+        const x = getNumberProp(node.getAttribute("cx"));
+        const y = getNumberProp(node.getAttribute("cy"));
+        return new BallSaveLamp(transformPoint(x, y, m));
       }
     },
 

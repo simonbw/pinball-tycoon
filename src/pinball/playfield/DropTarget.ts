@@ -12,7 +12,7 @@ import {
 import { scoreEvent } from "../system/LogicBoard";
 import { PositionalSound } from "../sound/PositionalSound";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 
 const UP_SPEED = 15.0;
 const DOWN_SPEED = 100.0;
@@ -32,7 +32,7 @@ export default class DropTarget extends BaseEntity
   dropForce: number;
   resetTime: number;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "wallHit1",
+    beginContactSound: { name: "wallHit1" },
   };
 
   constructor(
@@ -53,10 +53,9 @@ export default class DropTarget extends BaseEntity
 
     this.body = new Body({ position, angle });
     this.p2Shape = new Box({ width: width, height: depth });
-    this.p2Shape.material = P2Materials.dropTarget;
     this.p2Shape.collisionGroup = CollisionGroups.Table;
     this.p2Shape.collisionMask = CollisionGroups.Ball;
-    this.p2Shape.material = P2Materials.dropTarget;
+    this.p2Shape.material = P2Materials.rubber;
     this.body.addShape(this.p2Shape);
 
     this.mesh = new Mesh(

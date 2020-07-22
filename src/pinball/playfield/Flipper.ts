@@ -18,8 +18,9 @@ import {
 } from "../ball/BallCollisionInfo";
 import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 import { TEXTURES } from "../graphics/textures";
+import FlipperSoundController from "../sound/FlipperSoundController";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000cc,
@@ -28,7 +29,7 @@ const MATERIAL = new MeshStandardMaterial({
 });
 
 const DOWN_ANGLE = degToRad(30);
-const UP_ANGLE = degToRad(-38);
+const UP_ANGLE = degToRad(-32);
 const UP_STIFFNESS = 100000;
 const DOWN_STIFFNESS = 40000;
 const DAMPING = 1250;
@@ -45,37 +46,36 @@ export default class Flipper extends BaseEntity
   spring!: RotationalSpring;
   downAngle: number;
   upAngle: number;
-  side: Side;
   locked: boolean = false;
   engaged: boolean = false;
   handlers: CustomHandlersMap = {};
 
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "flipperHit",
+    beginContactSound: { name: "flipperHit" },
   };
+  soundController: FlipperSoundController;
 
   constructor(
     position: V2d,
-    side: Side = "left",
-    length: number = 6,
+    public side: Side = "left",
+    public length: number = 6,
     upAngle = UP_ANGLE,
     downAngle = DOWN_ANGLE
   ) {
     super();
-    this.side = side;
 
     switch (side) {
       case "left":
         this.upAngle = upAngle;
         this.downAngle = downAngle;
-        this.handlers["leftFlipperUp"] = () => (this.engaged = true);
-        this.handlers["leftFlipperDown"] = () => (this.engaged = false);
+        this.handlers["leftFlipperUp"] = () => this.engage();
+        this.handlers["leftFlipperDown"] = () => this.disengage();
         break;
       case "right":
         this.upAngle = reflectX(upAngle) + 2 * Math.PI;
         this.downAngle = reflectX(downAngle);
-        this.handlers["rightFlipperUp"] = () => (this.engaged = true);
-        this.handlers["rightFlipperDown"] = () => (this.engaged = false);
+        this.handlers["rightFlipperUp"] = () => this.engage();
+        this.handlers["rightFlipperDown"] = () => this.disengage();
         break;
     }
 
@@ -113,6 +113,18 @@ export default class Flipper extends BaseEntity
 
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = false;
+
+    this.soundController = this.addChild(new FlipperSoundController(this));
+  }
+
+  engage() {
+    this.engaged = true;
+    this.soundController.engage();
+  }
+
+  disengage() {
+    this.engaged = false;
+    this.soundController.disengage();
   }
 
   onAdd(game: Game) {
@@ -133,10 +145,6 @@ export default class Flipper extends BaseEntity
     });
 
     this.springs = [this.spring];
-
-    const controlName = this.side === "left" ? "LEFT_FLIPPER" : "RIGHT_FLIPPER";
-    const key = getBinding(controlName);
-    this.engaged = game.io.keyIsDown(key);
   }
 
   onRender() {

@@ -141,6 +141,10 @@ export class V2d extends Array {
     return this;
   }
 
+  equals(other) {
+    return other != undefined && other[0] == this[0] && other[1] == this[1];
+  }
+
   /**
    * Alias for [0].
    */

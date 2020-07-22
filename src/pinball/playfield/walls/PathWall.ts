@@ -6,6 +6,8 @@ import MultiWall from "./MultiWall";
 import { Path, Matrix3 } from "three";
 import { transformPoint } from "../../tables/SvgTable/svgUtils";
 
+const SEGMENTS_PER_HALF_INCH = 0.8;
+
 export default class PathWall extends BaseEntity implements Entity {
   constructor(
     path: Path,
@@ -18,15 +20,14 @@ export default class PathWall extends BaseEntity implements Entity {
     const p2Points: V2d[] = [];
 
     for (const curve of path.curves) {
-    }
-
-    for (const curve of path.curves) {
-      const segments = Math.ceil(curve.getLength()) * 2 + 2;
+      const segments =
+        Math.ceil(curve.getLength() * SEGMENTS_PER_HALF_INCH) + 1;
       for (let point of curve.getPoints(segments)) {
-        if (transform) {
-          p2Points.push(transformPoint(point.x, point.y, transform));
-        } else {
-          p2Points.push(V(point.x, point.y));
+        const p = transform
+          ? transformPoint(point.x, point.y, transform)
+          : V(point.x, point.y);
+        if (!p.equals(p2Points[p2Points.length - 1])) {
+          p2Points.push(p);
         }
       }
     }

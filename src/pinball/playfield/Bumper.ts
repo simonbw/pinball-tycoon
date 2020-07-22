@@ -8,7 +8,7 @@ import { isBall } from "../ball/Ball";
 import { scoreEvent } from "../system/LogicBoard";
 import { PositionalSound } from "../sound/PositionalSound";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 import BumperMesh from "./BumperMesh";
 import { rNormal } from "../../core/util/Random";
 
@@ -27,7 +27,7 @@ export default class Bumper extends BaseEntity implements Entity {
     });
 
     const shape = new Circle({ radius: size * 0.6 });
-    shape.material = P2Materials.bumper;
+    shape.material = P2Materials.rubber;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);

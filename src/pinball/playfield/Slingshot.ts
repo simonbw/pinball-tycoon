@@ -5,7 +5,7 @@ import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import Ball, { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 import SlingshotMesh from "./SlingshotMesh";
 import Post from "./Post";
 import { PositionalSound } from "../sound/PositionalSound";
@@ -56,14 +56,17 @@ export default class Slingshot extends BaseEntity implements Entity {
       mass: 0,
     });
 
-    const shape = new Capsule({ length: delta.magnitude, radius: width / 2 });
+    const shape = new Capsule({
+      length: delta.magnitude,
+      radius: (width / 2) * 0.9,
+    });
     shape.material = P2Materials.slingshot;
     shape.collisionGroup = CollisionGroups.Table;
     shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(shape);
 
     this.slingshotMesh = this.addChild(
-      new SlingshotMesh(this.start, this.end, this.middlePercent)
+      new SlingshotMesh(this.start, this.end, this.middlePercent, width)
     );
 
     this.addChildren(new Post(start, width * 1.0), new Post(end, width * 1.0));

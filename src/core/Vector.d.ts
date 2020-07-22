@@ -80,4 +80,6 @@ export interface V2d extends ArrayLen2 {
 
   /** (In place) Return a vector that is between this and other */
   ilerp(other: ArrayLen2, t: number): this;
+
+  equals(other?: ArrayLen2): boolean;
 }

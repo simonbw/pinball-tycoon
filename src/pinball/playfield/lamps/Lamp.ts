@@ -58,7 +58,7 @@ export default class Lamp extends BaseEntity implements Entity {
     [x, y]: [number, number],
     color: number,
     size: number = 0.6,
-    private toggleTime: number = 0.05
+    private toggleTime: number = 0.06
   ) {
     super();
 
@@ -107,16 +107,27 @@ export default class Lamp extends BaseEntity implements Entity {
   }
 
   async setPercentGradual(to: number, speed: number = this.toggleTime) {
-    this.clearTimers();
+    this.clearTimers(); // TODO: Can I do this?
     const from = this.litPercent;
-    const totalTime = this.toggleTime * Math.abs(to - from);
+    const totalTime = speed * Math.abs(to - from);
     await this.wait(totalTime, (dt, t) => {
       this.setPercentImmediate(lerp(from, to, t));
     });
     this.setPercentImmediate(to);
   }
 
-  flash(times: number, onDuration: number, offDuration: number) {}
+  async flash(
+    times: number,
+    onDuration: number = 0.13,
+    offDuration: number = 0.13
+  ) {
+    for (let i = 0; i < times; i++) {
+      await this.light();
+      await this.wait(onDuration);
+      await this.unlight();
+      await this.wait(offDuration);
+    }
+  }
 
   async setLit(on: boolean) {
     if (on) {

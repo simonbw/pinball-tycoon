@@ -5,17 +5,18 @@ import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
 import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V, V2d } from "../../core/Vector";
-import { NudgeEvent } from "../controllers/NudgeController";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "../playfield/Materials";
+import { NudgeEvent } from "../controllers/NudgeController";
+import { P2Materials } from "../playfield/P2Materials";
+import Table from "../tables/Table";
 import {
   BallCollisionInfo,
+  getNameFromSoundInfo,
   hasCollisionInfo,
   WithBallCollisionInfo,
 } from "./BallCollisionInfo";
 import BallMesh from "./BallMesh";
 import BallSoundController from "./BallSoundController";
-import Table from "../tables/Table";
 
 const RADIUS = 1.0625; // Radius in 1/2 inches
 const FRICTION = 0.008; // rolling friction
@@ -30,7 +31,7 @@ export default class Ball extends BaseEntity
   angularMomentum: Vector3 = new Vector3();
   soundController: BallSoundController;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "postHit",
+    beginContactSound: { names: ["ballOnBall1", "ballOnBall2"] },
   };
   z: number; // Height above the table
   vz: number = 0;
@@ -97,7 +98,7 @@ export default class Ball extends BaseEntity
         // We hit the ground
         if (this.z <= 0) {
           const gain = clamp(Math.abs(this.vz) * 0.2) * 0.5;
-          this.soundController.emitCollisionSound("ballDrop1", gain);
+          this.soundController.emitCollisionSound({ name: "ballDrop1" }, gain);
           this.vz = 0;
           this.z = 0;
         }

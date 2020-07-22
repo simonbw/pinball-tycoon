@@ -21,7 +21,7 @@ export default class Goal extends BaseEntity
   sensorShape: Shape;
   cooldown: boolean = false;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "postHit",
+    beginContactSound: { name: "postHit" },
   };
 
   constructor(

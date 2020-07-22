@@ -5,18 +5,22 @@ import Lamp from "./Lamp";
 
 export default class BallRemainingLamp extends BaseEntity implements Entity {
   lamp: Lamp;
+  lit: boolean = false;
 
   constructor(position: [number, number], private n: number) {
     super();
-
     this.lamp = this.addChild(new Lamp(position, 0xaa0000));
   }
 
   handlers = {
-    ballsRemaining: ({ ballsRemaining }: BallsRemainingEvent) => {
-      if (ballsRemaining >= this.n) {
+    ballsRemaining: async ({ ballsRemaining }: BallsRemainingEvent) => {
+      if (ballsRemaining >= this.n && !this.lit) {
+        this.lit = true;
+        await this.lamp.flash(2);
         this.lamp.light();
-      } else {
+      } else if (ballsRemaining < this.n && this.lit) {
+        this.lit = false;
+        await this.lamp.flash(2);
         this.lamp.unlight();
       }
     },

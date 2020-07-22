@@ -85,8 +85,8 @@ export default class CameraController extends BaseEntity implements Entity {
   }
 
   normalMode(camera: PerspectiveCamera) {
-    const game = this.game!;
     camera.position.sub(this.nudgeOffset);
+    const game = this.game!;
 
     smoothStepTowards(
       camera.position,

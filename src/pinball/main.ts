@@ -3,7 +3,7 @@ import AutoPauser from "../core/AutoPauser";
 import Game from "../core/Game";
 import GraphicsQualityController from "./controllers/GraphicsQualityController";
 import PauseController from "./controllers/PauseController";
-import { ContactMaterials } from "./playfield/Materials";
+import { ContactMaterials } from "./playfield/P2Materials";
 import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
 import { makeSVGTable } from "./tables/SvgTable/SVGTable";

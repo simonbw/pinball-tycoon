@@ -10,7 +10,7 @@ import {
 import { CollisionGroups } from "../Collision";
 import { PositionalSound } from "../sound/PositionalSound";
 import { getBinding } from "../ui/KeyboardBindings";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 import PlungerMesh from "./PlungerMesh";
 
 const WIDTH = 2;
@@ -27,7 +27,7 @@ export default class Plunger extends BaseEntity
   neutralPosition: V2d;
   private pullSpring?: Spring;
   ballCollisionInfo: BallCollisionInfo = {
-    beginContactSound: "plungerHit",
+    beginContactSound: { name: "plungerHit" },
   };
   plunging: boolean = false;
 

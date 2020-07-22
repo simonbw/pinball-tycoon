@@ -6,7 +6,7 @@ import { V } from "../../core/Vector";
 import { TEXTURES } from "../graphics/textures";
 import { Rect } from "../util/Rect";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 
 /**
  * The main boundary of the game, makes sure the ball can't possibly be in weird places.
@@ -59,7 +59,6 @@ export default class Playfield extends BaseEntity implements Entity {
 
 function makeP2Plane() {
   const shape = new Plane({});
-  shape.material = P2Materials.boundary;
   shape.collisionGroup = CollisionGroups.Table;
   shape.collisionMask = CollisionGroups.Ball;
   return shape;

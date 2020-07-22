@@ -10,14 +10,14 @@ import {
 import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./Materials";
+import { P2Materials } from "./P2Materials";
 
 export default class Post extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   ballCollisionInfo: BallCollisionInfo;
   reflector: Reflector;
 
-  constructor(position: V2d, radius: number = 0.5, height: number = 2.0) {
+  constructor(position: V2d, radius: number = 0.5, height: number = 1.8) {
     super();
 
     this.body = new Body({
@@ -26,13 +26,13 @@ export default class Post extends BaseEntity
     });
 
     const p2Shape = new Circle({ radius: radius });
-    p2Shape.material = P2Materials.bumper;
+    p2Shape.material = P2Materials.rubber;
     p2Shape.collisionGroup = CollisionGroups.Table;
     p2Shape.collisionMask = CollisionGroups.Ball;
     this.body.addShape(p2Shape);
 
     this.ballCollisionInfo = {
-      beginContactSound: "postHit",
+      beginContactSound: { name: "rubberHit3", speedVariance: 0.3 },
     };
 
     this.reflector = this.addChild(new Reflector());

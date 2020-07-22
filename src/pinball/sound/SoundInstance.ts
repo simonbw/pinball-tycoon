@@ -9,6 +9,7 @@ export interface SoundOptions {
   gain?: number;
   speed?: number;
   continuous?: boolean;
+  randomStart?: boolean;
 }
 
 /**
@@ -89,7 +90,10 @@ export class SoundInstance extends BaseEntity implements Entity {
 
     this.lastTick = game.audio.currentTime;
 
-    this.sourceNode.start();
+    const startTime = this.options.randomStart
+      ? rUniform(0, this.sourceNode.buffer!.duration * 0.99)
+      : undefined;
+    this.sourceNode.start(startTime);
   }
 
   makeChain({ audio, slowMo, masterGain }: Game): AudioNode {

@@ -6,6 +6,8 @@ import { SoundInstance } from "../sound/SoundInstance";
 import Table from "../tables/Table";
 import { getBinding } from "../ui/KeyboardBindings";
 import { PositionalSound } from "../sound/PositionalSound";
+import { getSoundDuration } from "../../core/resources/sounds";
+import BallSaveSystem from "./BallSaveSystem";
 
 export interface DrainEvent {
   type: "drain";
@@ -32,7 +34,11 @@ export function updateScoreEvent(score: number): UpdateScoreEvent {
 
 export interface NewBallEvent {
   type: "newBall";
-  noSound?: boolean;
+  fromSave?: boolean;
+}
+
+function newBallEvent(fromSave?: boolean): NewBallEvent {
+  return { type: "newBall", fromSave };
 }
 
 export interface BallsRemainingEvent {
@@ -55,9 +61,11 @@ export default class LogicBoard extends BaseEntity implements Entity {
   ballsRemaining: number = 0;
   score: number = 0;
   gameStarted: boolean = false;
+  ballSaveSystem: BallSaveSystem;
 
   constructor(private table: Table) {
     super();
+    this.ballSaveSystem = this.addChild(new BallSaveSystem());
   }
 
   handlers = {
@@ -72,40 +80,57 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.score = 0;
       this.gameStarted = true;
       this.game!.dispatch(updateScoreEvent(this.score));
-      this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
 
       this.addChild(
         new PositionalSound("quarterDrop1", this.table.coinSlotPos)
       );
+      const soundDuration = getSoundDuration("quarterDrop1");
 
-      await this.wait(0.9);
-
-      this.game!.dispatch({ type: "newBall" });
-    },
-    newBall: async (e: NewBallEvent) => {
-      if (!e.noSound) {
-        this.addChild(new SoundInstance("upgrade"));
-      }
-      this.ballsRemaining -= 1;
-      await this.wait(0.7);
+      await this.wait(soundDuration * 0.7);
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
+      await this.wait(soundDuration * 0.3 + 0.3);
+
+      this.game!.dispatch(newBallEvent());
+    },
+
+    newBall: async (e: NewBallEvent) => {
+      if (e.fromSave) {
+        this.addChild(new SoundInstance("defenderDown1"));
+      } else {
+        this.addChild(new SoundInstance("upgrade"));
+        this.ballsRemaining -= 1;
+        this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
+      }
+      await this.wait(0.7);
       this.game!.addEntity(new Ball(this.table.ballDropPosition.clone(), 6));
     },
+
     drain: async ({ ball }: DrainEvent) => {
       ball.destroy();
+      await this.wait(0.1);
 
-      if (this.ballsRemaining > 0) {
+      this.addChild(
+        new PositionalSound("ballDrop1", this.table.bounds.bottomMiddle)
+      );
+
+      if (this.ballSaveSystem.saveIfPossible()) {
+        await this.wait(0.8);
+        console.log("saved");
+        this.game!.dispatch(newBallEvent(true));
+      } else if (this.ballsRemaining > 0) {
         this.addChild(new SoundInstance("drain"));
         await this.wait(1.0);
-        this.game!.dispatch({ type: "newBall" });
+        this.game!.dispatch(newBallEvent());
       } else {
         this.game!.dispatch({ type: "gameOver" });
       }
     },
+
     gameOver: () => {
       this.gameStarted = false;
       this.addChild(new SoundInstance("drain"));
     },
+
     score: ({ points }: ScoreEvent) => {
       this.score += points;
       this.game!.dispatch(updateScoreEvent(this.score));
@@ -122,15 +147,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
           break;
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperUp" });
-          this.addChild(
-            new SoundInstance("flipperUp", { gain: 0.3, pan: -0.4 })
-          );
           break;
         case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperUp" });
-          this.addChild(
-            new SoundInstance("flipperUp", { gain: 0.3, pan: 0.4 })
-          );
           break;
       }
     }
@@ -141,15 +160,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
       switch (key) {
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperDown" });
-          this.addChild(
-            new SoundInstance("flipperDown", { gain: 0.3, pan: -0.4 })
-          );
           break;
         case getBinding("RIGHT_FLIPPER"):
           this.game!.dispatch({ type: "rightFlipperDown" });
-          this.addChild(
-            new SoundInstance("flipperDown", { gain: 0.3, pan: 0.4 })
-          );
           break;
       }
     }

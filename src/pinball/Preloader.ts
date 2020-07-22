@@ -2,15 +2,9 @@ import dsDigitalUrl from "../../resources/fonts/ds-digi.ttf";
 import BaseEntity from "../core/entity/BaseEntity";
 import Entity from "../core/entity/Entity";
 import Game from "../core/Game";
-import { waitForFontsLoaded } from "../core/resources/fonts";
-import {
-  loadAllSounds,
-  SOUND_URLS,
-  loadSound,
-  SoundName,
-} from "../core/resources/sounds";
-import { waitForTexturesLoaded } from "./graphics/textures";
 import { loadModels } from "../core/resources/models";
+import { loadSound, SoundName, SOUND_URLS } from "../core/resources/sounds";
+import { waitForTexturesLoaded } from "./graphics/textures";
 
 export default class Preloader extends BaseEntity implements Entity {
   private _resolve!: () => void;
