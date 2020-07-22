@@ -6,6 +6,7 @@ import { rUniform } from "../../core/util/Random";
 import { V, V2d } from "../../core/Vector";
 import { SoundInstance } from "../sound/SoundInstance";
 import { getBinding } from "../ui/KeyboardBindings";
+import { ControllerButton, ControllerAxis } from "../../core/io/Gamepad";
 
 export interface NudgeEvent {
   type: "nudge";
@@ -26,7 +27,7 @@ export default class NudgeController extends BaseEntity implements Entity {
     super();
   }
 
-  async onKeyDown(key: KeyCode) {
+  onKeyDown(key: KeyCode) {
     const power = 40;
     switch (key) {
       case getBinding("NUDGE_UP_LEFT"):
@@ -35,6 +36,15 @@ export default class NudgeController extends BaseEntity implements Entity {
       case getBinding("NUDGE_UP_RIGHT"):
         this.nudge(V(power, power));
         break;
+    }
+  }
+
+  onButtonDown(button: ControllerButton) {
+    if (button === ControllerButton.B) {
+      const x = this.game!.io.getAxis(ControllerAxis.LEFT_X);
+      const y = this.game!.io.getAxis(ControllerAxis.LEFT_Y);
+      const impulse = V(x, y).imul(50);
+      this.nudge(impulse);
     }
   }
 

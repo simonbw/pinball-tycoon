@@ -8,6 +8,7 @@ import { getBinding } from "../ui/KeyboardBindings";
 import { PositionalSound } from "../sound/PositionalSound";
 import { getSoundDuration } from "../../core/resources/sounds";
 import BallSaveSystem from "./BallSaveSystem";
+import { ControllerButton } from "../../core/io/Gamepad";
 
 export interface DrainEvent {
   type: "drain";
@@ -138,32 +139,17 @@ export default class LogicBoard extends BaseEntity implements Entity {
   };
 
   onKeyDown(key: KeyCode) {
-    if (!this.game?.paused) {
-      switch (key) {
-        case getBinding("START_GAME"):
-          if (!this.gameStarted) {
-            this.game!.dispatch({ type: "gameStart" });
-          }
-          break;
-        case getBinding("LEFT_FLIPPER"):
-          this.game!.dispatch({ type: "leftFlipperUp" });
-          break;
-        case getBinding("RIGHT_FLIPPER"):
-          this.game!.dispatch({ type: "rightFlipperUp" });
-          break;
+    if (key == getBinding("START_GAME")) {
+      if (!this.gameStarted) {
+        this.game!.dispatch({ type: "gameStart" });
       }
     }
   }
 
-  onKeyUp(key: KeyCode) {
-    if (!this.game?.paused) {
-      switch (key) {
-        case getBinding("LEFT_FLIPPER"):
-          this.game!.dispatch({ type: "leftFlipperDown" });
-          break;
-        case getBinding("RIGHT_FLIPPER"):
-          this.game!.dispatch({ type: "rightFlipperDown" });
-          break;
+  onButtonUp(button: ControllerButton) {
+    if (button === ControllerButton.START) {
+      if (!this.gameStarted) {
+        this.game!.dispatch({ type: "gameStart" });
       }
     }
   }

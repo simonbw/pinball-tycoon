@@ -1,6 +1,7 @@
 import { Body, Box, LinearSpring, Spring } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { ControllerButton } from "../../core/io/Gamepad";
 import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import {
@@ -75,7 +76,7 @@ export default class Plunger extends BaseEntity
 
   onTick() {
     if (this.plunging) {
-      if (!this.game?.io.keyIsDown(getBinding("PLUNGE"))) {
+      if (!this.shouldPlunge) {
         this.endPlunge();
       }
       const dy = this.body.position[1] - this.neutralPosition[1];
@@ -85,11 +86,17 @@ export default class Plunger extends BaseEntity
         this.stopWindSound();
       }
     } else {
-      if (this.game?.io.keyIsDown(getBinding("PLUNGE"))) {
+      if (this.shouldPlunge()) {
         this.startPlunge();
       }
-      this.pullSpring!.stiffness = 0;
     }
+  }
+
+  shouldPlunge() {
+    return (
+      this.game?.io.keyIsDown(getBinding("PLUNGE")) ||
+      this.game?.io.getButton(ControllerButton.B)
+    );
   }
 
   startPlunge() {
