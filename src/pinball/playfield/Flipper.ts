@@ -118,7 +118,7 @@ export default class Flipper extends BaseEntity
     shape.lineTo(length, -r2);
     shape.absarc(length, 0, r2, -Math.PI / 2, Math.PI / 2, false);
     shape.lineTo(0, r);
-    shape.absarc(0, 0, r2, -Math.PI / 2, Math.PI / 2, false);
+    shape.absarc(0, 0, r, Math.PI / 2, -Math.PI / 2, false);
 
     const geometry = new ExtrudeBufferGeometry(shape, {
       bevelEnabled: false,
