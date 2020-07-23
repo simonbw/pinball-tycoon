@@ -17,11 +17,11 @@ export default class BallRemainingLamp extends BaseEntity implements Entity {
       if (ballsRemaining >= this.n && !this.lit) {
         this.lit = true;
         await this.lamp.flash(2);
-        this.lamp.light();
+        this.lamp.turnOn();
       } else if (ballsRemaining < this.n && this.lit) {
         this.lit = false;
         await this.lamp.flash(2);
-        this.lamp.unlight();
+        this.lamp.turnOff();
       }
     },
   };

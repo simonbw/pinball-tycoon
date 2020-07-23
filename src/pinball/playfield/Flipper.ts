@@ -27,6 +27,7 @@ import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./P2Materials";
 import { TEXTURES } from "../graphics/textures";
 import FlipperSoundController from "../sound/FlipperSoundController";
+import RotationalSolenoidSpring from "../../core/physics/RotationalSolenoidSpring";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000cc,
@@ -36,9 +37,9 @@ const MATERIAL = new MeshStandardMaterial({
 
 const DEFAULT_DOWN_ANGLE = degToRad(30);
 const DEFAULT_SWING = degToRad(60);
-const UP_STIFFNESS = 125000;
-const DOWN_STIFFNESS = 40000;
-const DAMPING = 1250;
+const UP_STIFFNESS = 175;
+const DOWN_STIFFNESS = 40;
+const DAMPING = 12.5;
 const OVEREXTENSION_AMOUNT = degToRad(3);
 const MASS = 2.8;
 
@@ -65,7 +66,8 @@ export default class Flipper extends BaseEntity
     public length: number = 6,
     public width: number = 1.2,
     public downAngle: number = DEFAULT_DOWN_ANGLE,
-    swing = DEFAULT_SWING
+    swing = DEFAULT_SWING,
+    public strength: number = 1.0
   ) {
     super();
 
@@ -154,8 +156,8 @@ export default class Flipper extends BaseEntity
     }
     this.constraints = [this.joint];
 
-    this.spring = new DampedRotationalSpring(game.ground, this.body, {
-      stiffness: DOWN_STIFFNESS,
+    this.spring = new RotationalSolenoidSpring(game.ground, this.body, {
+      stiffness: this.getStiffness(),
       damping: DAMPING,
       restAngle: this.downAngle,
     });
@@ -189,9 +191,13 @@ export default class Flipper extends BaseEntity
     this.body.updateMassProperties();
   }
 
+  getStiffness() {
+    return (this.engaged ? UP_STIFFNESS : DOWN_STIFFNESS) * this.strength;
+  }
+
   onTick() {
     this.spring.restAngle = this.engaged ? this.upAngle : this.downAngle;
-    this.spring.stiffness = this.engaged ? UP_STIFFNESS : DOWN_STIFFNESS;
+    this.spring.stiffness = this.getStiffness();
 
     const shouldLock = this.shouldLock();
     if (!this.locked && shouldLock) {

@@ -4,7 +4,7 @@ import Flipper from "../playfield/Flipper";
 import { PositionalSound } from "./PositionalSound";
 import { clamp } from "../../core/util/MathUtil";
 
-const BUZZ_GAIN = 0.4;
+const BUZZ_GAIN = 0.25;
 
 export default class FlipperSoundController extends BaseEntity
   implements Entity {

@@ -22,8 +22,9 @@ interface SlingshotOptions {
   /** Width of the band in 1/2 inches  */
   width?: number;
   /** Amount of angle variation of impulse due to midpoint offset  */
-  angleDelta?: number;
+  angleSpread?: number;
 }
+
 export default class Slingshot extends BaseEntity implements Entity {
   lastHit: number = -Infinity;
   body: Body;
@@ -45,7 +46,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.minStrength = options.minStrength ?? 200;
     this.maxStrength = options.maxStrength ?? 350;
     this.triggerSpeed = options.triggerSpeed ?? 6.5;
-    this.angleSpread = options.angleDelta ?? degToRad(5);
+    this.angleSpread = options.angleSpread ?? degToRad(10);
     const width = options.width ?? 0.5;
 
     const delta = this.end.sub(this.start);
@@ -98,7 +99,7 @@ export default class Slingshot extends BaseEntity implements Entity {
         strengthPercent
       );
       const angle =
-        -this.angleSpread * Math.abs(midOffset) ** 0.4 * Math.sign(midOffset);
+        -this.angleSpread * Math.abs(midOffset) ** 0.2 * Math.sign(midOffset);
       const impactSpeed =
         strengthPercent * Math.abs(eqs[0].getVelocityAlongNormal());
 

@@ -8,10 +8,10 @@ import {
   getTableBounds,
 } from "./svgTableAttributes";
 import { getChildrenFromDoc } from "./svgTableChildren";
-import { fetchText } from "./svgUtils";
 
 export async function makeSVGTable(url: string) {
-  const svgText = await fetchText(url);
+  const response = await fetch(url);
+  const svgText = await response.text();
   const parser = new DOMParser();
   const doc = parser.parseFromString(svgText, "image/svg+xml");
 

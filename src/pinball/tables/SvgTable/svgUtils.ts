@@ -1,42 +1,5 @@
+import { Matrix3, Path, Vector2 } from "three";
 import { V, V2d } from "../../../core/Vector";
-import { HastSvgRootNode, HastSvgNode, HastSvgChildNode } from "svg-parser";
-import { Matrix3, Vector2, Path, ShapePath } from "three";
-
-export async function fetchText(url: string): Promise<string> {
-  const response = await fetch(url);
-  return await response.text();
-}
-
-/** Makes sure the tree is in good order */
-export function cleanupTree(root: HastSvgRootNode) {
-  const stack: HastSvgNode[] = [root];
-  while (stack.length > 0) {
-    const current = stack.pop()!;
-
-    if (current.type == "text") {
-      continue;
-    }
-
-    for (const child of current?.children ?? []) {
-      if (typeof child != "string") {
-        stack.push(child);
-      }
-    }
-
-    // DO STUFF
-    cleanNode(current);
-  }
-
-  return root;
-}
-
-function cleanNode(node: HastSvgNode) {
-  if (node.type === "element") {
-    if (node.properties?.["class"]) {
-      node.properties["className"] = node.properties["class"];
-    }
-  }
-}
 
 export function getNumberProp<T = 0>(
   value: string | number | null | undefined,
@@ -54,18 +17,16 @@ export function getNumberProp<T = 0>(
   return arguments.length > 1 ? backup! : 0;
 }
 
-// TODO: This isn't quite right
-export function parseStyle(s: string = ""): Record<string, string> {
-  const result: { [name: string]: string } = {};
-
-  for (const line of s.trim().split(";")) {
-    if (line) {
-      const [name, value] = line.trim().split(":");
-      result[name] = value.trim();
-    }
+export function getNumberAttribute<T = 0>(
+  node: Element,
+  name: string,
+  fallback?: T
+) {
+  if (arguments.length > 2) {
+    return getNumberProp(node.getAttribute(name), fallback);
+  } else {
+    return getNumberProp(node.getAttribute(name));
   }
-
-  return result;
 }
 
 export function parsePointString(s: string): V2d[] {

@@ -36,12 +36,12 @@ export function colorRange(from: number, to: number, steps: number): number[] {
   const perStepFade = 1.0 / steps;
   const out = [];
   for (let i = 0; i < steps; i++) {
-    out.push(colorFade(from, to, perStepFade * i));
+    out.push(colorLerp(from, to, perStepFade * i));
   }
   return out;
 }
 
-export function colorFade(from: number, to: number, percentTo: number): number {
+export function colorLerp(from: number, to: number, percentTo: number): number {
   const rgbFrom = hexToRGB(from);
   const rgbTo = hexToRGB(to);
 
@@ -57,9 +57,20 @@ export function colorFade(from: number, to: number, percentTo: number): number {
 }
 
 export function lighten(from: number, percent: number = 0.1): number {
-  return colorFade(from, 0xffffff, percent);
+  return colorLerp(from, 0xffffff, percent);
 }
 
 export function darken(from: number, percent: number = 0.1): number {
-  return colorFade(from, 0x000000, percent);
+  return colorLerp(from, 0x000000, percent);
+}
+
+export function colorDistance(c1: number, c2: number): number {
+  const rgb1 = hexToRGB(c1);
+  const rgb2 = hexToRGB(c2);
+
+  return Math.max(
+    Math.abs(rgb1.r - rgb2.r) / 255,
+    Math.abs(rgb1.g - rgb2.g) / 255,
+    Math.abs(rgb1.b - rgb2.b) / 255
+  );
 }

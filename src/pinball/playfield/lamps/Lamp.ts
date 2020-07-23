@@ -11,7 +11,12 @@ import {
 } from "three";
 import BaseEntity from "../../../core/entity/BaseEntity";
 import Entity from "../../../core/entity/Entity";
-import { colorFade, darken, lighten } from "../../../core/util/ColorUtils";
+import {
+  colorLerp,
+  darken,
+  lighten,
+  colorDistance,
+} from "../../../core/util/ColorUtils";
 import { lerp } from "../../../core/util/MathUtil";
 import { createRadialGradient } from "../../graphics/proceduralTextures";
 
@@ -20,7 +25,7 @@ const UNLIT_EMISSIVE = new Color(0x000000);
 const glowTexture = createRadialGradient(64, 1.4);
 glowTexture.magFilter = LinearFilter;
 glowTexture.minFilter = LinearFilter;
-const glowMaterialTemplate = new MeshBasicMaterial({
+const GLOW_MATERIAL = new MeshBasicMaterial({
   blending: AdditiveBlending,
   color: 0xaa0000,
   depthTest: true,
@@ -32,7 +37,7 @@ const glowMaterialTemplate = new MeshBasicMaterial({
   transparent: true,
 });
 
-const circleMaterialTemplate = new MeshStandardMaterial({
+const BULB_MATERIAL = new MeshStandardMaterial({
   transparent: true,
   color: 0x330000,
   roughness: 0.2,
@@ -45,8 +50,8 @@ const circleMaterialTemplate = new MeshStandardMaterial({
 
 export default class Lamp extends BaseEntity implements Entity {
   tags = ["lamp"];
-  emissiveColor: number;
-  glowColor: number;
+  emissiveColor!: number;
+  glowColor!: number;
 
   material: MeshStandardMaterial;
   glow: Object3D;
@@ -56,19 +61,15 @@ export default class Lamp extends BaseEntity implements Entity {
 
   constructor(
     [x, y]: [number, number],
-    color: number,
+    private color: number,
     size: number = 0.6,
+    private intensity: number = 1.0,
     private toggleTime: number = 0.06
   ) {
     super();
 
-    const materialColor = darken(color, 0.4);
-    this.emissiveColor = lighten(color, 0.0);
-    this.glowColor = darken(color, 0.3);
-
     const geometry = new CircleBufferGeometry(size, 32);
-    this.material = circleMaterialTemplate.clone();
-    this.material.color.set(materialColor);
+    this.material = BULB_MATERIAL.clone();
     this.mesh = new Mesh(geometry, this.material);
     this.mesh.rotateX(Math.PI);
     this.mesh.position.set(x, y, 0);
@@ -76,7 +77,7 @@ export default class Lamp extends BaseEntity implements Entity {
     this.mesh.matrixAutoUpdate = false;
 
     const glowGeometry = new PlaneBufferGeometry();
-    this.glowMaterial = glowMaterialTemplate.clone();
+    this.glowMaterial = GLOW_MATERIAL.clone();
     this.glowMaterial.color.set(0x000000);
     this.glow = new Mesh(glowGeometry, this.glowMaterial);
     this.glow.rotateX(Math.PI);
@@ -86,7 +87,8 @@ export default class Lamp extends BaseEntity implements Entity {
     this.glow.matrixAutoUpdate = false;
     this.object3ds.push(this.glow);
 
-    this.setPercentImmediate(0);
+    this.setBrightnessImmediate(0);
+    this.setColorImmediate(color);
 
     this.disposeables.push(
       geometry,
@@ -96,24 +98,56 @@ export default class Lamp extends BaseEntity implements Entity {
     );
   }
 
-  setPercentImmediate(percent: number) {
+  setColorImmediate(color: number) {
+    this.color = color;
+    this.material.color.set(darken(color, 0.4));
+    this.material.needsUpdate = true;
+    this.emissiveColor = lighten(color, 0.0);
+    this.glowColor = darken(color, 0.3);
+  }
+
+  async setColorGradual(to: number, maxTime: number = this.toggleTime) {
+    this.clearTimers("color-timer");
+    const from = this.color;
+    const totalTime = maxTime * colorDistance(from, to);
+    await this.wait(
+      totalTime,
+      (dt, t) => {
+        this.setColorImmediate(colorLerp(from, to, t));
+      },
+      "color-timer"
+    );
+    this.setColorImmediate(to);
+  }
+
+  setBrightnessImmediate(percent: number) {
     this.litPercent = percent;
     this.glow.visible = percent > 0;
 
-    this.glowMaterial.color.set(colorFade(0x0, this.glowColor, percent));
+    const p = percent * this.intensity;
+    this.glowMaterial.color.set(colorLerp(0x0, this.glowColor, p));
     this.glowMaterial.needsUpdate = true;
-    this.material.emissive.set(colorFade(0x0, this.emissiveColor, percent));
+    this.material.emissive.set(colorLerp(0x0, this.emissiveColor, p));
     this.material.needsUpdate = true;
   }
 
-  async setPercentGradual(to: number, speed: number = this.toggleTime) {
-    this.clearTimers(); // TODO: Can I do this?
+  async setBrightnessGradual(to: number, maxTime: number = this.toggleTime) {
+    this.clearTimers("percent-timer");
     const from = this.litPercent;
-    const totalTime = speed * Math.abs(to - from);
-    await this.wait(totalTime, (dt, t) => {
-      this.setPercentImmediate(lerp(from, to, t));
-    });
-    this.setPercentImmediate(to);
+    const totalTime = maxTime * Math.abs(to - from);
+    await this.wait(
+      totalTime,
+      (dt, t) => {
+        this.setBrightnessImmediate(lerp(from, to, t));
+      },
+      "percent-timer"
+    );
+    this.setBrightnessImmediate(to);
+  }
+
+  stopTransitions() {
+    this.clearTimers("percent-timer");
+    this.clearTimers("color-timer");
   }
 
   async flash(
@@ -122,26 +156,26 @@ export default class Lamp extends BaseEntity implements Entity {
     offDuration: number = 0.13
   ) {
     for (let i = 0; i < times; i++) {
-      await this.light();
+      await this.turnOn();
       await this.wait(onDuration);
-      await this.unlight();
+      await this.turnOff();
       await this.wait(offDuration);
     }
   }
 
   async setLit(on: boolean) {
     if (on) {
-      this.light();
+      this.turnOn();
     } else {
-      this.unlight();
+      this.turnOff();
     }
   }
 
-  async light() {
-    this.setPercentGradual(1);
+  async turnOn() {
+    this.setBrightnessGradual(1);
   }
 
-  async unlight() {
-    this.setPercentGradual(0);
+  async turnOff() {
+    this.setBrightnessGradual(0);
   }
 }

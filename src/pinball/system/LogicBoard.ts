@@ -105,7 +105,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
         this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
       }
       await this.wait(0.7);
-      this.game!.addEntity(new Ball(this.table.ballDropPosition.clone(), 6));
+      this.table.addChild(new Ball(this.table.ballDropPosition.clone(), 6));
     },
 
     drain: async ({ ball }: DrainEvent) => {
@@ -118,7 +118,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
 
       if (this.ballSaveSystem.saveIfPossible()) {
         await this.wait(0.8);
-        console.log("saved");
+        console.log("ball saved");
         this.game!.dispatch(newBallEvent(true));
       } else if (this.ballsRemaining > 0) {
         this.addChild(new SoundInstance("drain"));

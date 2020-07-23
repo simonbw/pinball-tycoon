@@ -87,10 +87,11 @@ export default abstract class BaseEntity implements Entity {
    */
   wait(
     delay: number = 0,
-    onTick?: (dt: number, t: number) => void
+    onTick?: (dt: number, t: number) => void,
+    timerId?: string
   ): Promise<void> {
     return new Promise((resolve) => {
-      const timer = new Timer(delay, () => resolve(), onTick);
+      const timer = new Timer(delay, () => resolve(), onTick, timerId);
       this.addChild(timer);
     });
   }
@@ -98,11 +99,13 @@ export default abstract class BaseEntity implements Entity {
   /**
    * Remove all timers from this instance. i.e. cancel all 'waits'.
    */
-  clearTimers(): void {
+  clearTimers(timerId?: string): void {
     if (this.children) {
-      const timers = this.children.filter((e) => e instanceof Timer);
+      const timers = this.children.filter(isTimer);
       for (const timer of timers) {
-        timer.destroy();
+        if (!timerId || timerId === timer.id) {
+          timer.destroy();
+        }
       }
     }
   }
@@ -117,7 +120,8 @@ class Timer extends BaseEntity implements Entity {
   constructor(
     private delay: number,
     endEffect?: () => void,
-    duringEffect?: (dt: number, t: number) => void
+    duringEffect?: (dt: number, t: number) => void,
+    public id?: string
   ) {
     super();
     this.timeRemaining = delay;
@@ -134,4 +138,8 @@ class Timer extends BaseEntity implements Entity {
       this.destroy();
     }
   }
+}
+
+function isTimer(e?: Entity): e is Timer {
+  return e instanceof Timer;
 }

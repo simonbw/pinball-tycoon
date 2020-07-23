@@ -79,7 +79,7 @@ export default class Ball extends BaseEntity
   }
 
   getIncline() {
-    return this.getTable()?.incline ?? degToRad(4);
+    return this.getTable()?.getIncline(this.body.position) ?? 0;
   }
 
   onTick(dt: number) {
@@ -109,7 +109,7 @@ export default class Ball extends BaseEntity
         const spinForce = V(this.body.velocity)
           .inormalize()
           .irotate90cw()
-          .imul(this.body.angularVelocity * 0.05);
+          .imul(this.body.angularVelocity * 0.005);
         this.body.applyForce(spinForce);
 
         // Friction

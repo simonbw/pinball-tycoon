@@ -14,7 +14,7 @@ export interface NudgeEvent {
   duration: number;
 }
 
-function nudgeEvent(impulse: V2d, duration: number = 0.06): NudgeEvent {
+function nudgeEvent(impulse: V2d, duration: number = 0.08): NudgeEvent {
   return {
     type: "nudge",
     impulse,

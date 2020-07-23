@@ -27,7 +27,9 @@ import {
   parsePointString,
   svgArcToShapeArc,
   transformPoint,
+  getNumberAttribute,
 } from "./svgUtils";
+import SlowMoLamps from "../../playfield/lamps/SlowMoLamps";
 
 export type Extractor = (
   node: SVGElement,
@@ -194,12 +196,26 @@ export function getExtractors() {
         return new BallRemainingLamp(transformPoint(x, y, m), minBalls);
       }
     },
-    // ball-remaining lamps
+
+    // ball-save lamps
     (node, m) => {
       if (node.matches("circle.ball-save-lamp")) {
         const x = getNumberProp(node.getAttribute("cx"));
         const y = getNumberProp(node.getAttribute("cy"));
         return new BallSaveLamp(transformPoint(x, y, m));
+      }
+    },
+
+    // slow-mo lamps
+    (node, m) => {
+      if (node.matches("rect.slow-mo-lamps")) {
+        const left = getNumberProp(node.getAttribute("x"));
+        const top = getNumberProp(node.getAttribute("y"));
+        const width = getNumberProp(node.getAttribute("width"));
+        const height = getNumberProp(node.getAttribute("height"));
+        const x = left + width / 2;
+        const y = top + height / 2;
+        return new SlowMoLamps(transformPoint(x, y, m));
       }
     },
 
@@ -255,7 +271,12 @@ export function getExtractors() {
         const y2 = getNumberProp(node.getAttribute("y2"));
         const a = transformPoint(x1, y1, m);
         const b = transformPoint(x2, y2, m);
-        return new Slingshot(a, b);
+        const middleOffset = getNumberAttribute(
+          node,
+          "data-middle-offset",
+          undefined
+        );
+        return new Slingshot(a, b, { middlePercent: middleOffset });
       }
     },
 
@@ -302,8 +323,12 @@ export function getExtractors() {
         const delta = b.sub(a);
         const side = a.x < b.x ? "left" : "right";
         const width = getNumberProp(node.style.strokeWidth, undefined);
-        console.log(width);
-        return new Flipper(a, side, delta.magnitude, width, delta.angle);
+        let swing = getNumberProp(node.getAttribute("data-swing"), undefined);
+        swing = swing && degToRad(swing);
+        const strength = getNumberAttribute(node, "data-strength", undefined);
+        const length = delta.magnitude;
+        const angle = delta.angle;
+        return new Flipper(a, side, length, width, angle, swing, strength);
       }
     },
 

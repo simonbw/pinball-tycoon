@@ -1,6 +1,6 @@
 import { Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
-import { getExtractors } from "./getExtrators";
+import { getExtractors } from "./svgExtrators";
 
 export function getChildrenFromDoc(doc: Document) {
   return getChildrenFromNode(doc.getRootNode());
