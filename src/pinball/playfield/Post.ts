@@ -1,5 +1,11 @@
 import { Body, Circle } from "p2";
-import { CylinderBufferGeometry, Mesh, MeshStandardMaterial } from "three";
+import {
+  CylinderBufferGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  SphereBufferGeometry,
+  Object3D,
+} from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V2d } from "../../core/Vector";
@@ -11,6 +17,19 @@ import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
 import { CollisionGroups } from "../Collision";
 import { P2Materials } from "./P2Materials";
+
+const RUBBER_MATERIAL = new MeshStandardMaterial({
+  color: 0x070707,
+  metalness: 0.0,
+  roughness: 0.0,
+});
+
+const RUBBER_GEOMETRY = new SphereBufferGeometry(1.1, 12, 12);
+RUBBER_GEOMETRY.rotateX(Math.PI / 2);
+RUBBER_GEOMETRY.scale(1, 1, 0.7);
+
+const CYLINDER_GEOMETRY = new CylinderBufferGeometry(0.7, 0.7, 1);
+CYLINDER_GEOMETRY.rotateX(Math.PI / 2);
 
 export default class Post extends BaseEntity
   implements Entity, WithBallCollisionInfo {
@@ -37,7 +56,7 @@ export default class Post extends BaseEntity
 
     this.reflector = this.addChild(new Reflector());
 
-    const material = new MeshStandardMaterial({
+    const cylinderMaterial = new MeshStandardMaterial({
       color: 0xdddddd,
       metalness: 1.0,
       roughness: 1.5,
@@ -45,15 +64,21 @@ export default class Post extends BaseEntity
       envMap: this.reflector.envMap,
     });
 
-    const geometry = new CylinderBufferGeometry(radius, radius, height);
-    geometry.rotateX(Math.PI / 2);
-    this.mesh = new Mesh(geometry, material);
-    this.mesh.position.set(position.x, position.y, -1.0);
-    this.mesh.castShadow = false;
-    this.mesh.receiveShadow = false;
+    const rubberMesh = new Mesh(RUBBER_GEOMETRY, RUBBER_MATERIAL);
+    rubberMesh.scale.set(radius, radius, radius);
 
-    this.reflector.parentMesh = this.mesh;
+    const cylinderMesh = new Mesh(CYLINDER_GEOMETRY, cylinderMaterial);
+    cylinderMesh.scale.set(radius, radius, height);
 
-    this.disposeables.push(material, geometry);
+    const obj = new Object3D();
+    obj.position.set(position.x, position.y, -height / 2);
+    obj.add(rubberMesh);
+    obj.add(cylinderMesh);
+    obj.castShadow = false;
+    obj.receiveShadow = false;
+
+    this.reflector.parentMesh = obj;
+    this.object3ds.push(obj);
+    this.disposeables.push(cylinderMaterial);
   }
 }

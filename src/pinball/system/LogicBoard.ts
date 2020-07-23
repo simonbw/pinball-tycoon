@@ -9,6 +9,7 @@ import { PositionalSound } from "../sound/PositionalSound";
 import { getSoundDuration } from "../../core/resources/sounds";
 import BallSaveSystem from "./BallSaveSystem";
 import { ControllerButton } from "../../core/io/Gamepad";
+import FlipperController from "./FlipperController";
 
 export interface DrainEvent {
   type: "drain";
@@ -67,6 +68,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
   constructor(private table: Table) {
     super();
     this.ballSaveSystem = this.addChild(new BallSaveSystem());
+    this.addChild(new FlipperController());
   }
 
   handlers = {

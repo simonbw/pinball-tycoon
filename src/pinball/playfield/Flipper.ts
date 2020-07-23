@@ -1,4 +1,10 @@
-import { Body, Capsule, RevoluteConstraint, RotationalSpring } from "p2";
+import {
+  Body,
+  Capsule,
+  RevoluteConstraint,
+  RotationalSpring,
+  Convex,
+} from "p2";
 import {
   ExtrudeBufferGeometry,
   Mesh,
@@ -28,13 +34,12 @@ const MATERIAL = new MeshStandardMaterial({
   // map: TEXTURES.Wood,
 });
 
-const DOWN_ANGLE = degToRad(30);
-const UP_ANGLE = degToRad(-32);
-const UP_STIFFNESS = 100000;
+const DEFAULT_DOWN_ANGLE = degToRad(30);
+const DEFAULT_SWING = degToRad(60);
+const UP_STIFFNESS = 125000;
 const DOWN_STIFFNESS = 40000;
 const DAMPING = 1250;
 const OVEREXTENSION_AMOUNT = degToRad(3);
-const WIDTH = 1.2;
 const MASS = 2.8;
 
 type Side = "left" | "right";
@@ -44,7 +49,6 @@ export default class Flipper extends BaseEntity
   body: Body;
   joint?: RevoluteConstraint;
   spring!: RotationalSpring;
-  downAngle: number;
   upAngle: number;
   locked: boolean = false;
   engaged: boolean = false;
@@ -59,25 +63,29 @@ export default class Flipper extends BaseEntity
     position: V2d,
     public side: Side = "left",
     public length: number = 6,
-    upAngle = UP_ANGLE,
-    downAngle = DOWN_ANGLE
+    public width: number = 1.2,
+    public downAngle: number = DEFAULT_DOWN_ANGLE,
+    swing = DEFAULT_SWING
   ) {
     super();
 
+    swing = side === "left" ? -swing : swing;
+    this.upAngle = downAngle + swing;
+
     switch (side) {
       case "left":
-        this.upAngle = upAngle;
-        this.downAngle = downAngle;
         this.handlers["leftFlipperUp"] = () => this.engage();
         this.handlers["leftFlipperDown"] = () => this.disengage();
         break;
       case "right":
-        this.upAngle = reflectX(upAngle) + 2 * Math.PI;
-        this.downAngle = reflectX(downAngle);
         this.handlers["rightFlipperUp"] = () => this.engage();
         this.handlers["rightFlipperDown"] = () => this.disengage();
         break;
     }
+
+    const r = width * 0.5;
+    const r2 = width * 0.3;
+    length = length + (r - r2);
 
     this.body = new Body({
       position: position,
@@ -87,22 +95,30 @@ export default class Flipper extends BaseEntity
       fixedY: true,
     });
 
-    const p2Shape = new Capsule({
-      length: length,
-      radius: WIDTH / 2,
-    });
+    const corners = [
+      [0, -r],
+      [length, -r2],
+      [length + 0.707 * r2, -0.707 * r2],
+      [length + r2, 0],
+      [length + 0.707 * r2, 0.707 * r2],
+      [length, r2],
+      [0, r],
+      [0, -r2],
+    ];
+
+    const p2Shape = new Convex({ vertices: corners });
     p2Shape.material = P2Materials.flipper;
     p2Shape.collisionGroup = CollisionGroups.Table;
     p2Shape.collisionMask = CollisionGroups.Ball;
-    this.body.addShape(p2Shape, [length / 2, 0]);
+    this.body.addShape(p2Shape, [0, 0]);
 
     const shape = new Shape();
-    const r = WIDTH / 2;
+
     shape.moveTo(0, -r);
-    shape.lineTo(length, -r);
-    shape.absarc(length, 0, r, -Math.PI / 2, Math.PI / 2, false);
+    shape.lineTo(length, -r2);
+    shape.absarc(length, 0, r2, -Math.PI / 2, Math.PI / 2, false);
     shape.lineTo(0, r);
-    shape.lineTo(0, -r);
+    shape.absarc(0, 0, r2, -Math.PI / 2, Math.PI / 2, false);
 
     const geometry = new ExtrudeBufferGeometry(shape, {
       bevelEnabled: false,

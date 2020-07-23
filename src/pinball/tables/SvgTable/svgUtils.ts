@@ -51,7 +51,7 @@ export function getNumberProp<T = 0>(
       return f;
     }
   }
-  return backup ?? 0;
+  return arguments.length > 1 ? backup! : 0;
 }
 
 // TODO: This isn't quite right

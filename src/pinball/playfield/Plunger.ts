@@ -76,7 +76,7 @@ export default class Plunger extends BaseEntity
 
   onTick() {
     if (this.plunging) {
-      if (!this.shouldPlunge) {
+      if (!this.shouldPlunge()) {
         this.endPlunge();
       }
       const dy = this.body.position[1] - this.neutralPosition[1];
@@ -86,6 +86,7 @@ export default class Plunger extends BaseEntity
         this.stopWindSound();
       }
     } else {
+      this.pullSpring!.stiffness = 0;
       if (this.shouldPlunge()) {
         this.startPlunge();
       }
@@ -94,8 +95,8 @@ export default class Plunger extends BaseEntity
 
   shouldPlunge() {
     return (
-      this.game?.io.keyIsDown(getBinding("PLUNGE")) ||
-      this.game?.io.getButton(ControllerButton.B)
+      this.game!.io.keyIsDown(getBinding("PLUNGE")) ||
+      this.game!.io.getButton(ControllerButton.B) > 0.1
     );
   }
 
@@ -108,7 +109,6 @@ export default class Plunger extends BaseEntity
   endPlunge() {
     this.plunging = false;
     this.stopWindSound();
-    const pan = clamp(this.body.position[0] / 40, -0.6, 0.6);
     const gain = this.getPercentDown() ** 1.5;
     this.addChild(new PositionalSound("boing2", this.getPosition(), { gain }));
   }

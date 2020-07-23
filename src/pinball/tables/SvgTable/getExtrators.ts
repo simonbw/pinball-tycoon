@@ -301,8 +301,9 @@ export function getExtractors() {
         const b = transformPoint(x2, y2, m);
         const delta = b.sub(a);
         const side = a.x < b.x ? "left" : "right";
-        // TODO: Angles
-        return new Flipper(a, side, delta.magnitude);
+        const width = getNumberProp(node.style.strokeWidth, undefined);
+        console.log(width);
+        return new Flipper(a, side, delta.magnitude, width, delta.angle);
       }
     },
 

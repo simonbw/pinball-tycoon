@@ -42,7 +42,7 @@ export default class NudgeController extends BaseEntity implements Entity {
   onButtonDown(button: ControllerButton) {
     if (button === ControllerButton.B) {
       const x = this.game!.io.getAxis(ControllerAxis.LEFT_X);
-      const y = this.game!.io.getAxis(ControllerAxis.LEFT_Y);
+      const y = -this.game!.io.getAxis(ControllerAxis.LEFT_Y);
       const impulse = V(x, y).imul(50);
       this.nudge(impulse);
     }

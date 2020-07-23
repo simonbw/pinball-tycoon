@@ -22,7 +22,7 @@ export async function main() {
 
   const audioContext = new AudioContext();
 
-  const game = new Game(audioContext, ContactMaterials, 20);
+  const game = new Game(audioContext, ContactMaterials, 22);
   window.DEBUG = { game };
   game.start();
 
