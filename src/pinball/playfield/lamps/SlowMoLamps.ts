@@ -49,7 +49,7 @@ export default class SlowMoLamps extends BaseEntity implements Entity {
   handlers = {
     gameStart: () => {
       for (const lamp of this.lamps) {
-        lamp.flash(5);
+        lamp.flash(4);
       }
     },
 

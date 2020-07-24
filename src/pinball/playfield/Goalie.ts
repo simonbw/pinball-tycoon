@@ -12,7 +12,7 @@ const MATERIAL = new MeshPhongMaterial({
 });
 
 const DROP_FORCE = 60;
-const RESET_TIME = 5;
+const RESET_TIME = 15;
 const WIDTH = 3.3;
 const HEIGHT = 4.5;
 

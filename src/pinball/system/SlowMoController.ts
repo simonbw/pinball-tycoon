@@ -86,6 +86,8 @@ export default class SlowMoController extends BaseEntity implements Entity {
         }
         game.slowMo = Math.min(game.slowMo + RAMP_UP_SPEED, 1);
       }
+    } else {
+      game.slowMo = 1.0;
     }
 
     // Dispatch updates if stuff changed

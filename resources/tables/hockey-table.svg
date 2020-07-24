@@ -52,7 +52,7 @@
     <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" points="28 0 28 100"/>
     <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" points="-24 0 -24 100"/>
   </g>
-  <circle style="fill: rgb(59, 230, 230);" cx="-2.769" cy="6.154" r="1.6" class="bumper"/>
+  <circle style="fill: rgb(59, 230, 230);" cx="-3.144" cy="10.18" r="2.053" class="bumper"/>
   <g transform="matrix(1, 0, 0, 1, 3.191236, 18.283638)">
     <title>Bumper Zone</title>
     <circle style="fill: rgb(59, 230, 230);" cx="4.91" cy="5.232" r="2" class="bumper"/>
@@ -71,14 +71,14 @@
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="20 71 20 83.5 8 90.5"/>
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="-24 88 -4 99.5 -4 100"/>
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="24 88 4 99.5 4 100"/>
-  <path d="M 24 100 L 24 47 L 19.146 50.107 L 19.146 53.107 L 24 50" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
-  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.28px;" x1="-8" y1="90.729" x2="-2.875" y2="93.369" class="flipper">
+  <path d="M 24 100 L 24 47 L 16.695 51.926 L 16.689 54.573 L 24 50" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
+  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.5px;" x1="-8" y1="90.772" x2="-2.875" y2="93.412" class="flipper">
     <title>Left Flipper</title>
   </line>
-  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.28px;" x1="8" y1="90.729" x2="2.875" y2="93.369" class="flipper">
+  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.5px;" x1="8" y1="90.772" x2="2.875" y2="93.412" class="flipper">
     <title>Right Flipper</title>
   </line>
-  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.25px;" x1="22.827" y1="47.962" x2="19.312" y2="50.219" class="flipper" data-strength="0.7" data-swing="55" transform="matrix(0.999993, 0.00373, -0.00373, 0.999993, 0.185019, -0.075725)">
+  <line style="stroke: rgb(0, 170, 255); stroke-width: 1.25px;" x1="20.802" y1="49.17" x2="17.114" y2="51.89" class="flipper" data-strength="0.7" data-swing="55" transform="matrix(0.999993, 0.00373, -0.00373, 0.999993, 0.187745, -0.070436)">
     <title>Upper Flipper</title>
   </line>
   <rect x="-9" y="100" width="18" height="4" style="fill: none;" class="drain">
@@ -89,8 +89,8 @@
     <title>First Gate</title>
   </line>
   <path d="M 23.933 62.469 L 19.321 59.469 L 19.321 71.916 L 23.933 69.078" style="stroke: rgb(0, 0, 0); fill: none;" transform="matrix(-1, 0, 0, -1, 43.254, 128.360001)" class="wall"/>
-  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" d="M -14.811 33.694 C -4.965 34.526 0.022 24.438 -4.293 17.302 C -6.902 12.987 -11.023 10.876 -17.194 12.065" class="wall" transform="matrix(-0.242541, -0.970141, 0.970141, -0.242541, -34.37484, 18.676686)"/>
-  <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-0.797" y2="0.073" class="gate" x3="24" y3="47" data-swing="150">
+  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" class="wall" transform="matrix(-0.242541, -0.970141, 0.970141, -0.242541, -34.37484, 18.676686)" d="M -14.943 33.661 C -4.591 34.941 0.022 24.438 -4.293 17.302 C -6.902 12.987 -11.023 10.876 -17.194 12.065"/>
+  <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-1.269" y2="0.098" class="gate" x3="24" y3="47" data-swing="150">
     <title>First Gate</title>
   </line>
   <circle style="fill: rgb(170, 0, 0);" cx="26" cy="93" r="0.6" class="ball-remaining-lamp" data-min-balls="1">
@@ -112,12 +112,25 @@
   <circle style="fill: rgb(216, 216, 216);" cx="1.951" cy="25.406" r="0.3" class="post" transform="matrix(0.999366, -0.035611, 0.035611, 0.999366, -0.824053, -0.337601)"/>
   <rect x="-1" y="72" width="2" height="5" style="fill: rgb(170, 255, 170);" class="slow-mo-lamps"/>
   <use width="2" height="2" transform="matrix(0.993861, -0.110637, 0.110637, 0.993861, -22.680761, 30.095564)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.500001, 0.866027, -0.866027, 0.500001, 17.2665, 55.365055)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.500001, 0.866027, -0.866027, 0.500001, 17.343269, 56.416271)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
   <g transform="matrix(1, 0, 0, 1, -0.282536, 0.022481)" class="target-bank">
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="61.764" x2="-19" y2="59.764"/>
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="58.764" x2="-19" y2="56.764"/>
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="55.764" x2="-19" y2="53.764"/>
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="52.764" x2="-19" y2="50.764"/>
   </g>
-  <rect x="13.774" y="55.583" width="4.018" height="3.418" style="fill: rgb(216, 216, 216);" transform="matrix(0.5, 0.866025, -0.866025, 0.5, 63.078671, 12.622159)" class="scoop"/>
+  <rect x="13.774" y="81.627" width="4.018" height="5.02" style="fill: rgb(216, 216, 216);" transform="matrix(0.520702, 0.853739, -0.853739, 0.520702, 84.273026, -1.947744)" class="scoop"/>
+  <path style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.6;" d="M 23.945 39.686 C 24.023 33.086 16.571 31.241 12.697 37.493 C 13.544 33.348 24.177 27.338 23.572 21.964" class="wall"/>
+  <circle style="fill: rgb(59, 230, 230);" cx="18.479" cy="39.535" r="1.6" class="bumper"/>
+  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M -3.445 16.747"/>
+  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.752 21.835"/>
+  <path style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.4px;" d="M -3.943 16.349 C -2.968 16.896 1.427 14.81 2.624 16.969 C 3.66 18.836 1.851 20.343 2.038 24.803" class="wall"/>
+  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <circle style="fill: rgb(59, 230, 230);" cx="7.703" cy="11.098" r="1.589" class="bumper"/>
+  <use width="2" height="2" transform="matrix(0.724424, 0.689355, -0.689355, 0.724424, 15.669888, 41.198456)" id="right-loop-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.946836, -0.531737, 0.439563, 0.782703, -8.686562, 30.792738)" id="goal-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 52.165531)" id="use-2" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 55.234703)" id="use-3" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 58.22723)" id="use-4" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 61.261974)" id="use-5" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
 </svg>

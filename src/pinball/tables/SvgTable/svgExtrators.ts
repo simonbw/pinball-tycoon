@@ -182,8 +182,9 @@ export function getExtractors() {
         node.matches(`use`) &&
         node.getAttribute("xlink:href") === "#target-lamp-symbol"
       ) {
-        const width = getNumberProp(node.getAttribute("width"));
-        const height = getNumberProp(node.getAttribute("height"));
+        const [w, h] = [getTransformWidth(m), getTransformHeight(m)];
+        const width = getNumberProp(node.getAttribute("width")) * w;
+        const height = getNumberProp(node.getAttribute("height")) * h;
         const angle = getTransformAngle(m);
         const position = transformPoint(width / 2, height / 2, m);
         const bulbGeometry = BULB_GEOMETRY_ARROW;

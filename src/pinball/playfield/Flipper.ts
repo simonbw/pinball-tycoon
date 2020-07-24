@@ -178,7 +178,7 @@ export default class Flipper extends BaseEntity
     const targetAngle = this.spring.restAngle;
     const speed = Math.abs(this.body.angularVelocity);
     const offset = Math.abs(angleDelta(angle, targetAngle));
-    return offset < 0.05 && speed < 0.5;
+    return offset < 0.03 && speed < 0.2;
   }
 
   lock() {

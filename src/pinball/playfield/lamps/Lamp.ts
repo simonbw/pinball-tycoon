@@ -181,9 +181,9 @@ export default class Lamp extends BaseEntity implements Entity {
   ) {
     for (let i = 0; i < times; i++) {
       await this.turnOn();
-      await this.wait(onDuration);
+      await this.wait(onDuration, undefined, "flash");
       await this.turnOff();
-      await this.wait(offDuration);
+      await this.wait(offDuration, undefined, "flash");
     }
   }
 
