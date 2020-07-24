@@ -1,10 +1,8 @@
+import { CircleBufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { polarToVec } from "../../core/util/MathUtil";
-import { MeshStandardMaterial, CircleBufferGeometry, Mesh } from "three";
-import { createRadialGradient } from "../graphics/proceduralTextures";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000ff,
@@ -13,7 +11,6 @@ const MATERIAL = new MeshStandardMaterial({
   depthWrite: false,
   transparent: true,
   opacity: 0.5,
-  // alphaMap: createRadialGradient(32),
 });
 
 export default class Magnet extends BaseEntity implements Entity {

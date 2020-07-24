@@ -12,7 +12,7 @@ export const P2Materials = {
 
 export const ContactMaterials = [
   new ContactMaterial(P2Materials.ball, P2Materials.rubber, {
-    restitution: 1.2,
+    restitution: 1.25,
     friction: 3.0,
   }),
   new ContactMaterial(P2Materials.ball, P2Materials.metal, {

@@ -1,14 +1,19 @@
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import Game from "../../core/Game";
 import focusFragShader from "./focusFragShader.frag";
 import focusVertShader from "./focusVertShader.vert";
-import { Vector2 } from "three";
+import glowFragShader from "./glowFragShader.frag";
+import glowVertShader from "./glowVertShader.vert";
 
 const FOCUS_UNIFORMS = {
   tDiffuse: { value: null },
   opacity: { value: 1.0 },
-  focusAmount: { value: 0.8 },
+  focusAmount: { value: 0.0 },
+};
+
+const GLOW_UNIFORMS = {
+  tDiffuse: { value: null },
+  opacity: { value: 1.0 },
 };
 
 const focusPass = new ShaderPass({
@@ -17,10 +22,14 @@ const focusPass = new ShaderPass({
   fragmentShader: focusFragShader,
 });
 
-const bloomPass = new UnrealBloomPass(new Vector2(1024, 1024), 1.0, 4.0, 0.8);
+const glowPass = new ShaderPass({
+  uniforms: GLOW_UNIFORMS,
+  vertexShader: glowVertShader,
+  fragmentShader: glowFragShader,
+});
 
 export function initPostProcessing(game: Game) {
-  // game.renderer.composer.addPass(bloomPass);
+  // game.renderer.composer.addPass(glowPass);
   game.renderer.composer.addPass(focusPass);
 }
 

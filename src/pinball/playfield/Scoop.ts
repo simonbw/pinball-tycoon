@@ -4,8 +4,8 @@ import Entity from "../../core/entity/Entity";
 import { SoundName } from "../../core/resources/sounds";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
-import { scoreEvent } from "../system/LogicBoard";
 import { CollisionGroups } from "../Collision";
+import { scoreEvent } from "../system/LogicBoard";
 
 interface ScoopOptions {
   position: V2d;
@@ -13,7 +13,7 @@ interface ScoopOptions {
   width?: number;
   depth?: number;
   captureDuration?: number;
-  releaseForce?: number;
+  getReleaseForce?: () => V2d;
   soundName?: SoundName;
 }
 
@@ -27,7 +27,7 @@ export default class Scoop extends BaseEntity implements Entity {
     width = 2.0,
     depth: number = 2.0,
     public captureDuration: number = 1.5,
-    public releaseForce: number = 100,
+    public getReleaseForce?: () => V2d,
     public onScoop?: () => void,
     public onRelease?: () => void
   ) {
@@ -62,7 +62,9 @@ export default class Scoop extends BaseEntity implements Entity {
       await this.wait(this.captureDuration);
 
       ball.release();
-      const impulse = V(0, this.releaseForce).irotate(this.body!.angle);
+
+      const impulse =
+        this.getReleaseForce?.() ?? V(0, 100).irotate(this.body!.angle);
       ball.body.applyImpulse(impulse);
       this.cooldown = true;
 

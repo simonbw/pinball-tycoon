@@ -20,7 +20,9 @@ export default class Reflector extends BaseEntity implements Entity {
     envUpdated: () => this.update(),
   };
 
-  onAdd() {
+  async onAdd() {
+    this.update();
+    await this.wait(); // so we can update after the table has been built
     this.update();
   }
 

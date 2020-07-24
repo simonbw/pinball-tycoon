@@ -103,9 +103,7 @@ export default abstract class BaseEntity implements Entity {
     if (this.children) {
       const timers = this.children.filter(isTimer);
       for (const timer of timers) {
-        if (!timerId || timerId === timer.id) {
-          timer.destroy();
-        }
+        if (!timerId || timerId === timer.id) timer.destroy();
       }
     }
   }

@@ -1,4 +1,5 @@
-import { Matrix3, Path, Vector2 } from "three";
+import { pathParse } from "svg-path-parse";
+import { Matrix3, Path, Vector2, Shape } from "three";
 import { V, V2d } from "../../../core/Vector";
 
 export function getNumberProp<T = 0>(
@@ -45,10 +46,22 @@ export function transformPoint(x: number, y: number, m: Matrix3): V2d {
   return V(new Vector2(x, y).applyMatrix3(m).toArray());
 }
 
-export function getAngle(m: Matrix3): number {
-  const a = m.elements[0];
-  const b = m.elements[3];
-  return Math.atan2(-b, a);
+/** Get the angle of a transform matrix */
+export function getTransformAngle(m: Matrix3): number {
+  const origin = transformPoint(0, 0, m);
+  const d = transformPoint(1, 0, m);
+  return d.sub(origin).angle;
+}
+
+export function getTransformWidth(m: Matrix3): number {
+  const origin = transformPoint(0, 0, m);
+  const d = transformPoint(1, 0, m);
+  return d.sub(origin).magnitude;
+}
+export function getTransformHeight(m: Matrix3): number {
+  const origin = transformPoint(0, 0, m);
+  const d = transformPoint(0, 1, m);
+  return d.sub(origin).magnitude;
 }
 
 // TODO: Rewrite this in my code
@@ -128,4 +141,67 @@ function svgAngle(ux: number, uy: number, vx: number, vy: number) {
   let ang = Math.acos(Math.max(-1, Math.min(1, dot / len))); // floating point precision, slightly over values appear
   if (ux * vy - uy * vx < 0) ang = -ang;
   return ang;
+}
+
+export function pathStringToShape(pathString: string): Shape {
+  const parseResult = pathParse(pathString).absNormalize();
+  if (parseResult.err) {
+    throw parseResult.err;
+  }
+  const shape = new Shape();
+  for (const { type, args } of parseResult.segments) {
+    switch (type) {
+      case "M": {
+        shape.moveTo(args[0], args[1]);
+        break;
+      }
+      case "L": {
+        shape.lineTo(args[0], args[1]);
+        break;
+      }
+      case "H": {
+        shape.lineTo(args[0], shape.currentPoint.y);
+        break;
+      }
+      case "V": {
+        shape.lineTo(shape.currentPoint.x, args[0]);
+        break;
+      }
+      case "C": {
+        const [x1, y1, x2, y2, x, y] = args;
+        shape.bezierCurveTo(x1, y1, x2, y2, x, y);
+        break;
+      }
+      case "S": {
+        console.warn("TODO: S curve");
+        break;
+      }
+      case "Q":
+        shape.quadraticCurveTo(args[0], args[1], args[2], args[3]);
+        break;
+      case "T": {
+        console.warn("TODO: T curve");
+        break;
+      }
+      case "A": {
+        const [rx, ry, angle, largeFlag, sweepFlag, x, y] = args;
+        svgArcToShapeArc(
+          shape,
+          rx,
+          ry,
+          angle,
+          largeFlag,
+          sweepFlag,
+          shape.currentPoint.clone(),
+          new Vector2(x, y)
+        );
+        break;
+      }
+      case "Z": {
+        shape.closePath();
+        break;
+      }
+    }
+  }
+  return shape;
 }

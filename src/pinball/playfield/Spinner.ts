@@ -141,7 +141,5 @@ class SpinnerMesh extends BaseEntity implements Entity {
     const axis = new Vector3(nx, ny, 0);
     const angle = this.spinner.getAngle();
     this.mesh!.setRotationFromAxisAngle(axis, angle);
-
-    // this.reflector.update();
   }
 }

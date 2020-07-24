@@ -45,7 +45,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.middlePercent = options.middlePercent ?? 0.5;
     this.minStrength = options.minStrength ?? 200;
     this.maxStrength = options.maxStrength ?? 350;
-    this.triggerSpeed = options.triggerSpeed ?? 6.5;
+    this.triggerSpeed = options.triggerSpeed ?? 6;
     this.angleSpread = options.angleSpread ?? degToRad(10);
     const width = options.width ?? 0.5;
 

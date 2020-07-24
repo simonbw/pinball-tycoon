@@ -37,8 +37,8 @@ const MATERIAL = new MeshStandardMaterial({
 
 const DEFAULT_DOWN_ANGLE = degToRad(30);
 const DEFAULT_SWING = degToRad(60);
-const UP_STIFFNESS = 175;
-const DOWN_STIFFNESS = 40;
+const UP_STIFFNESS = 150;
+const DOWN_STIFFNESS = 35;
 const DAMPING = 12.5;
 const OVEREXTENSION_AMOUNT = degToRad(3);
 const MASS = 2.8;

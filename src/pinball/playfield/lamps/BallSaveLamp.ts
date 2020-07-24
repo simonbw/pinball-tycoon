@@ -9,7 +9,7 @@ export default class BallSaveLamp extends BaseEntity implements Entity {
 
   constructor(position: [number, number]) {
     super();
-    this.lamp = this.addChild(new Lamp(position, 0x0000dd));
+    this.lamp = this.addChild(new Lamp(position, { color: 0x0000dd }));
   }
 
   handlers = {

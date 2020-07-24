@@ -1,16 +1,19 @@
-import { pathParse } from "svg-path-parse";
-import { Matrix3, Path, Vector2 } from "three";
+import { Color, Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
 import Bumper from "../../playfield/Bumper";
 import Defender from "../../playfield/Defender";
 import Drain from "../../playfield/Drain";
+import DropTarget from "../../playfield/DropTarget";
 import Flipper from "../../playfield/Flipper";
 import Gate from "../../playfield/Gate";
 import Goal from "../../playfield/Goal";
 import Goalie from "../../playfield/Goalie";
 import BallRemainingLamp from "../../playfield/lamps/BallRemainingLamp";
 import BallSaveLamp from "../../playfield/lamps/BallSaveLamp";
+import { BULB_GEOMETRY_ARROW } from "../../playfield/lamps/LampShapes";
+import SlowMoLamps from "../../playfield/lamps/SlowMoLamps";
+import TargetLamp from "../../playfield/lamps/TargetLamp";
 import Magnet from "../../playfield/Magnet";
 import MagnetOrbiter from "../../playfield/MagnetOrbiter";
 import OverheadLight from "../../playfield/OverheadLight";
@@ -22,14 +25,17 @@ import MultiWall from "../../playfield/walls/MultiWall";
 import PathWall from "../../playfield/walls/PathWall";
 import { Rect } from "../../util/Rect";
 import {
-  getAngle,
-  getNumberProp,
-  parsePointString,
-  svgArcToShapeArc,
-  transformPoint,
   getNumberAttribute,
+  getNumberProp,
+  getTransformAngle,
+  parsePointString,
+  pathStringToShape,
+  transformPoint,
+  getTransformWidth,
+  getTransformHeight,
 } from "./svgUtils";
-import SlowMoLamps from "../../playfield/lamps/SlowMoLamps";
+import ButtonTarget from "../../playfield/ButtonTarget";
+import AirKicker from "../../playfield/AirKicker";
 
 export type Extractor = (
   node: SVGElement,
@@ -56,68 +62,9 @@ export function getExtractors() {
 
     // Curve Wall
     (node, m) => {
-      if (node.matches("path")) {
+      if (node.matches("path.wall")) {
         const pathString = node.getAttribute("d") ?? "";
-        const parseResult = pathParse(pathString).absNormalize();
-        if (parseResult.err) {
-          console.warn(parseResult.err);
-          return;
-        }
-        const shapePath = new Path();
-        for (const { type, args } of parseResult.segments) {
-          switch (type) {
-            case "M": {
-              shapePath.moveTo(args[0], args[1]);
-              break;
-            }
-            case "L": {
-              shapePath.lineTo(args[0], args[1]);
-              break;
-            }
-            case "H": {
-              shapePath.lineTo(args[0], shapePath.currentPoint.y);
-              break;
-            }
-            case "V": {
-              shapePath.lineTo(shapePath.currentPoint.x, args[0]);
-              break;
-            }
-            case "C": {
-              const [x1, y1, x2, y2, x, y] = args;
-              shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
-              break;
-            }
-            case "S": {
-              console.warn("TODO: S curve");
-              break;
-            }
-            case "Q":
-              shapePath.quadraticCurveTo(args[0], args[1], args[2], args[3]);
-              break;
-            case "T": {
-              console.warn("TODO: T curve");
-              break;
-            }
-            case "A": {
-              const [rx, ry, angle, largeFlag, sweepFlag, x, y] = args;
-              svgArcToShapeArc(
-                shapePath,
-                rx,
-                ry,
-                angle,
-                largeFlag,
-                sweepFlag,
-                shapePath.currentPoint.clone(),
-                new Vector2(x, y)
-              );
-              break;
-            }
-            case "Z": {
-              shapePath.closePath();
-              break;
-            }
-          }
-        }
+        const shapePath = pathStringToShape(pathString);
         const width = getNumberProp(node.style.strokeWidth, 1.0);
         return new PathWall(shapePath, width, m);
       }
@@ -175,6 +122,15 @@ export function getExtractors() {
       }
     },
 
+    (node, m) => {
+      if (node.matches("circle.air-kicker")) {
+        const x = getNumberProp(node.getAttribute("cx"));
+        const y = getNumberProp(node.getAttribute("cy"));
+        const r = getNumberProp(node.getAttribute("r"));
+        return new AirKicker(transformPoint(x, y, m), r);
+      }
+    },
+
     // magnet
     (node, m) => {
       if (node.matches("circle.orbiter")) {
@@ -219,18 +175,59 @@ export function getExtractors() {
       }
     },
 
+    // target lamps
+    (node, m) => {
+      if (
+        node.matches(`use`) &&
+        node.getAttribute("xlink:href") === "#target-lamp-symbol"
+      ) {
+        const width = getNumberProp(node.getAttribute("width"));
+        const height = getNumberProp(node.getAttribute("height"));
+        const angle = getTransformAngle(m);
+        const position = transformPoint(width / 2, height / 2, m);
+        const bulbGeometry = BULB_GEOMETRY_ARROW;
+        const size = (width + height) / 4;
+        const color = new Color(node.style.fill).getHex();
+
+        return new TargetLamp(position, node.id, {
+          bulbGeometry,
+          angle,
+          size,
+          color,
+          intensity: 0.7,
+        });
+      }
+    },
+
+    // target lamps
+    (node, m) => {
+      if (node.matches(`.target-bank > line`)) {
+        const x1 = getNumberProp(node.getAttribute("x1"));
+        const y1 = getNumberProp(node.getAttribute("y1"));
+        const x2 = getNumberProp(node.getAttribute("x2"));
+        const y2 = getNumberProp(node.getAttribute("y2"));
+        const a = transformPoint(x1, y1, m);
+        const b = transformPoint(x2, y2, m);
+        const center = a.add(b).imul(0.5);
+        const delta = b.sub(a);
+        const color = new Color(node.style.stroke).getHex();
+        return new ButtonTarget(center, delta.angle, delta.magnitude, color);
+      }
+    },
+
     // goal
     (node, m) => {
       if (node.matches("rect.goal")) {
+        const [w, h] = [getTransformWidth(m), getTransformHeight(m)];
         const left = getNumberProp(node.getAttribute("x"));
         const top = getNumberProp(node.getAttribute("y"));
-        const width = getNumberProp(node.getAttribute("width"));
-        const height = getNumberProp(node.getAttribute("height"));
-        const angle = getAngle(m);
+        const width = getNumberAttribute(node, "width");
+        const height = getNumberAttribute(node, "height");
+        const angle = getTransformAngle(m);
         const x = left + width / 2;
         const y = top + height / 2;
         // TODO: transform width & height
-        return new Goal(transformPoint(x, y, m), angle, width, height);
+        return new Goal(transformPoint(x, y, m), angle, width * w, height * h);
       }
     },
 
@@ -339,7 +336,6 @@ export function getExtractors() {
         const top = getNumberProp(node.getAttribute("y"));
         const width = getNumberProp(node.getAttribute("width"));
         const height = getNumberProp(node.getAttribute("height"));
-        const angle = getAngle(m);
         const y = top + height / 2;
         // TODO: transform width & height
         const topLeft = transformPoint(left, top, m);

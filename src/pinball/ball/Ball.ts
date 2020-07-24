@@ -89,17 +89,21 @@ export default class Ball extends BaseEntity
       const yGravity = GRAVITY * Math.sin(this.getIncline());
       this.body.applyForce([0, yGravity * this.body.mass]);
 
-      // We're in the air
-      if (this.z > 0) {
+      // We're in the air, or going up
+      if (this.z > 0 || this.vz > 0) {
         const zGravity = -GRAVITY * Math.cos(this.getIncline());
-        this.vz += zGravity * dt * this.body.mass;
+        this.vz += zGravity * dt;
         this.z += this.vz * dt;
 
         // We hit the ground
         if (this.z <= 0) {
           const gain = clamp(Math.abs(this.vz) * 0.2) * 0.5;
           this.soundController.emitCollisionSound({ name: "ballDrop1" }, gain);
-          this.vz = 0;
+          if (this.vz < -50) {
+            this.vz *= -0.35;
+          } else {
+            this.vz = 0;
+          }
           this.z = 0;
         }
       } else {

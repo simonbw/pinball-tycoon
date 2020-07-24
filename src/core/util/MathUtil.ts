@@ -32,6 +32,16 @@ export function lerpOrSnap(
   return lerp(a, b, t);
 }
 
+export function smoothstep(t: number): number {
+  t = clamp(t);
+  return 3 * t ** 2 - 2 * t ** 3;
+}
+
+export function smootherstep(t: number): number {
+  t = clamp(t);
+  return 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3;
+}
+
 /** Normalizes an angle in radians to be in the range [-pi, pi] */
 export function normalizeAngle(angle: number) {
   return mod(angle + Math.PI, Math.PI * 2) - Math.PI;

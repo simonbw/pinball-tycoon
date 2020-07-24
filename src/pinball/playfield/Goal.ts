@@ -11,6 +11,8 @@ import { SoundInstance } from "../sound/SoundInstance";
 import { scoreEvent } from "../system/LogicBoard";
 import GoalMesh from "./GoalMesh";
 import Scoop from "./Scoop";
+import { rNormal } from "../../core/util/Random";
+import { degToRad } from "../../core/util/MathUtil";
 
 const CAPTURE_DURATION = 1.5;
 const RELEASE_FORCE = 500;
@@ -64,7 +66,7 @@ export default class Goal extends BaseEntity
         width - WALL_WIDTH,
         depth * 0.5,
         CAPTURE_DURATION,
-        RELEASE_FORCE,
+        () => V(0, 100).irotate(this.body!.angle + rNormal(0, degToRad(10))),
         () => {
           goalCount += 1;
           this.game!.dispatch(scoreEvent(25000 * Math.min(goalCount, 4)));
