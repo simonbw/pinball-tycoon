@@ -10,6 +10,7 @@ import NudgeController from "../controllers/NudgeController";
 import SlowMoController from "../system/SlowMoController";
 import LogicBoard from "../system/LogicBoard";
 import { Rect } from "../util/Rect";
+import TiltMeter from "../system/TiltMeter";
 
 export default class Table extends BaseEntity implements Entity {
   readonly center: Vector3;
@@ -31,7 +32,8 @@ export default class Table extends BaseEntity implements Entity {
       new CameraController(this),
       new MagicBallController(),
       new NudgeController(),
-      new SlowMoController(logicBoard)
+      new SlowMoController(logicBoard),
+      new TiltMeter()
     );
   }
 

@@ -1,6 +1,7 @@
 import { pathParse } from "svg-path-parse";
 import { Matrix3, Path, Vector2, Shape } from "three";
 import { V, V2d } from "../../../core/Vector";
+import { degToRad } from "../../../core/util/MathUtil";
 
 export function getNumberProp<T = 0>(
   value: string | number | null | undefined,
@@ -18,15 +19,16 @@ export function getNumberProp<T = 0>(
   return arguments.length > 1 ? backup! : 0;
 }
 
-export function getNumberAttribute<T = 0>(
-  node: Element,
-  name: string,
-  fallback?: T
-) {
-  if (arguments.length > 2) {
-    return getNumberProp(node.getAttribute(name), fallback);
+export function getNumberAttribute(node: Element, name: string) {
+  return getNumberProp(node.getAttribute(name), undefined);
+}
+
+export function getAngleAttribute(node: Element, name: string) {
+  const result = getNumberAttribute(node, name);
+  if (result != undefined) {
+    return degToRad(result);
   } else {
-    return getNumberProp(node.getAttribute(name));
+    return undefined;
   }
 }
 

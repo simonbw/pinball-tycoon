@@ -1,10 +1,11 @@
 import { Color, Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
+import AirKicker from "../../playfield/AirKicker";
 import Bumper from "../../playfield/Bumper";
+import ButtonTarget from "../../playfield/ButtonTarget";
 import Defender from "../../playfield/Defender";
 import Drain from "../../playfield/Drain";
-import DropTarget from "../../playfield/DropTarget";
 import Flipper from "../../playfield/Flipper";
 import Gate from "../../playfield/Gate";
 import Goal from "../../playfield/Goal";
@@ -25,17 +26,17 @@ import MultiWall from "../../playfield/walls/MultiWall";
 import PathWall from "../../playfield/walls/PathWall";
 import { Rect } from "../../util/Rect";
 import {
+  getAngleAttribute,
   getNumberAttribute,
   getNumberProp,
   getTransformAngle,
+  getTransformHeight,
+  getTransformWidth,
   parsePointString,
   pathStringToShape,
   transformPoint,
-  getTransformWidth,
-  getTransformHeight,
 } from "./svgUtils";
-import ButtonTarget from "../../playfield/ButtonTarget";
-import AirKicker from "../../playfield/AirKicker";
+import Scoop from "../../playfield/Scoop";
 
 export type Extractor = (
   node: SVGElement,
@@ -215,14 +216,30 @@ export function getExtractors() {
       }
     },
 
+    // scoop
+    (node, m) => {
+      if (node.matches("rect.scoop")) {
+        const [w, h] = [getTransformWidth(m), getTransformHeight(m)];
+        const left = getNumberProp(node.getAttribute("x"));
+        const top = getNumberProp(node.getAttribute("y"));
+        const width = getNumberAttribute(node, "width") ?? 0;
+        const height = getNumberAttribute(node, "height") ?? 0;
+        const angle = getTransformAngle(m);
+        const x = left + width / 2;
+        const y = top + height / 2;
+        // TODO: transform width & height
+        return new Scoop(transformPoint(x, y, m), angle, width * w, height * h);
+      }
+    },
+
     // goal
     (node, m) => {
       if (node.matches("rect.goal")) {
         const [w, h] = [getTransformWidth(m), getTransformHeight(m)];
         const left = getNumberProp(node.getAttribute("x"));
         const top = getNumberProp(node.getAttribute("y"));
-        const width = getNumberAttribute(node, "width");
-        const height = getNumberAttribute(node, "height");
+        const width = getNumberAttribute(node, "width") ?? 0;
+        const height = getNumberAttribute(node, "height") ?? 0;
         const angle = getTransformAngle(m);
         const x = left + width / 2;
         const y = top + height / 2;
@@ -268,12 +285,16 @@ export function getExtractors() {
         const y2 = getNumberProp(node.getAttribute("y2"));
         const a = transformPoint(x1, y1, m);
         const b = transformPoint(x2, y2, m);
-        const middleOffset = getNumberAttribute(
-          node,
-          "data-middle-offset",
-          undefined
-        );
-        return new Slingshot(a, b, { middlePercent: middleOffset });
+        const middleOffset = getNumberAttribute(node, "data-middle-offset");
+        const angleSpread = getAngleAttribute(node, "data-angle-spread");
+        const minStrength = getNumberAttribute(node, "data-min-strength");
+        const maxStrength = getNumberAttribute(node, "data-max-strength");
+        return new Slingshot(a, b, {
+          middleOffset,
+          angleSpread,
+          minStrength,
+          maxStrength,
+        });
       }
     },
 
@@ -320,9 +341,8 @@ export function getExtractors() {
         const delta = b.sub(a);
         const side = a.x < b.x ? "left" : "right";
         const width = getNumberProp(node.style.strokeWidth, undefined);
-        let swing = getNumberProp(node.getAttribute("data-swing"), undefined);
-        swing = swing && degToRad(swing);
-        const strength = getNumberAttribute(node, "data-strength", undefined);
+        const swing = getAngleAttribute(node, "data-swing");
+        const strength = getNumberAttribute(node, "data-strength");
         const length = delta.magnitude;
         const angle = delta.angle;
         return new Flipper(a, side, length, width, angle, swing, strength);

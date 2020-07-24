@@ -35,6 +35,9 @@
     </line>
     <polyline style="stroke: rgb(0, 0, 0); stroke-width: 0.9; fill: none;" points="14 71 14 82.75 9.971 85.01"/>
     <polyline style="stroke: rgb(0, 0, 0); stroke-width: 0.9; fill: none;" points="-14 71 -14 82.75 -9.963 85"/>
+    <line style="stroke: rgb(238, 238, 0); stroke-width: 0.5;" x1="19.479" y1="56.807" x2="19.564" y2="64.526" class="slingshot" data-middle-offset="0.85" data-angle-spread="20">
+      <title>Right Slingshot</title>
+    </line>
   </g>
   <g transform="matrix(0.751825, -0.42459, 0.482239, 0.853904, -16.000599, 24.0259)" style="">
     <title>Goal Zone</title>
@@ -61,7 +64,7 @@
     <title>Spinner</title>
   </line>
   <path d="M 24 42 L 24 25.468 C 24 14.021 15.822 4.5 3.548 4.5" style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.6px;" class="wall"/>
-  <path d="M -24 38.5 C -24.05 41.604 -24.101 48.709 -19.026 47.626 L -19.077 48.998 L -20.5 49 L -20.5 63.5 L -20.25 63.5 L -24 66.5" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
+  <path d="M -24 38.5 C -24.05 41.604 -24.212 47.275 -19.026 47.626 L -19.077 48.998 L -20.5 49 L -20.5 63.5 L -20.25 63.5 L -24 66.5" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
   <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); stroke-width: 0.4;" points="-17 71 -17 81"/>
   <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); stroke-width: 0.4;" points="17 71 17 81"/>
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="-20 68.5 -20 83.5 -8 90.5"/>
@@ -85,7 +88,7 @@
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="28" y1="44" x2="24.663" y2="46.408" class="gate" x3="24" y3="47" data-swing="-120">
     <title>First Gate</title>
   </line>
-  <path d="M 19.321 71.916 L 23.933 69.078 L 23.933 62.469 L 19.321 59.469 L 19.321 71.916 Z" style="stroke: rgb(0, 0, 0); fill: none;" transform="matrix(-1, 0, 0, -1, 43.254, 128.360001)" class="wall"/>
+  <path d="M 23.933 62.469 L 19.321 59.469 L 19.321 71.916 L 23.933 69.078" style="stroke: rgb(0, 0, 0); fill: none;" transform="matrix(-1, 0, 0, -1, 43.254, 128.360001)" class="wall"/>
   <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" d="M -14.811 33.694 C -4.965 34.526 0.022 24.438 -4.293 17.302 C -6.902 12.987 -11.023 10.876 -17.194 12.065" class="wall" transform="matrix(-0.242541, -0.970141, 0.970141, -0.242541, -34.37484, 18.676686)"/>
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-0.797" y2="0.073" class="gate" x3="24" y3="47" data-swing="150">
     <title>First Gate</title>
@@ -99,7 +102,6 @@
   <circle style="fill: rgb(170, 0, 0);" cx="26" cy="89" r="0.6" class="ball-remaining-lamp" data-min-balls="3">
     <title>Ball Drop</title>
   </circle>
-  <circle style="fill: rgb(216, 216, 216);" cx="19.041" cy="66.49" r="0.4" class="post"/>
   <circle style="fill: rgb(216, 216, 216);" cx="19.967" cy="70.684" r="0.4" class="post"/>
   <circle style="fill: rgb(0, 0, 170);" cx="0" cy="91" r="0.6" class="ball-save-lamp">
     <title>Ball Drop</title>
@@ -117,4 +119,5 @@
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="55.764" x2="-19" y2="53.764"/>
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="52.764" x2="-19" y2="50.764"/>
   </g>
+  <rect x="13.774" y="55.583" width="4.018" height="3.418" style="fill: rgb(216, 216, 216);" transform="matrix(0.5, 0.866025, -0.866025, 0.5, 63.078671, 12.622159)" class="scoop"/>
 </svg>

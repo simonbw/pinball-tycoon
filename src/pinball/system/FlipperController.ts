@@ -3,14 +3,25 @@ import Entity from "../../core/entity/Entity";
 import { getBinding } from "../ui/KeyboardBindings";
 import { KeyCode } from "../../core/io/Keys";
 import { ControllerButton } from "../../core/io/Gamepad";
+import { TiltEvent } from "./TiltMeter";
 
 export default class FlipperController extends BaseEntity implements Entity {
-  constructor() {
-    super();
-  }
+  enabled: boolean = true;
+
+  handlers = {
+    tilt: ({ count }: TiltEvent) => {
+      this.enabled = false;
+      this.game!.dispatch({ type: "leftFlipperDown" });
+      this.game!.dispatch({ type: "rightFlipperDown" });
+    },
+
+    gameStart: () => {
+      this.enabled = true;
+    },
+  };
 
   onKeyDown(key: KeyCode) {
-    if (!this.game?.paused) {
+    if (this.enabled && !this.game?.paused) {
       switch (key) {
         case getBinding("LEFT_FLIPPER"):
           this.game!.dispatch({ type: "leftFlipperUp" });
@@ -36,10 +47,12 @@ export default class FlipperController extends BaseEntity implements Entity {
   }
 
   onButtonDown(button: ControllerButton) {
-    if (button === ControllerButton.RB) {
-      this.game!.dispatch({ type: "rightFlipperUp" });
-    } else if (button === ControllerButton.LB) {
-      this.game!.dispatch({ type: "leftFlipperUp" });
+    if (this.enabled) {
+      if (button === ControllerButton.RB) {
+        this.game!.dispatch({ type: "rightFlipperUp" });
+      } else if (button === ControllerButton.LB) {
+        this.game!.dispatch({ type: "leftFlipperUp" });
+      }
     }
   }
 

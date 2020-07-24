@@ -28,12 +28,17 @@ import plungerWind from "../../../resources/audio/plunger-wind.flac";
 import pop1 from "../../../resources/audio/pop1.flac";
 import postHit from "../../../resources/audio/post-hit.flac";
 import quarterDrop1 from "../../../resources/audio/quarter-drop-1.flac";
+import ringingHit1 from "../../../resources/audio/ringing-hit-1.flac";
 import rubberHit1 from "../../../resources/audio/rubber-hit-1.flac";
 import rubberHit2 from "../../../resources/audio/rubber-hit-2.flac";
 import rubberHit3 from "../../../resources/audio/rubber-hit-3.flac";
+import suck1 from "../../../resources/audio/suck-1.flac";
 import upgrade from "../../../resources/audio/upgrade.flac";
 import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
 import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
+import tilt1 from "../../../resources/audio/tilt-1.flac";
+import tilt2 from "../../../resources/audio/tilt-2.flac";
+import tilt3 from "../../../resources/audio/tilt-3.flac";
 
 // TODO: These shouln't be listed in core/
 export const SOUND_URLS = {
@@ -67,9 +72,14 @@ export const SOUND_URLS = {
   pop1,
   postHit,
   quarterDrop1,
+  ringingHit1,
   rubberHit1,
   rubberHit2,
   rubberHit3,
+  suck1,
+  tilt1,
+  tilt2,
+  tilt3,
   upgrade,
   wallHit1,
   wallHit2,

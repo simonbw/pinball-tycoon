@@ -1,4 +1,5 @@
 import {
+  BoxBufferGeometry,
   BufferGeometry,
   ExtrudeGeometry,
   Mesh,
@@ -11,7 +12,7 @@ import { V2d } from "../../core/Vector";
 import { makeOutlineShape } from "../graphics/OutlineShape";
 
 const EXPAND_AMOUNT = 1.2;
-const DURATION = 0.07;
+const DURATION = 0.08;
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0xdd0000,
@@ -19,26 +20,27 @@ const MATERIAL = new MeshStandardMaterial({
   morphTargets: true,
 });
 
+const KICKER_MATERIAL = new MeshStandardMaterial({
+  color: 0xdddddd,
+  roughness: 0.1,
+  metalness: 0.5,
+});
+
 export default class SlingshotMesh extends BaseEntity implements Entity {
   animationStartTime: number = -Infinity;
   mesh: Mesh;
+  kickerMesh: Mesh;
 
   constructor(
-    start: V2d,
-    end: V2d,
-    middlePercent: number = 0.5,
-    width: number = 0.5
+    private start: V2d,
+    private end: V2d,
+    private middlePercent: number = 0.5,
+    private width: number = 0.5
   ) {
     super();
 
-    const geometry = this.makeGeometry(start, end, middlePercent, width, 0);
-    const morphGeometry = this.makeGeometry(
-      start,
-      end,
-      middlePercent,
-      width,
-      EXPAND_AMOUNT
-    );
+    const geometry = this.makeGeometry(0);
+    const morphGeometry = this.makeGeometry(EXPAND_AMOUNT);
 
     geometry.morphTargets.push({
       name: "open",
@@ -50,21 +52,33 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
 
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = false;
+
+    const kickerGeometry = new BoxBufferGeometry(0.25, 0.6, 1.0);
+    kickerGeometry.translate(0, 0, -0.5);
+    this.kickerMesh = new Mesh(kickerGeometry, KICKER_MATERIAL);
+    const normal = end.sub(start).irotate90cw();
+    this.kickerMesh.rotateZ(normal.angle);
+    this.object3ds.push(this.kickerMesh);
+
+    this.disposeables.push(bufferGeometry);
+    // Cuz we already don't need them
+    geometry.dispose();
+    morphGeometry.dispose();
   }
 
-  makeGeometry(
-    start: V2d,
-    end: V2d,
-    middlePercent: number,
-    width: number,
-    displacement: number
-  ) {
-    const normal = end.sub(start).irotate90ccw().inormalize();
-    const midpoint = start
-      .lerp(end, middlePercent)
-      .add(normal.mul(displacement));
+  getDisplacePos(percent: number, amount: number) {
+    const normal = this.end.sub(this.start).irotate90ccw().inormalize();
+    const midpoint = this.start.lerp(this.end, percent);
+    return midpoint.add(normal.mul(amount));
+  }
 
-    const shape = makeOutlineShape([start, midpoint, end], width);
+  makeGeometry(displacement: number) {
+    const midpoint = this.getDisplacePos(this.middlePercent, displacement);
+
+    const shape = makeOutlineShape(
+      [this.start, midpoint, this.end],
+      this.width
+    );
     const geometry = new ExtrudeGeometry(shape, {
       depth: 1.0,
       bevelEnabled: false,
@@ -77,16 +91,17 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
     const timeSinceHit = this.game!.elapsedTime - this.animationStartTime;
     const t = clamp(timeSinceHit, 0, DURATION) / DURATION;
 
-    let d;
-    const p = 0.2;
-    if (t < p) {
-      d = t / p;
-    } else {
-      d = 1.0 - t / (1.0 - p);
-    }
-    d = d ** 2;
+    const mid = 0.3;
+    const springDisplacement =
+      t < mid ? t / mid : 1.0 - (t - mid) / (1.0 - mid);
+    this.mesh.morphTargetInfluences![0] = springDisplacement;
 
-    this.mesh.morphTargetInfluences![0] = d;
-    this;
+    const kickerDisplacement = t < mid ? 1.0 - t / mid : clamp(1.0 - t / mid);
+    const kickerPos = this.getDisplacePos(
+      this.middlePercent,
+      -0.5 + 0.7 * kickerDisplacement
+    );
+    this.kickerMesh.position.x = kickerPos.x;
+    this.kickerMesh.position.y = kickerPos.y;
   }
 }

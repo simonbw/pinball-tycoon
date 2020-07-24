@@ -12,7 +12,7 @@ import { PositionalSound } from "../sound/PositionalSound";
 
 interface SlingshotOptions {
   /** Percent along string where the kicker is  */
-  middlePercent?: number;
+  middleOffset?: number;
   /** Impulse strength at the very ends  */
   minStrength?: number;
   /** Impulse strength at the kicker  */
@@ -30,7 +30,7 @@ export default class Slingshot extends BaseEntity implements Entity {
   body: Body;
   slingshotMesh: SlingshotMesh;
 
-  middlePercent: number;
+  middleOffset: number;
   minStrength: number;
   maxStrength: number;
   triggerSpeed: number;
@@ -42,7 +42,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     options: SlingshotOptions = {}
   ) {
     super();
-    this.middlePercent = options.middlePercent ?? 0.5;
+    this.middleOffset = options.middleOffset ?? 0.5;
     this.minStrength = options.minStrength ?? 200;
     this.maxStrength = options.maxStrength ?? 350;
     this.triggerSpeed = options.triggerSpeed ?? 6;
@@ -67,7 +67,7 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.body.addShape(shape);
 
     this.slingshotMesh = this.addChild(
-      new SlingshotMesh(this.start, this.end, this.middlePercent, width)
+      new SlingshotMesh(this.start, this.end, this.middleOffset, width)
     );
 
     this.addChildren(new Post(start, width * 1.0), new Post(end, width * 1.0));
@@ -84,7 +84,7 @@ export default class Slingshot extends BaseEntity implements Entity {
 
   getMidOffset(position: V2d): number {
     const impactLocation = this.getPercentAcross(position);
-    const mid = this.middlePercent;
+    const mid = this.middleOffset;
     const denominator = impactLocation < mid ? mid : 1.0 - mid;
     return (impactLocation - mid) / denominator;
   }
@@ -111,8 +111,8 @@ export default class Slingshot extends BaseEntity implements Entity {
           .rotate(angle)
           .imul(strength);
 
-        ball.capture();
-        ball.release();
+        ball.body.velocity[0] *= 0.0;
+        ball.body.velocity[1] *= 0.0;
         ball.body.applyImpulse(impulse);
 
         this.game!.dispatch({ type: "score", points: 45 });

@@ -136,13 +136,17 @@ export default class Flipper extends BaseEntity
   }
 
   engage() {
-    this.engaged = true;
-    this.soundController.engage();
+    if (!this.engaged) {
+      this.engaged = true;
+      this.soundController.engage();
+    }
   }
 
   disengage() {
-    this.engaged = false;
-    this.soundController.disengage();
+    if (this.engaged) {
+      this.engaged = false;
+      this.soundController.disengage();
+    }
   }
 
   onAdd(game: Game) {

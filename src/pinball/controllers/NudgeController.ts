@@ -28,7 +28,7 @@ export default class NudgeController extends BaseEntity implements Entity {
   }
 
   onKeyDown(key: KeyCode) {
-    const power = 40;
+    const power = 55;
     switch (key) {
       case getBinding("NUDGE_UP_LEFT"):
         this.nudge(V(-power, power));

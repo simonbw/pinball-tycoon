@@ -2,9 +2,12 @@ import { Body, Box, ContactEquation, Shape } from "p2";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { SoundName } from "../../core/resources/sounds";
+import { degToRad } from "../../core/util/MathUtil";
+import { rNormal } from "../../core/util/Random";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
+import { PositionalSound } from "../sound/PositionalSound";
 import { scoreEvent } from "../system/LogicBoard";
 
 interface ScoopOptions {
@@ -41,6 +44,14 @@ export default class Scoop extends BaseEntity implements Entity {
     this.body.addShape(sensorShape);
   }
 
+  private _getReleaseForce() {
+    if (this.getReleaseForce) {
+      return this.getReleaseForce();
+    } else {
+      return V(0, 400).irotate(this.body!.angle + rNormal(0, degToRad(5)));
+    }
+  }
+
   async onBeginContact(
     ball: Entity,
     _: Shape,
@@ -56,19 +67,25 @@ export default class Scoop extends BaseEntity implements Entity {
       if (this.onScoop) {
         this.onScoop();
       } else {
-        this.game!.dispatch(scoreEvent(1000));
+        this.addChild(new PositionalSound("suck1", this.getPosition()));
       }
 
       await this.wait(this.captureDuration);
 
       ball.release();
 
-      const impulse =
-        this.getReleaseForce?.() ?? V(0, 100).irotate(this.body!.angle);
+      const impulse = this._getReleaseForce();
       ball.body.applyImpulse(impulse);
       this.cooldown = true;
 
-      this.onRelease?.();
+      if (this.onRelease) {
+        this.onRelease();
+      } else {
+        this.addChild(
+          new PositionalSound("pop1", this.getPosition(), { speed: 0.5 })
+        );
+        this.game!.dispatch(scoreEvent(1000));
+      }
 
       await this.wait(0.5);
 

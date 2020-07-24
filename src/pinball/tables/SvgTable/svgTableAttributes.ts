@@ -12,7 +12,7 @@ export function getBallDropPosition(doc: Document): V2d {
 
 export function getIncline(doc: Document): number {
   const boundsRect = doc.querySelector("rect#bounds");
-  const degrees = getNumberProp(boundsRect?.getAttribute("data-incline"), 5.0);
+  const degrees = getNumberProp(boundsRect?.getAttribute("data-incline")) ?? 5;
   return degToRad(degrees);
 }
 

@@ -10,6 +10,7 @@ import { getSoundDuration } from "../../core/resources/sounds";
 import BallSaveSystem from "./BallSaveSystem";
 import { ControllerButton } from "../../core/io/Gamepad";
 import FlipperController from "./FlipperController";
+import { TiltEvent } from "./TiltMeter";
 
 export interface DrainEvent {
   type: "drain";
@@ -137,6 +138,15 @@ export default class LogicBoard extends BaseEntity implements Entity {
     score: ({ points }: ScoreEvent) => {
       this.score += points;
       this.game!.dispatch(updateScoreEvent(this.score));
+    },
+
+    tilt: ({ count }: TiltEvent) => {
+      console.log("tilt!");
+      if (count >= 3) {
+        this.score = 0;
+        this.game!.dispatch(updateScoreEvent(this.score));
+        this.game!.dispatch({ type: "gameOver" });
+      }
     },
   };
 
