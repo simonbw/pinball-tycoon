@@ -53,5 +53,9 @@ export default class TiltMeter extends BaseEntity implements Entity {
     nudge: ({ impulse }: NudgeEvent) => {
       this.velocity.iadd(impulse);
     },
+
+    gameStart: () => {
+      this.tiltCount = 0;
+    },
   };
 }

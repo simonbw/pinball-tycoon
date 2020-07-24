@@ -10,9 +10,11 @@ export default class FlipperController extends BaseEntity implements Entity {
 
   handlers = {
     tilt: ({ count }: TiltEvent) => {
-      this.enabled = false;
-      this.game!.dispatch({ type: "leftFlipperDown" });
-      this.game!.dispatch({ type: "rightFlipperDown" });
+      if (count >= 3) {
+        this.enabled = false;
+        this.game!.dispatch({ type: "leftFlipperDown" });
+        this.game!.dispatch({ type: "rightFlipperDown" });
+      }
     },
 
     gameStart: () => {
