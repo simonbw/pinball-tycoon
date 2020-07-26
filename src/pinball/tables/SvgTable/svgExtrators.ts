@@ -37,10 +37,13 @@ import {
   transformPoint,
 } from "./svgUtils";
 import Scoop from "../../playfield/Scoop";
+import TargetBank from "../../system/TargetBank";
+import Rollover from "../../playfield/Rollover";
 
 export type Extractor = (
   node: SVGElement,
-  transform: Matrix3
+  transform: Matrix3,
+  nodeToEntity: Map<Node, Entity>
 ) => Entity | undefined | void;
 
 export function getExtractors() {
@@ -68,6 +71,21 @@ export function getExtractors() {
         const shapePath = pathStringToShape(pathString);
         const width = getNumberProp(node.style.strokeWidth, 1.0);
         return new PathWall(shapePath, width, m);
+      }
+    },
+
+    // Bumper
+    (node, m) => {
+      if (node.matches("circle.rollover")) {
+        const x = getNumberProp(node.getAttribute("cx"));
+        const y = getNumberProp(node.getAttribute("cy"));
+        const r = getNumberProp(node.getAttribute("r"), undefined);
+        const position = transformPoint(x, y, m);
+        const direction = getAngleAttribute(node, "data-direction");
+        const color = new Color(node.style.fill).getHex();
+        const id = node.id;
+
+        return new Rollover(position, r, { direction, color, id });
       }
     },
 
@@ -203,9 +221,14 @@ export function getExtractors() {
 
     // target lamps
     (node, m) => {
-      if (node.matches(`.target-bank > line`)) {
-        const parent = node.parentNode!;
+      if (node.matches(`.target-bank`)) {
+        return new TargetBank();
+      }
+    },
 
+    // target lamps
+    (node, m, nodeToEntity) => {
+      if (node.matches(`.target-bank > line`)) {
         const x1 = getNumberProp(node.getAttribute("x1"));
         const y1 = getNumberProp(node.getAttribute("y1"));
         const x2 = getNumberProp(node.getAttribute("x2"));
@@ -215,7 +238,19 @@ export function getExtractors() {
         const center = a.add(b).imul(0.5);
         const delta = b.sub(a);
         const color = new Color(node.style.stroke).getHex();
-        return new LightUpTarget(center, delta.angle, delta.magnitude, color);
+        const target = new LightUpTarget(
+          center,
+          delta.angle,
+          delta.magnitude,
+          color
+        );
+
+        const maybeBank = nodeToEntity.get(node.parentElement!);
+        if (maybeBank instanceof TargetBank) {
+          maybeBank.addTarget(target);
+        } else {
+          return target;
+        }
       }
     },
 
@@ -292,11 +327,13 @@ export function getExtractors() {
         const angleSpread = getAngleAttribute(node, "data-angle-spread");
         const minStrength = getNumberAttribute(node, "data-min-strength");
         const maxStrength = getNumberAttribute(node, "data-max-strength");
+        const color = new Color(node.style.stroke).getHex();
         return new Slingshot(a, b, {
           middleOffset,
           angleSpread,
           minStrength,
           maxStrength,
+          color,
         });
       }
     },

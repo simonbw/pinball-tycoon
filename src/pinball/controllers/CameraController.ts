@@ -20,7 +20,7 @@ export default class CameraController extends BaseEntity implements Entity {
   up: Vector3;
   nudgeOffset: Vector3 = new Vector3(0, 0, 0);
 
-  mode: "normal" | "top" | "manual" | "ball" = "normal";
+  mode: "normal" | "normal-still" | "top" | "manual" | "ball" = "normal";
 
   constructor(table: Table) {
     super();
@@ -52,12 +52,15 @@ export default class CameraController extends BaseEntity implements Entity {
 
     const camera = this.game.camera as PerspectiveCamera;
 
-    this.manualMode(camera);
+    // this.manualMode(camera);
     this.zoomControls(camera);
 
     switch (this.mode) {
       case "normal":
         this.normalMode(camera);
+        break;
+      case "normal-still":
+        this.normalMode(camera, true);
         break;
       case "top":
         this.topMode(camera);
@@ -75,6 +78,9 @@ export default class CameraController extends BaseEntity implements Entity {
           this.mode = "normal";
           break;
         case "normal":
+          this.mode = "normal-still";
+          break;
+        case "normal-still":
           this.mode = "top";
           break;
         case "manual":
@@ -84,7 +90,7 @@ export default class CameraController extends BaseEntity implements Entity {
     }
   }
 
-  normalMode(camera: PerspectiveCamera) {
+  normalMode(camera: PerspectiveCamera, still: boolean = false) {
     camera.position.sub(this.nudgeOffset);
     const game = this.game!;
 
@@ -97,8 +103,10 @@ export default class CameraController extends BaseEntity implements Entity {
 
     const balls = game.entities.getTagged("ball").filter(isBall);
     const weightedCenter = this.table.center.clone();
-    for (const ball of balls) {
-      weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
+    if (!still) {
+      for (const ball of balls) {
+        weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
+      }
     }
     const speed = balls.length > 0 ? 0.1 : 0.01;
     this.lookTarget.lerp(weightedCenter, speed);

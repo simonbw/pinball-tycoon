@@ -26,6 +26,10 @@ export default class LightUpTarget extends BaseEntity
   };
   material: MeshPhongMaterial;
   lit: boolean = false;
+  enabled: boolean = true;
+
+  onUnlitHit?: () => void;
+  onLitHit?: () => void;
 
   constructor(
     position: V2d,
@@ -62,29 +66,34 @@ export default class LightUpTarget extends BaseEntity
   }
 
   light() {
-    if (!this.lit) {
-      this.lit = true;
-      this.game!.dispatch(scoreEvent(1000));
-      const emissive = darken(lighten(this.material.color.getHex(), 0.6), 0.5);
-      this.material.emissive.set(emissive);
-    }
+    this.lit = true;
+    const emissive = darken(lighten(this.material.color.getHex(), 0.6), 0.5);
+    this.material.emissive.set(emissive);
   }
 
   unLight() {
-    if (this.lit) {
-      this.lit = false;
-      this.material.emissive.set(0x0);
-    }
+    this.lit = false;
+    this.material.emissive.set(0x0);
   }
 
   async onImpact(ball: Entity) {
-    if (isBall(ball)) {
+    if (isBall(ball) && this.enabled) {
       if (!this.lit) {
         this.light();
-        this.addChild(new PositionalSound("boing2", this.getPosition()));
+
+        if (this.onUnlitHit) {
+          this.onUnlitHit();
+        } else {
+          this.game!.dispatch(scoreEvent(1000));
+          this.addChild(new PositionalSound("boing2", this.getPosition()));
+        }
       } else {
-        this.game!.dispatch(scoreEvent(200));
-        this.addChild(new PositionalSound("defenderUp1", this.getPosition()));
+        if (this.onLitHit) {
+          this.onLitHit();
+        } else {
+          this.game!.dispatch(scoreEvent(200));
+          this.addChild(new PositionalSound("defenderUp1", this.getPosition()));
+        }
       }
     }
   }

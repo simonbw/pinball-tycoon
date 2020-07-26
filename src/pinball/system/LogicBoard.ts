@@ -11,6 +11,7 @@ import BallSaveSystem from "./BallSaveSystem";
 import { ControllerButton } from "../../core/io/Gamepad";
 import FlipperController from "./FlipperController";
 import { TiltEvent } from "./TiltMeter";
+import { RolloverEvent } from "../playfield/Rollover";
 
 export interface DrainEvent {
   type: "drain";
@@ -147,6 +148,11 @@ export default class LogicBoard extends BaseEntity implements Entity {
         this.game!.dispatch(updateScoreEvent(this.score));
         this.game!.dispatch({ type: "gameOver" });
       }
+    },
+
+    // TODO: Move this to an objectives logic board
+    rollover: (e: RolloverEvent) => {
+      this.game!.dispatch(scoreEvent(1000));
     },
   };
 

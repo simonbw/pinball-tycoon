@@ -2,22 +2,22 @@ import { Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { getExtractors } from "./svgExtrators";
 
-export function getChildrenFromDoc(doc: Document) {
-  return getChildrenFromNode(doc.getRootNode());
+export function getChildrenFromDoc(doc: Document): Entity[] {
+  return [...getChildrenFromNode(doc.getRootNode()).values()];
 }
 
 function getChildrenFromNode(
   node: Node,
   transform: Matrix3 = new Matrix3(),
-  entities: Entity[] = []
+  entityMap: Map<SVGElement, Entity> = new Map()
 ) {
   if (isTextNode(node)) {
-    return entities;
+    return entityMap;
   }
 
   if (isSVGElement(node)) {
     if (node.matches(".ignore")) {
-      return entities;
+      return entityMap;
     }
 
     const localTransform = node.getAttribute("transform");
@@ -26,18 +26,19 @@ function getChildrenFromNode(
     }
 
     for (const extractor of getExtractors()) {
-      const entity = extractor(node, transform);
+      const entity = extractor(node, transform, entityMap);
       if (entity != undefined) {
-        entities.push(entity);
+        entityMap.set(node, entity);
+        break; // TODO: Allow multiple entities per element?
       }
     }
   }
 
   node.childNodes.forEach((child) =>
-    getChildrenFromNode(child, transform, entities)
+    getChildrenFromNode(child, transform, entityMap)
   );
 
-  return entities;
+  return entityMap;
 }
 
 function parseTransform(s: string): Matrix3 {

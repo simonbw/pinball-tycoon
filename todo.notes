@@ -1,24 +1,45 @@
-July 29
+
+
+Need For Release
+  [ ] Some sort of menu or something
+  [ ] Cabinet
+  [ ] Controls Display
+  [ ] Look over controls again
+  [ ] Remove Cheats
+  [ ] Prettier wall coverings
+  [ ] All main shots tuned to return to flippers
+    [ ] In particular, do something about shots on goal
+  [ ] Rollovers for loops
+
+August 1
   [ ] Post on reddit
 
+
+
+July 31
+July 30
+July 29
 July 28
+
 July 27
-July 26
   [ ] Ramps
-  [ ] Logic Groups in SVG
   [ ] Slides as well as nudges
   [ ] Kickbacks
   [ ] Jackpot?
   [ ] Stanley Cup
+
+July 26
+  [ ] "Has plunged" sensor
+  [ ] Cabinet
   [ ] Blob wall (just for aesthetics really, but also could be good for physics performance)
+  [ ] Rollover score thing (just so ramps can have points associated with them)
 
 July 25
   [√] Performance
     [√] Profile for slowdowns
-    [ ] Raise CCD threshold
-    [ ] Reduce number of bodies by combining multiwall shapes
-    
-  [ ] "Has plunged" sensor
+    [√] Raise CCD threshold
+    [√] Reduce number of bodies by combining multiwall shapes
+  [√] Logic Groups in SVG
 
 July 23
   [ ] Cabinet

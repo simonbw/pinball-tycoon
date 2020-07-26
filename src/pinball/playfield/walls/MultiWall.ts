@@ -1,12 +1,12 @@
+import { Body, Capsule } from "p2";
 import { ExtrudeBufferGeometry, Mesh } from "three";
+import { WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL } from ".";
 import BaseEntity from "../../../core/entity/BaseEntity";
 import Entity from "../../../core/entity/Entity";
 import { V2d } from "../../../core/Vector";
-import { makeOutlineShape } from "../../graphics/OutlineShape";
-import Wall, { WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL } from "./Wall";
-import { Body, Capsule } from "p2";
-import { P2Materials } from "../P2Materials";
 import { CollisionGroups } from "../../Collision";
+import { makeOutlineShape } from "../../graphics/OutlineShape";
+import { P2Materials } from "../P2Materials";
 
 export default class MultiWall extends BaseEntity implements Entity {
   constructor(

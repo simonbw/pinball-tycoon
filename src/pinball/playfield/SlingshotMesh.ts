@@ -35,7 +35,8 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
     private start: V2d,
     private end: V2d,
     private middlePercent: number = 0.5,
-    private width: number = 0.5
+    private width: number = 0.5,
+    color: number = 0xdd0000
   ) {
     super();
 
@@ -47,8 +48,10 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
       vertices: morphGeometry.vertices,
     });
 
+    const material = MATERIAL.clone();
+    material.color.set(color);
     const bufferGeometry = new BufferGeometry().fromGeometry(geometry);
-    this.mesh = new Mesh(bufferGeometry, MATERIAL);
+    this.mesh = new Mesh(bufferGeometry, material);
 
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = false;
@@ -60,7 +63,7 @@ export default class SlingshotMesh extends BaseEntity implements Entity {
     this.kickerMesh.rotateZ(normal.angle);
     this.object3ds.push(this.kickerMesh);
 
-    this.disposeables.push(bufferGeometry);
+    this.disposeables.push(bufferGeometry, material);
     // Cuz we already don't need them
     geometry.dispose();
     morphGeometry.dispose();

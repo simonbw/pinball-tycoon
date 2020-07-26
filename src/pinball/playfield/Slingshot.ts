@@ -23,6 +23,8 @@ interface SlingshotOptions {
   width?: number;
   /** Amount of angle variation of impulse due to midpoint offset  */
   angleSpread?: number;
+
+  color?: number;
 }
 
 export default class Slingshot extends BaseEntity implements Entity {
@@ -67,7 +69,13 @@ export default class Slingshot extends BaseEntity implements Entity {
     this.body.addShape(shape);
 
     this.slingshotMesh = this.addChild(
-      new SlingshotMesh(this.start, this.end, this.middleOffset, width)
+      new SlingshotMesh(
+        this.start,
+        this.end,
+        this.middleOffset,
+        width,
+        options.color
+      )
     );
 
     this.addChildren(new Post(start, width * 1.0), new Post(end, width * 1.0));

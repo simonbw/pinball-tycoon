@@ -35,6 +35,7 @@ export default class Ball extends BaseEntity
   };
   z: number; // Height above the table
   vz: number = 0;
+  nudging: number = 0;
 
   constructor(position: V2d, z: number = 1, velocity: V2d = V(0, 0)) {
     super();
@@ -144,13 +145,17 @@ export default class Ball extends BaseEntity
 
   handlers = {
     nudge: async (e: NudgeEvent) => {
+      this.nudging += 1;
       this.body.applyImpulse(e.impulse);
       await this.wait(e.duration / 2);
       this.body.applyImpulse(e.impulse.mul(-2));
       await this.wait(e.duration / 2);
       this.body.applyImpulse(e.impulse);
+      this.nudging -= 1;
     },
   };
+
+  onImpact() {}
 
   onBeginContact(
     other: Entity,
@@ -182,6 +187,10 @@ export default class Ball extends BaseEntity
         this.soundController.emitCollisionSound(duringContactSound, gain);
       }
     }
+
+    // if (this.nudging && this.z === 0) {
+    //   this.vz += Math.random() * 80;
+    // }
   }
 }
 
