@@ -19,8 +19,6 @@ export default class AirKicker extends BaseEntity implements Entity {
   constructor(position: [number, number], radius: number = 1.0) {
     super();
 
-    console.log("new air kicker");
-
     this.body = new Body({ position: V(position), collisionResponse: false });
     const shape = new Circle({ radius });
     this.body.addShape(shape);

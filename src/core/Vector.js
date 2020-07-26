@@ -3,7 +3,7 @@ import { lerp } from "./util/MathUtil";
 export function V(x, y) {
   if (x instanceof V2d) {
     return x.clone();
-  } else if (x instanceof Array) {
+  } else if (x instanceof Array || x instanceof Float32Array) {
     return new V2d(x[0], x[1]);
   }
   return new V2d(x, y);
@@ -12,6 +12,9 @@ export function V(x, y) {
 export class V2d extends Array {
   constructor(x, y) {
     super();
+    if (isNaN(x) || isNaN(y)) {
+      throw new Error(`Can't make a V2d with NaN ${x},${y}`);
+    }
     this[0] = x;
     this[1] = y;
   }

@@ -4,22 +4,27 @@ July 29
 July 28
 July 27
 July 26
-  [ ] Jackpot?
-  [ ] Stanley Cup
-
-July 25
   [ ] Ramps
-
-July 24
+  [ ] Logic Groups in SVG
   [ ] Slides as well as nudges
   [ ] Kickbacks
+  [ ] Jackpot?
+  [ ] Stanley Cup
+  [ ] Blob wall (just for aesthetics really, but also could be good for physics performance)
+
+July 25
+  [√] Performance
+    [√] Profile for slowdowns
+    [ ] Raise CCD threshold
+    [ ] Reduce number of bodies by combining multiwall shapes
+    
+  [ ] "Has plunged" sensor
 
 July 23
   [ ] Cabinet
   [√] Flipper Shapes
   [√] More lamps
     [√] SlowMoLamps
-  [ ] "Has plunged" sensor
 
 July 22
   [√] Gamepad

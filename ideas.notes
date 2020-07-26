@@ -17,6 +17,21 @@ Custom events:
 Child Entities:
   [ ] Allow child entitie's Mesh to be added to parent's mesh
 
+#-------------#
+# Performance #
+#-------------#
+
+From profiling the app, it seems like 80% of the time is spent in phyics.
+Some ideas for speeding up physics:
+  [√] Raise CCD threshold. It seems like this is currently about 30% of time spend.
+    - This was big. Removed about 30% of the calculations being done
+  [√] Make multiwalls be one body. It seems like there's probably a slowdown due to iterating through so many bodies
+    - This was even bigger. Further reduced more than 50% of calculations. Possibly as great as 75%.
+  [ ] See if we can lower the number of iterations per tick and still have acceptable accuracy.
+  [ ] Write a custom broadphase implementation that only runs through checks on dynamic bodies, since there are only ever gonna be a single digit number of bodies
+  [ ] Do some splitting of huge walls that span the whole table so that only the nearby parts are checked. It seems like what I really want would be some custom octree sorting or something
+
+
 #---------#
 # Pinball #
 #---------#

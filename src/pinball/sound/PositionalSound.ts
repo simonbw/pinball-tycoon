@@ -38,6 +38,9 @@ export class PositionalSound extends SoundInstance implements Entity {
   }
 
   setPosition(position: V2d) {
+    if (isNaN(position[0]) || isNaN(position[1])) {
+      throw new Error(`invalid position: ${position}`);
+    }
     const relativePosition = position.sub(LISTENER);
     relativePosition.y *= SCALE_Y;
     const theta = relativePosition.angle;

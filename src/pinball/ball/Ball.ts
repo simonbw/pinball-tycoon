@@ -43,7 +43,7 @@ export default class Ball extends BaseEntity
 
     this.body = new CCDBody({
       mass: 2.8,
-      ccdSpeedThreshold: 30, // I think this can help performance a lot
+      ccdSpeedThreshold: RADIUS * 20 * 60, // moving approximately half its width per tick
       ccdIterations: 5,
       position: position.clone(),
       velocity: velocity.clone(),

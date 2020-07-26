@@ -4,6 +4,9 @@ import Entity from "../../../core/entity/Entity";
 import { V2d } from "../../../core/Vector";
 import { makeOutlineShape } from "../../graphics/OutlineShape";
 import Wall, { WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL } from "./Wall";
+import { Body, Capsule } from "p2";
+import { P2Materials } from "../P2Materials";
+import { CollisionGroups } from "../../Collision";
 
 export default class MultiWall extends BaseEntity implements Entity {
   constructor(
@@ -17,10 +20,26 @@ export default class MultiWall extends BaseEntity implements Entity {
       throw new Error("Need at least 2 points for a multiwall.");
     }
 
+    this.body = new Body({
+      mass: 0,
+    });
+
     for (let i = 1; i < points.length; i++) {
       const start = points[i - 1];
       const end = points[i];
-      this.addChild(new Wall(start, end, width, color, false));
+
+      const delta = end.sub(start);
+      const length = delta.magnitude;
+      const center = start.add(delta.mul(0.5));
+
+      const shape = new Capsule({
+        length,
+        radius: width / 2,
+      });
+      shape.material = P2Materials.plastic;
+      shape.collisionGroup = CollisionGroups.Table;
+      shape.collisionMask = CollisionGroups.Ball;
+      this.body.addShape(shape, center, delta.angle);
     }
 
     if (renderSelf) {

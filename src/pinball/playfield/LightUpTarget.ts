@@ -14,8 +14,7 @@ import { PositionalSound } from "../sound/PositionalSound";
 import { scoreEvent } from "../system/LogicBoard";
 import { P2Materials } from "./P2Materials";
 
-// TODO: Try composition instead of inheritance
-export default class ButtonTarget extends BaseEntity
+export default class LightUpTarget extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   tags = ["button_target"];
   body: Body;
@@ -62,21 +61,26 @@ export default class ButtonTarget extends BaseEntity
     this.disposeables.push(geometry, this.material);
   }
 
-  onLight() {
-    this.game!.dispatch(scoreEvent(1000));
-    const emissive = darken(lighten(this.material.color.getHex(), 0.6), 0.5);
-    this.material.emissive.set(emissive);
+  light() {
+    if (!this.lit) {
+      this.lit = true;
+      this.game!.dispatch(scoreEvent(1000));
+      const emissive = darken(lighten(this.material.color.getHex(), 0.6), 0.5);
+      this.material.emissive.set(emissive);
+    }
   }
 
   unLight() {
-    this.material.emissive.set(0x0);
+    if (this.lit) {
+      this.lit = false;
+      this.material.emissive.set(0x0);
+    }
   }
 
   async onImpact(ball: Entity) {
     if (isBall(ball)) {
       if (!this.lit) {
-        this.lit = true;
-        this.onLight();
+        this.light();
         this.addChild(new PositionalSound("boing2", this.getPosition()));
       } else {
         this.game!.dispatch(scoreEvent(200));

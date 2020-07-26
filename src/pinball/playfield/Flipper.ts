@@ -90,7 +90,7 @@ export default class Flipper extends BaseEntity
     length = length + (r - r2);
 
     this.body = new Body({
-      position: position,
+      position: position.clone(),
       mass: MASS,
       angle: this.downAngle,
       fixedX: true,

@@ -3,7 +3,7 @@ import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
 import AirKicker from "../../playfield/AirKicker";
 import Bumper from "../../playfield/Bumper";
-import ButtonTarget from "../../playfield/ButtonTarget";
+import LightUpTarget from "../../playfield/LightUpTarget";
 import Defender from "../../playfield/Defender";
 import Drain from "../../playfield/Drain";
 import Flipper from "../../playfield/Flipper";
@@ -204,6 +204,8 @@ export function getExtractors() {
     // target lamps
     (node, m) => {
       if (node.matches(`.target-bank > line`)) {
+        const parent = node.parentNode!;
+
         const x1 = getNumberProp(node.getAttribute("x1"));
         const y1 = getNumberProp(node.getAttribute("y1"));
         const x2 = getNumberProp(node.getAttribute("x2"));
@@ -213,7 +215,7 @@ export function getExtractors() {
         const center = a.add(b).imul(0.5);
         const delta = b.sub(a);
         const color = new Color(node.style.stroke).getHex();
-        return new ButtonTarget(center, delta.angle, delta.magnitude, color);
+        return new LightUpTarget(center, delta.angle, delta.magnitude, color);
       }
     },
 

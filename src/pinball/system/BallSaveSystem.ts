@@ -14,7 +14,7 @@ function ballSaveChange(active: boolean): BallSaveChangeEvent {
   };
 }
 
-const INITIAL_SAVE_TIME = 5;
+const INITIAL_SAVE_TIME = 10;
 
 export default class BallSaveSystem extends BaseEntity implements Entity {
   initialSave: boolean = true;
