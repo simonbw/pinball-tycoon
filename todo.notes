@@ -6,10 +6,12 @@ Need For Release
   [ ] Controls Display
   [ ] Look over controls again
   [ ] Remove Cheats
-  [ ] Prettier wall coverings
+  [√] Prettier wall coverings
   [ ] All main shots tuned to return to flippers
     [ ] In particular, do something about shots on goal
-  [ ] Rollovers for loops
+  [√] Rollovers for loops
+  [ ] Visible indications of tilt
+  [ ] Test it on other browsers
 
 August 1
   [ ] Post on reddit
@@ -17,22 +19,23 @@ August 1
 
 
 July 31
-July 30
-July 29
-July 28
-
-July 27
   [ ] Ramps
   [ ] Slides as well as nudges
   [ ] Kickbacks
   [ ] Jackpot?
   [ ] Stanley Cup
+July 30
+July 29
+July 28
+
+July 27
+  [ ] "Has plunged" sensor
+  [ ] Backglass "flash" functionality
 
 July 26
-  [ ] "Has plunged" sensor
-  [ ] Cabinet
-  [ ] Blob wall (just for aesthetics really, but also could be good for physics performance)
-  [ ] Rollover score thing (just so ramps can have points associated with them)
+  [√] Rollover score thing (just so ramps can have points associated with them)
+  [√] Cabinet
+  [√] Blob wall (just for aesthetics really, but also could be good for physics performance)
 
 July 25
   [√] Performance

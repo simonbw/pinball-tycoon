@@ -16,7 +16,7 @@ import Plunger from "./Plunger";
 import { makeSpringGeometry } from "../graphics/SpringMesh";
 
 const HEAD_LENGTH = 1;
-const SHAFT_LENGTH = 3.8;
+const SHAFT_LENGTH = 5.8;
 const SPRING_LENGTH = 3.2;
 const TOP_OFFSET = 0.25;
 

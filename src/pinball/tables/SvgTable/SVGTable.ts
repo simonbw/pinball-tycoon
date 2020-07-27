@@ -8,12 +8,12 @@ import {
   getTableBounds,
 } from "./svgTableAttributes";
 import { getChildrenFromDoc } from "./svgTableChildren";
+import { fetchSVGDoc } from "./svgUtils";
+import Cabinet from "../../environment/Cabinet";
+import GeneralIllumination from "../../environment/GeneralIllumination";
 
 export async function makeSVGTable(url: string) {
-  const response = await fetch(url);
-  const svgText = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svgText, "image/svg+xml");
+  const doc = await fetchSVGDoc(url);
 
   const table = new Table(
     getTableBounds(doc),
@@ -21,19 +21,21 @@ export async function makeSVGTable(url: string) {
     getBallDropPosition(doc)
   );
 
-  // Default light
-  const hemisphereLight = new HemisphereLight(0xffffff, 0x555555, 1);
-  hemisphereLight.position.set(0, 0, -1);
-  table.object3ds.push(hemisphereLight);
+  table.addChild(new GeneralIllumination());
+
+  // Cabinet
+  table.addChild(new Cabinet(table, 6, 4));
 
   // Backglass
-  table.addChild(new Backglass(table));
+  table.addChild(new Backglass(table, 6 + 4));
 
-  // Matching playfield
+  // Playfield
   table.addChild(new Playfield(table.bounds));
 
   // Load everything else up
+  console.time("getChildren");
   table.addChildren(...getChildrenFromDoc(doc));
+  console.timeEnd("getChildren");
 
   return table;
 }

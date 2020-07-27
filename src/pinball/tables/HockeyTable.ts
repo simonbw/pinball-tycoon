@@ -13,7 +13,7 @@ import Goal from "../playfield/Goal";
 import Goalie from "../playfield/Goalie";
 import BallRemainingLamp from "../playfield/lamps/BallRemainingLamp";
 import BallSaveLamp from "../playfield/lamps/BallSaveLamp";
-import OverheadLight from "../playfield/OverheadLight";
+import OverheadLight from "../environment/OverheadLight";
 import Playfield from "../playfield/Playfield";
 import Plunger from "../playfield/Plunger";
 import Slingshot from "../playfield/Slingshot";
@@ -24,7 +24,7 @@ import Wall from "../playfield/walls/Wall";
 import Backglass from "../ui/Backglass";
 import { Rect } from "../util/Rect";
 import Table from "./Table";
-import Topglass from "./Topglass";
+import Topglass from "../environment/Topglass";
 
 const BOUNDS: Rect = Rect.fromCorners([-24, 0], [28, 100]);
 const INCLINE = degToRad(15);

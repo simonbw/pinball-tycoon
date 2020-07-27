@@ -3,6 +3,13 @@ import { Matrix3, Path, Vector2, Shape } from "three";
 import { V, V2d } from "../../../core/Vector";
 import { degToRad } from "../../../core/util/MathUtil";
 
+export async function fetchSVGDoc(url: string) {
+  const response = await fetch(url);
+  const svgText = await response.text();
+  const parser = new DOMParser();
+  return parser.parseFromString(svgText, "image/svg+xml");
+}
+
 export function getNumberProp<T = 0>(
   value: string | number | null | undefined,
   backup?: T

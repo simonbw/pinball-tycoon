@@ -17,7 +17,7 @@ import SlowMoLamps from "../../playfield/lamps/SlowMoLamps";
 import TargetLamp from "../../playfield/lamps/TargetLamp";
 import Magnet from "../../playfield/Magnet";
 import MagnetOrbiter from "../../playfield/MagnetOrbiter";
-import OverheadLight from "../../playfield/OverheadLight";
+import OverheadLight from "../../environment/OverheadLight";
 import Plunger from "../../playfield/Plunger";
 import Post from "../../playfield/Post";
 import Slingshot from "../../playfield/Slingshot";
@@ -39,6 +39,7 @@ import {
 import Scoop from "../../playfield/Scoop";
 import TargetBank from "../../system/TargetBank";
 import Rollover from "../../playfield/Rollover";
+import BlobWall from "../../playfield/walls/BlobWall";
 
 export type Extractor = (
   node: SVGElement,
@@ -70,7 +71,12 @@ export function getExtractors() {
         const pathString = node.getAttribute("d") ?? "";
         const shapePath = pathStringToShape(pathString);
         const width = getNumberProp(node.style.strokeWidth, 1.0);
-        return new PathWall(shapePath, width, m);
+
+        if (node.style.fill != "none") {
+          return new BlobWall(shapePath, m);
+        } else {
+          return new PathWall(shapePath, width, m);
+        }
       }
     },
 

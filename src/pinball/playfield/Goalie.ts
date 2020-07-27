@@ -21,7 +21,7 @@ export default class Goalie extends DropTarget implements Entity {
   end: V2d;
   t: number = 0;
   reverse: boolean = false;
-  speed: number = 1.0;
+  speed: number = 0.0;
 
   constructor(start: V2d, end: V2d) {
     super(start, end.sub(start).angle, WIDTH, HEIGHT, DROP_FORCE, RESET_TIME);
@@ -38,6 +38,9 @@ export default class Goalie extends DropTarget implements Entity {
     };
     this.handlers["resetDefenders"] = () => {
       this.raise();
+    };
+    this.handlers["gameStart"] = () => {
+      this.speed = 1.0;
     };
   }
 

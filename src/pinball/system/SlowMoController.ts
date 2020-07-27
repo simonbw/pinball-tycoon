@@ -62,7 +62,7 @@ export default class SlowMoController extends BaseEntity implements Entity {
     const lastCooldown = this.cooldown;
 
     if (
-      this.logicBoard.gameStarted &&
+      this.logicBoard.gamePhase === "playing" &&
       game.entities.getTagged("ball").length > 0
     ) {
       const keys = getBindings("SLO_MO", "SLO_MO2");

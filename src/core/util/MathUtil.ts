@@ -1,4 +1,7 @@
 import { V2d, V } from "../Vector";
+import { Shape } from "p2";
+import { Path, LineCurve, Matrix3 } from "three";
+import { transformPoint } from "../../pinball/tables/SvgTable/svgUtils";
 
 // Modulo operator for modular arithmetic
 export function mod(a: number, b: number): number {
@@ -76,4 +79,45 @@ export function reflectXY(theta: number): number {
 
 export function polarToVec(theta: number, r: number): V2d {
   return V(r * Math.cos(theta), r * Math.sin(theta));
+}
+
+export function isCCW(points: readonly V2d[]): boolean {
+  let total = 0;
+  for (let i = 1; i < points.length; i++) {
+    const [x1, y1] = points[i - 1];
+    const [x2, y2] = points[i];
+    total += (x2 - x1) * (y2 + y1);
+  }
+  return total > 0;
+}
+
+export function pathToPoints(
+  path: Path,
+  transform?: Matrix3,
+  segmentDensity = 0.9
+) {
+  const points: V2d[] = [];
+
+  for (const curve of path.curves) {
+    const segments = Math.ceil(curve.getLength() * segmentDensity);
+
+    const curvePoints =
+      curve instanceof LineCurve
+        ? curve.getPoints(1)
+        : curve.getPoints(segments);
+
+    for (const point of curvePoints) {
+      const p = transform
+        ? transformPoint(point.x, point.y, transform)
+        : V(point.x, point.y);
+      if (!p.equals(points[points.length - 1])) {
+        points.push(p);
+      }
+    }
+  }
+  if (points[0].equals(points[points.length - 1])) {
+    points.pop();
+  }
+
+  return points;
 }

@@ -6,7 +6,7 @@ import { ControllerButton } from "../../core/io/Gamepad";
 import { TiltEvent } from "./TiltMeter";
 
 export default class FlipperController extends BaseEntity implements Entity {
-  enabled: boolean = true;
+  enabled: boolean = false;
 
   handlers = {
     tilt: ({ count }: TiltEvent) => {
@@ -15,6 +15,10 @@ export default class FlipperController extends BaseEntity implements Entity {
         this.game!.dispatch({ type: "leftFlipperDown" });
         this.game!.dispatch({ type: "rightFlipperDown" });
       }
+    },
+
+    turnOn: () => {
+      this.enabled = true;
     },
 
     gameStart: () => {

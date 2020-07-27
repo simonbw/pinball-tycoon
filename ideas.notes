@@ -55,18 +55,19 @@ Other Features
   [ ] Multiple z-levels
 
 Visuals:
-  [ ] Apron of the machine
+  [√] Apron of the machine
   [ ] "Street lighting", i.e. lots of little LEDs in the apron of the machine to light up all the corners
 
 UI:
-  [ ] Incorporate UI into Table
-    [ ] Slowmo
-    [ ] Balls Remaining
+  [√] Incorporate UI into Table
+    [√] Slowmo
+    [√] Balls Remaining
 
 Backglass Ideas:
-  [ ] Show "Press S to Start" message when game hasn't started yet
-  [ ] Show "Game Over" Message
+  [√] Show "Press S to Start" message when game hasn't started yet
+  [√] Show "Game Over" Message
   [ ] Custom 7/14/16 segment display for text
+
 
 Table Features
   [√] Flipper

@@ -57,6 +57,14 @@ function ballsRemainingEvent(ballsRemaining: number): BallsRemainingEvent {
   };
 }
 
+type GamePhase =
+  | "off"
+  | "inserting-coin"
+  | "awaiting-plunge"
+  | "starting"
+  | "playing"
+  | "game-over";
+
 /**
  * Controls the behind the scenes stuff.
  */
@@ -64,8 +72,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
   tags = ["logic_board"];
   ballsRemaining: number = 0;
   score: number = 0;
-  gameStarted: boolean = false;
+  gamePhase: GamePhase = "off";
   ballSaveSystem: BallSaveSystem;
+  insertingCoin = false;
 
   constructor(private table: Table) {
     super();
@@ -74,26 +83,40 @@ export default class LogicBoard extends BaseEntity implements Entity {
   }
 
   handlers = {
-    gameStart: async () => {
-      // Clear the table
+    insertCoin: async () => {
+      this.insertingCoin = true;
       this.clearTimers();
-      for (const ball of [...this.game!.entities.getTagged("ball")]) {
-        ball.destroy();
-      }
-
-      this.ballsRemaining = 3;
-      this.score = 0;
-      this.gameStarted = true;
-      this.game!.dispatch(updateScoreEvent(this.score));
 
       this.addChild(
         new PositionalSound("quarterDrop1", this.table.coinSlotPos)
       );
       const soundDuration = getSoundDuration("quarterDrop1");
-
       await this.wait(soundDuration * 0.7);
+
+      this.insertingCoin = false;
+      if (this.gamePhase === "off") {
+        this.game!.dispatch({ type: "turnOn" });
+      }
+      await this.wait(soundDuration * 0.3);
+      this.game!.dispatch({ type: "gameStart" });
+    },
+
+    gameStart: async () => {
+      this.gamePhase = "starting";
+      this.clearTimers();
+
+      this.ballsRemaining = 3;
+      this.score = 0;
+      this.game!.dispatch(updateScoreEvent(this.score));
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
-      await this.wait(soundDuration * 0.3 + 0.3);
+
+      await this.wait(0.5);
+
+      // TODO: Game start sound
+
+      this.gamePhase = "awaiting-plunge";
+      // TODO: Detect Plunge
+      this.gamePhase = "playing";
 
       this.game!.dispatch(newBallEvent());
     },
@@ -132,7 +155,7 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
 
     gameOver: () => {
-      this.gameStarted = false;
+      this.gamePhase = "game-over";
       this.addChild(new SoundInstance("drain"));
     },
 
@@ -156,19 +179,24 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
   };
 
+  tryInsertCoin() {
+    if (
+      !this.insertingCoin &&
+      (this.gamePhase === "off" || this.gamePhase === "game-over")
+    ) {
+      this.game!.dispatch({ type: "insertCoin" });
+    }
+  }
+
   onKeyDown(key: KeyCode) {
     if (key == getBinding("START_GAME")) {
-      if (!this.gameStarted) {
-        this.game!.dispatch({ type: "gameStart" });
-      }
+      this.tryInsertCoin();
     }
   }
 
   onButtonUp(button: ControllerButton) {
     if (button === ControllerButton.START) {
-      if (!this.gameStarted) {
-        this.game!.dispatch({ type: "gameStart" });
-      }
+      this.tryInsertCoin();
     }
   }
 }

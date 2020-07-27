@@ -28,7 +28,7 @@ export default class CameraController extends BaseEntity implements Entity {
     this.lookTarget = table.center.clone();
     this.normalPosition = new Vector3(
       table.center.x,
-      table.bounds.bottom + 10,
+      table.bounds.bottom + 15,
       -70
     );
     this.topPosition = new Vector3(
@@ -73,20 +73,19 @@ export default class CameraController extends BaseEntity implements Entity {
 
   onKeyDown(keyCode: KeyCode) {
     if (keyCode === getBinding("CAMERA_TOGGLE")) {
-      switch (this.mode) {
-        case "top":
-          this.mode = "normal";
-          break;
-        case "normal":
-          this.mode = "normal-still";
-          break;
-        case "normal-still":
-          this.mode = "top";
-          break;
-        case "manual":
-          this.mode = "top";
-          break;
-      }
+      this.mode = (() => {
+        switch (this.mode) {
+          case "normal":
+            return "top";
+          case "top":
+            return "normal-still";
+          case "normal-still":
+            return "normal";
+          case "manual":
+          default:
+            return "top";
+        }
+      })();
     }
   }
 

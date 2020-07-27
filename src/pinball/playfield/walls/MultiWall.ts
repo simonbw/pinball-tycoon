@@ -7,8 +7,18 @@ import { V2d } from "../../../core/Vector";
 import { CollisionGroups } from "../../Collision";
 import { makeOutlineShape } from "../../graphics/OutlineShape";
 import { P2Materials } from "../P2Materials";
+import {
+  WithBallCollisionInfo,
+  BallCollisionInfo,
+} from "../../ball/BallCollisionInfo";
 
-export default class MultiWall extends BaseEntity implements Entity {
+export default class MultiWall extends BaseEntity
+  implements Entity, WithBallCollisionInfo {
+  ballCollisionInfo: BallCollisionInfo = {
+    beginContactSound: {
+      name: "wallHit2",
+    },
+  };
   constructor(
     points: readonly V2d[],
     width: number = 1.0,
@@ -47,7 +57,8 @@ export default class MultiWall extends BaseEntity implements Entity {
 
       const geometry = new ExtrudeBufferGeometry(shape, {
         bevelEnabled: false,
-        depth: 2.0 * width,
+        depth: 2.0 * width + 0.25,
+        curveSegments: 1,
       });
       geometry.translate(0, 0, -2 * width);
       this.mesh = new Mesh(geometry, [WALL_TOP_MATERIAL, WALL_SIDE_MATERIAL]);

@@ -15,7 +15,6 @@ import { rNormal } from "../../core/util/Random";
 import { degToRad } from "../../core/util/MathUtil";
 
 const CAPTURE_DURATION = 1.5;
-const RELEASE_FORCE = 500;
 const WALL_WIDTH = 0.5;
 
 export default class Goal extends BaseEntity
@@ -25,6 +24,7 @@ export default class Goal extends BaseEntity
   ballCollisionInfo: BallCollisionInfo = {
     beginContactSound: { name: "postHit" },
   };
+  goalCount: number = 0;
 
   constructor(
     position: V2d,
@@ -57,8 +57,6 @@ export default class Goal extends BaseEntity
 
     this.addChild(new GoalMesh(position, angle, width, depth));
 
-    let goalCount = 0;
-
     this.addChild(
       new Scoop(
         position.add(V(0, -0.2 * depth).irotate(angle)),
@@ -68,8 +66,8 @@ export default class Goal extends BaseEntity
         CAPTURE_DURATION,
         () => V(0, 500).irotate(this.body!.angle + rNormal(0, degToRad(10))),
         () => {
-          goalCount += 1;
-          this.game!.dispatch(scoreEvent(25000 * Math.min(goalCount, 4)));
+          this.goalCount += 1;
+          this.game!.dispatch(scoreEvent(25000 * Math.min(this.goalCount, 4)));
           this.game!.dispatch({ type: "goal" });
           this.addChild(new SoundInstance("goal"));
         },
@@ -80,4 +78,10 @@ export default class Goal extends BaseEntity
       )
     );
   }
+
+  handlers = {
+    gameStart: () => {
+      this.goalCount = 0;
+    },
+  };
 }

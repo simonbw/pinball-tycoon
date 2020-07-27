@@ -47,11 +47,9 @@
     <line style="stroke-width: 0.25px; stroke: rgb(255, 238, 0);" x1="7.5" y1="7" x2="10" y2="7" class="defender"/>
     <line style="stroke-width: 0.25px; stroke: rgb(151, 0, 0);" x1="0" y1="6" x2="10" y2="6" class="goalie"/>
   </g>
-  <g style="">
+  <path d="M 28 100 L 28 0 L -24 0 L -24 100" style="stroke: rgb(0, 0, 0); fill: none;" class="wall">
     <title>Outer Walls</title>
-    <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" points="28 0 28 100"/>
-    <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" points="-24 0 -24 100"/>
-  </g>
+  </path>
   <circle style="fill: rgb(170, 0, 0);" cx="-14.027" cy="18.489" r="0.7" class="rollover" id="behind-goal-rollover"/>
   <circle style="fill: rgb(59, 230, 230);" cx="-3.144" cy="10.18" r="2.053" class="bumper"/>
   <g transform="matrix(1, 0, 0, 1, 3.191236, 18.283638)">
@@ -65,13 +63,21 @@
     <title>Spinner</title>
   </line>
   <path d="M 24 42 L 24 25.468 C 24 14.021 15.822 4.5 3.548 4.5" style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.6px;" class="wall"/>
-  <path d="M -24 38.5 C -24.05 41.604 -24.212 47.275 -19.026 47.626 L -19.077 48.998 L -20.5 49 L -20.5 63.5 L -20.25 63.5 L -24 66.5" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
+  <g>
+    <path d="M -23.5 38 C -23.5 43 -23.5 47 -18.5 47 L -18.5 49.3 L -20 49.3 L -20.1 63.157 L -18.227 63.157 L -23.808 68.057 L -23.5 38 Z" style="fill: rgb(17, 17, 17);" class="wall"/>
+    <path style="stroke-width: 0.6; fill: rgb(17, 17, 17);" d="M 23.797 39.535 C 23.647 33.04 16.571 31.241 12.697 37.493 C 13.544 33.348 24.177 27.338 23.572 21.964 C 24.02 22.886 24.105 34.372 23.797 39.535 Z" class="wall"/>
+    <path style="stroke-width: 0.4px; fill: rgb(17, 17, 17);" d="M 1.908 24.867 C 1.536 22.086 -0.369 15.46 -8.641 15.327 C -8.641 15.327 1.427 14.81 2.624 16.969 C 3.66 18.836 1.721 20.407 1.908 24.867 Z" class="wall"/>
+  </g>
   <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); stroke-width: 0.4;" points="-17 71 -17 81"/>
   <polyline style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); stroke-width: 0.4;" points="17 71 17 81"/>
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="-20 68.5 -20 83.5 -8 90.5"/>
   <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="20 71 20 83.5 8 90.5"/>
-  <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="-24 88 -4 99.5 -4 100"/>
-  <polyline style="stroke: rgb(0, 0, 0); stroke-width: 1; fill: none;" points="24 88 4 99.5 4 100"/>
+  <path d="M -24 88 L -4 100 L -24 100 Z" style="fill: rgb(17, 17, 17);" class="wall">
+    <title>Left Bottom Triangle</title>
+  </path>
+  <path d="M 24 88 L 4 100 L 24 100 Z" style="fill: rgb(17, 17, 17);" class="wall">
+    <title>Right Bottom Triangle</title>
+  </path>
   <path d="M 24 100 L 24 47 L 16.695 51.926 L 16.689 54.573 L 24 50" style="stroke: rgb(0, 0, 0); fill: none;" class="wall"/>
   <line style="stroke: rgb(0, 170, 255); stroke-width: 1.5px;" x1="-8" y1="90.772" x2="-2.875" y2="93.412" class="flipper">
     <title>Left Flipper</title>
@@ -85,35 +91,37 @@
   <rect x="-9" y="100" width="18" height="4" style="fill: none;" class="drain">
     <title>Drain</title>
   </rect>
-  <path style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.8;" d="M -24 27 C -26 -9 30 -9 28 27" class="wall"/>
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="28" y1="44" x2="24.663" y2="46.408" class="gate" x3="24" y3="47" data-swing="-120">
-    <title>First Gate</title>
+    <title>Lower Gate</title>
   </line>
   <path d="M 23.933 62.469 L 19.321 59.469 L 19.321 71.916 L 23.933 69.078" style="stroke: rgb(0, 0, 0); fill: none;" transform="matrix(-1, 0, 0, -1, 43.254, 128.360001)" class="wall"/>
-  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" class="wall" transform="matrix(-0.242541, -0.970141, 0.970141, -0.242541, -34.37484, 18.676686)" d="M -14.943 33.661 C -4.591 34.941 0.022 24.438 -4.293 17.302 C -6.902 12.987 -11.023 10.876 -17.194 12.065"/>
+  <path style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 0.4px;" class="wall" transform="matrix(-0.242541, -0.970141, 0.970141, -0.242541, -34.37484, 18.676686)" d="M -14.943 33.661 C -4.591 34.941 0.022 24.438 -4.293 17.302 C -6.902 12.987 -11.023 10.876 -17.194 12.065">
+    <title>Backstop</title>
+  </path>
   <line style="stroke: rgb(170, 170, 170); stroke-width: 0.5;" x1="3.83" y1="4.446" x2="-1.269" y2="0.098" class="gate" x3="24" y3="47" data-swing="150">
-    <title>First Gate</title>
+    <title>Top Gate</title>
   </line>
-  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="93" r="0.6" class="ball-remaining-lamp" data-min-balls="1">
-    <title>Ball Drop</title>
-  </circle>
-  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="91" r="0.6" class="ball-remaining-lamp" data-min-balls="2">
-    <title>Ball Drop</title>
-  </circle>
-  <circle style="fill: rgb(170, 0, 0);" cx="26" cy="89" r="0.6" class="ball-remaining-lamp" data-min-balls="3">
-    <title>Ball Drop</title>
-  </circle>
+  <g>
+    <title>Ball Indicators</title>
+    <circle style="fill: rgb(170, 0, 0);" cx="26" cy="93" r="0.6" class="ball-remaining-lamp" data-min-balls="1">
+      <title>Ball Indicator 1</title>
+    </circle>
+    <circle style="fill: rgb(170, 0, 0);" cx="26" cy="91" r="0.6" class="ball-remaining-lamp" data-min-balls="2">
+      <title>Ball Indicator 2</title>
+    </circle>
+    <circle style="fill: rgb(170, 0, 0);" cx="26" cy="89" r="0.6" class="ball-remaining-lamp" data-min-balls="3">
+      <title>Ball Indicator 3</title>
+    </circle>
+  </g>
   <circle style="fill: rgb(216, 216, 216);" cx="19.967" cy="70.684" r="0.4" class="post"/>
   <circle style="fill: rgb(0, 0, 170);" cx="0" cy="91" r="0.6" class="ball-save-lamp">
-    <title>Ball Drop</title>
+    <title>Ball Save Lamp</title>
   </circle>
-  <circle style="fill: rgb(216, 216, 216);" cx="-20.054" cy="68.106" r="0.4" class="post"/>
-  <circle style="fill: rgb(216, 216, 216);" cx="-19.905" cy="64.372" r="0.4" class="post"/>
+  <circle style="fill: rgb(216, 216, 216);" cx="-20.016" cy="68.106" r="0.4" class="post"/>
+  <circle style="fill: rgb(216, 216, 216);" cx="-20.016" cy="65.031" r="0.4" class="post"/>
   <circle style="fill: rgb(216, 216, 216);" cx="-18.85" cy="32.295" r="0.3" class="post" transform="matrix(0.999366, -0.035611, 0.035611, 0.999366, -0.824053, -0.337601)"/>
   <circle style="fill: rgb(216, 216, 216);" cx="1.951" cy="25.406" r="0.3" class="post" transform="matrix(0.999366, -0.035611, 0.035611, 0.999366, -0.824053, -0.337601)"/>
   <rect x="-1" y="72" width="2" height="5" style="fill: rgb(170, 255, 170);" class="slow-mo-lamps"/>
-  <use width="2" height="2" transform="matrix(0.9938610792160034, -0.11063700914382935, 0.11063700914382935, 0.9938610792160034, -22.680761337280273, 30.095563888549805)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.5000010132789612, 0.8660269975662231, -0.8660269975662231, 0.5000010132789612, 17.34326934814453, 56.4162712097168)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
   <g transform="matrix(1, 0, 0, 1, -0.282536, 0.022481)" class="target-bank">
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="61.764" x2="-19" y2="59.764"/>
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="58.764" x2="-19" y2="56.764"/>
@@ -121,18 +129,21 @@
     <line style="stroke-width: 0.2; color: initial; stroke: rgb(220, 0, 209);" x1="-19" y1="52.764" x2="-19" y2="50.764"/>
   </g>
   <rect x="13.774" y="81.627" width="4.018" height="5.02" style="fill: rgb(216, 216, 216);" transform="matrix(0.520702, 0.853739, -0.853739, 0.520702, 84.273026, -1.947744)" class="scoop"/>
-  <path style="stroke: rgb(0, 0, 0); stroke-width: 0.6; fill: rgb(40, 201, 0);" d="M 23.945 39.686 C 24.023 33.086 16.571 31.241 12.697 37.493 C 13.544 33.348 24.177 27.338 23.572 21.964" class="wall"/>
   <circle style="fill: rgb(59, 230, 230);" cx="18.479" cy="39.535" r="1.6" class="bumper"/>
-  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M -3.445 16.747"/>
-  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.752 21.835"/>
-  <path style="stroke: rgb(0, 0, 0); fill: none; stroke-width: 0.4px;" d="M -3.943 16.349 C -2.968 16.896 1.427 14.81 2.624 16.969 C 3.66 18.836 1.851 20.343 2.038 24.803" class="wall"/>
-  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
-  <circle style="fill: rgb(59, 230, 230);" cx="7.703" cy="11.098" r="1.589" class="bumper"/>
-  <use width="2" height="2" transform="matrix(0.7244240045547485, 0.6893550157546997, -0.6893550157546997, 0.7244240045547485, 15.66988754272461, 41.198455810546875)" id="right-loop-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.9468360543251038, -0.5317369103431702, 0.43956300616264343, 0.7827029228210449, -8.686561584472656, 30.79273796081543)" id="goal-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 52.165531158447266)" id="use-2" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 55.234703063964844)" id="use-3" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 58.227230072021484)" id="use-4" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
-  <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 61.2619743347168)" id="use-5" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  <g>
+    <use width="2" height="2" transform="matrix(0.993861, -0.110637, 0.110637, 0.993861, -22.680761, 30.095564)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.500001, 0.866027, -0.866027, 0.500001, 17.343269, 56.416271)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.724424, 0.689355, -0.689355, 0.724424, 15.669888, 41.198456)" id="right-loop-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.946836, -0.531737, 0.439563, 0.782703, -8.686562, 30.792738)" id="goal-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 52.165531)" id="use-2" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 55.234703)" id="use-3" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 58.22723)" id="use-4" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.008588, -0.373374, 0.373374, 0.008588, -18.727566, 61.261974)" id="use-5" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
+  </g>
   <circle style="fill: rgb(170, 0, 0);" cx="18.288" cy="34.907" r="0.7" class="rollover" id="right-loop-rollover" data-direction="0"/>
+  <path style="stroke-width: 0.1px; fill: rgb(255, 0, 0);" d="M 27.559 27 L 27.559 0 L -23.524 0 L -23.524 27 C -23.524 -9.754 27.559 -7.128 27.559 27 Z" class="wall">
+    <title>Top Corners</title>
+  </path>
+  <circle style="fill: rgb(170, 0, 0);" cx="18.3" cy="72.452" r="0.7" class="rollover" id="right-inlane-reverse-rollover" data-direction="-90"/>
+  <circle style="fill: rgb(170, 0, 0);" cx="-18.3" cy="72.452" r="0.7" class="rollover" id="left-inlane-reverse-rollover" data-direction="-90"/>
 </svg>

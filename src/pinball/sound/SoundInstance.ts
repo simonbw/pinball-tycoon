@@ -113,6 +113,12 @@ export class SoundInstance extends BaseEntity implements Entity {
     return this.gainNode;
   }
 
+  async waitTillEnded() {
+    if (this.continuous) {
+      throw new Error("Can't wait for end of continuous sound");
+    }
+  }
+
   onTick() {
     const now = this.game!.audio.currentTime;
     this.elapsed += (now - this.lastTick) * this.sourceNode.playbackRate.value;

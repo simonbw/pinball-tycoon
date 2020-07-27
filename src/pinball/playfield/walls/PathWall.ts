@@ -17,7 +17,7 @@ export default class PathWall extends BaseEntity implements Entity {
   ) {
     super();
 
-    const p2Points: V2d[] = [];
+    const points: V2d[] = [];
 
     for (const curve of path.curves) {
       const segments =
@@ -26,12 +26,12 @@ export default class PathWall extends BaseEntity implements Entity {
         const p = transform
           ? transformPoint(point.x, point.y, transform)
           : V(point.x, point.y);
-        if (!p.equals(p2Points[p2Points.length - 1])) {
-          p2Points.push(p);
+        if (!p.equals(points[points.length - 1])) {
+          points.push(p);
         }
       }
     }
 
-    this.addChild(new MultiWall(p2Points, width, color));
+    this.addChild(new MultiWall(points, width, color));
   }
 }
