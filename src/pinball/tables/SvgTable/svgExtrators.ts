@@ -71,9 +71,10 @@ export function getExtractors() {
         const pathString = node.getAttribute("d") ?? "";
         const shapePath = pathStringToShape(pathString);
         const width = getNumberProp(node.style.strokeWidth, 1.0);
+        const height = getNumberAttribute(node, "data-height");
 
         if (node.style.fill != "none") {
-          return new BlobWall(shapePath, m);
+          return new BlobWall(shapePath, m, { height });
         } else {
           return new PathWall(shapePath, width, m);
         }
@@ -109,11 +110,12 @@ export function getExtractors() {
     // Post
     (node, m) => {
       if (node.matches("circle.post")) {
-        const x = getNumberProp(node.getAttribute("cx"));
-        const y = getNumberProp(node.getAttribute("cy"));
-        const r = getNumberProp(node.getAttribute("r"), undefined);
+        const x = getNumberAttribute(node, "cx") ?? 0;
+        const y = getNumberAttribute(node, "cy") ?? 0;
+        const r = getNumberAttribute(node, "r");
+        const height = getNumberAttribute(node, "height");
 
-        return new Post(transformPoint(x, y, m), r);
+        return new Post(transformPoint(x, y, m), r, height);
       }
     },
 

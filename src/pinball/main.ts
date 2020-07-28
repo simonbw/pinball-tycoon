@@ -20,7 +20,11 @@ declare global {
 export async function main() {
   await new Promise((resolve) => window.addEventListener("load", resolve));
 
-  const audioContext = new AudioContext();
+  try {
+    const audioContext = new (AudioContext || webkitAudioContext)();
+  } catch (e) {
+    console.error("Could not create AudioContext");
+  }
 
   const game = new Game(audioContext, ContactMaterials, 22);
   window.DEBUG = { game };

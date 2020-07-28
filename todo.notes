@@ -1,40 +1,44 @@
-
-
-Need For Release
-  [ ] Some sort of menu or something
-  [ ] Cabinet
-  [ ] Controls Display
-  [ ] Look over controls again
-  [ ] Remove Cheats
-  [√] Prettier wall coverings
-  [ ] All main shots tuned to return to flippers
-    [ ] In particular, do something about shots on goal
-  [√] Rollovers for loops
-  [ ] Visible indications of tilt
-  [ ] Test it on other browsers
-
-August 1
-  [ ] Post on reddit
-
-
-
-July 31
+Future
   [ ] Ramps
   [ ] Slides as well as nudges
   [ ] Kickbacks
   [ ] Jackpot?
   [ ] Stanley Cup
-July 30
-July 29
-July 28
+  [ ] Objectives Controller
+    [ ] 
 
-July 27
+August 1
+  [ ] Post on reddit
+    [ ] Some sort of menu or something
+    [ ] All main shots tuned to return to flippers
+      [ ] In particular, do something about shots on goal
+    [ ] Visible indications of tilt
+    [ ] Controls Display
+    [ ] Make sure the controls are as good as they can be
+    [√] Remove Cheats
+    [√] Cabinet
+    [√] Prettier wall coverings
+    [√] Rollovers for loops
+    [√] Test it on other browsers
+
+July 31
+
+July 30
+
+July 29
+
+July 28
+  [√] Make it work in firefox
+  [x] Make it work in safari
   [ ] "Has plunged" sensor
   [ ] Backglass "flash" functionality
 
+July 27
+  [√] Cabinet
+  [√] Various polish
+
 July 26
   [√] Rollover score thing (just so ramps can have points associated with them)
-  [√] Cabinet
   [√] Blob wall (just for aesthetics really, but also could be good for physics performance)
 
 July 25
@@ -45,7 +49,6 @@ July 25
   [√] Logic Groups in SVG
 
 July 23
-  [ ] Cabinet
   [√] Flipper Shapes
   [√] More lamps
     [√] SlowMoLamps

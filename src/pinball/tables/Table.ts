@@ -30,11 +30,15 @@ export default class Table extends BaseEntity implements Entity {
     const logicBoard = this.addChild(new LogicBoard(this));
     this.addChildren(
       new CameraController(this),
-      new MagicBallController(),
+
       new NudgeController(),
       new SlowMoController(logicBoard),
       new TiltMeter()
     );
+
+    if (process.env.NODE_ENV === "development") {
+      this.addChild(new MagicBallController());
+    }
   }
 
   onAdd(game: Game) {

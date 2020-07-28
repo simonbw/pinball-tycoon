@@ -71,6 +71,14 @@ export class Rect {
     return new Rect(top, top + height, left, left + width);
   }
 
+  static fromBottomRight(
+    [right, bottom]: [number, number],
+    width: number,
+    height: number
+  ): Rect {
+    return new Rect(bottom - height, bottom, right - width, right);
+  }
+
   static fromCenter(
     [cx, cy]: [number, number],
     width: number,

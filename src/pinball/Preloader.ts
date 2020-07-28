@@ -67,7 +67,11 @@ export default class Preloader extends BaseEntity implements Entity {
     await Promise.all(
       soundNames.map(async (name) => {
         const url = SOUND_URLS[name];
-        await loadSound(name as SoundName, url, audioContext);
+        try {
+          await loadSound(name as SoundName, url, audioContext);
+        } catch (e) {
+          console.warn(`Sound failed to load: ${name}, ${url}`, e);
+        }
         loaded += 1;
         element.innerText = `${loaded} / ${total}`;
       })

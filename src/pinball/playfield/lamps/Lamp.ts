@@ -34,7 +34,7 @@ const GLOW_MATERIAL = new MeshBasicMaterial({
   depthWrite: false,
   map: glowTexture,
   polygonOffset: true,
-  polygonOffsetFactor: -0.5,
+  polygonOffsetFactor: -2,
   premultipliedAlpha: true,
   transparent: true,
 });
@@ -46,7 +46,7 @@ const BULB_MATERIAL = new MeshStandardMaterial({
   depthWrite: false,
   emissive: UNLIT_EMISSIVE,
   polygonOffset: true,
-  polygonOffsetFactor: -0.3,
+  polygonOffsetFactor: -1,
 });
 
 const GLOW_GEOMETRY = new PlaneBufferGeometry(8, 8);
