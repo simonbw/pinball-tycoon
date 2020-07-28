@@ -1,7 +1,7 @@
 import { Color, Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
-import AirKicker from "../../playfield/AirKicker";
+import Popper from "../../playfield/Popper";
 import Bumper from "../../playfield/Bumper";
 import LightUpTarget from "../../playfield/LightUpTarget";
 import Defender from "../../playfield/Defender";
@@ -152,7 +152,7 @@ export function getExtractors() {
         const x = getNumberProp(node.getAttribute("cx"));
         const y = getNumberProp(node.getAttribute("cy"));
         const r = getNumberProp(node.getAttribute("r"));
-        return new AirKicker(transformPoint(x, y, m), r);
+        return new Popper(transformPoint(x, y, m), r);
       }
     },
 

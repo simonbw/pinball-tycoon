@@ -15,7 +15,7 @@ const MATERIAL = new MeshStandardMaterial({
   opacity: 0.5,
 });
 
-export default class AirKicker extends BaseEntity implements Entity {
+export default class Popper extends BaseEntity implements Entity {
   constructor(position: [number, number], radius: number = 1.0) {
     super();
 
