@@ -27,9 +27,16 @@ Some ideas for speeding up physics:
     - This was big. Removed about 30% of the calculations being done
   [√] Make multiwalls be one body. It seems like there's probably a slowdown due to iterating through so many bodies
     - This was even bigger. Further reduced more than 50% of calculations. Possibly as great as 75%.
-  [ ] See if we can lower the number of iterations per tick and still have acceptable accuracy.
-  [ ] Write a custom broadphase implementation that only runs through checks on dynamic bodies, since there are only ever gonna be a single digit number of bodies
-  [ ] Do some splitting of huge walls that span the whole table so that only the nearby parts are checked. It seems like what I really want would be some custom octree sorting or something
+  [√] See if we can lower the number of iterations per tick and still have acceptable accuracy.
+    - It definitely starts getting bad quickly. The high iteration count is what's giving us such good physics. I'll have to keep looking.
+  [ ] Write a custom broadphase implementation
+    - I could implement this with spatial hashing.
+    - Keep track of dynamic bodies and only check them
+    - We should be able to avoid ever having to iterate through all bodies, which should mean we can have as many static bodies as we want. This might require some updates in world.js too
+    - At some point, I might want to fork p2
+  [ ] Write a custom narrowphase implementation that does better than what it does now.
+    - This probably isn't actually necessary if I split everything up into a lot of bodies again
+  [ ] Do some splitting of huge walls that span the whole table so that only the nearby parts are checked. It seems like what I really want would be some custom quadtree sorting or something
 
 
 #---------#

@@ -1,4 +1,4 @@
-import p2, { ContactMaterial } from "p2";
+import p2, { Broadphase, Narrowphase } from "p2";
 import ContactList, {
   ContactInfo,
   ContactInfoWithEquations,
@@ -7,7 +7,14 @@ import Entity, { WithOwner } from "./entity/Entity";
 import EntityList from "./EntityList";
 import { GameRenderer3d } from "./graphics/GameRenderer3d";
 import { IOManager } from "./io/IO";
-import { rRound } from "./util/Random";
+
+interface GameOptions {
+  audio?: AudioContext;
+  tickIterations?: number;
+  framerate?: number;
+  broadphase?: Broadphase;
+  narrowphase?: Narrowphase;
+}
 
 /**
  * Top Level control structure
@@ -37,7 +44,7 @@ export default class Game {
   /** Multiplier of time that passes during tick */
   slowMo: number = 1;
   /** Target number of frames per second */
-  framerate: number = 60;
+  framerate: number;
   /** Readonly. Number of frames that have gone by */
   framenumber: number = 0;
   /** Readonly. Number of ticks that have gone by */
@@ -54,11 +61,13 @@ export default class Game {
   /**
    * Create a new Game.
    */
-  constructor(
-    audio: AudioContext,
-    contactMaterials: ReadonlyArray<ContactMaterial>,
-    tickIterations: number = 5
-  ) {
+  constructor({
+    audio,
+    tickIterations = 5,
+    framerate = 60,
+    broadphase,
+    narrowphase,
+  }: GameOptions) {
     this.entities = new EntityList();
     this.entitiesToRemove = new Set();
 
@@ -67,10 +76,13 @@ export default class Game {
     this.io = new IOManager(this.renderer.domElement);
 
     this.tickIterations = tickIterations;
-    this.world = new p2.World({ gravity: [0, 0] });
-    for (const material of contactMaterials) {
-      this.world.addContactMaterial(material);
+    this.framerate = framerate;
+    this.world = new p2.World({ gravity: [0, 0], broadphase });
+    if (narrowphase) {
+      this.world.narrowphase = narrowphase;
     }
+    this.world.applyGravity = false;
+    this.world.applyDamping = false;
     this.world.on("beginContact", this.beginContact, null);
     this.world.on("endContact", this.endContact, null);
     this.world.on("impact", this.impact, null);
@@ -78,7 +90,7 @@ export default class Game {
     this.world.addBody(this.ground);
     this.contactList = new ContactList();
 
-    this.audio = audio;
+    this.audio = audio ?? new AudioContext();
     this.masterGain = this.audio.createGain();
     this.masterGain.connect(this.audio.destination);
   }
@@ -162,24 +174,24 @@ export default class Game {
     this.io.addHandler(entity);
 
     if (entity.mesh) {
-      this.renderer.scene.add(entity.mesh);
       entity.mesh.owner = entity;
+      this.renderer.scene.add(entity.mesh);
     }
     if (entity.object3ds) {
       for (const mesh of entity.object3ds) {
-        this.renderer.scene.add(mesh);
         mesh.owner = entity;
+        this.renderer.scene.add(mesh);
       }
     }
 
     if (entity.body) {
-      this.world.addBody(entity.body);
       entity.body.owner = entity;
+      this.world.addBody(entity.body);
     }
     if (entity.bodies) {
       for (const body of entity.bodies) {
-        this.world.addBody(body);
         body.owner = entity;
+        this.world.addBody(body);
       }
     }
     if (entity.springs) {
@@ -293,7 +305,6 @@ export default class Game {
     if (entity.bodies) {
       for (const body of entity.bodies) {
         this.world.removeBody(body);
-        body.owner = entity;
       }
     }
     if (entity.springs) {

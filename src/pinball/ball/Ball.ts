@@ -3,7 +3,7 @@ import { Vector3 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import CCDBody from "../../core/physics/CCDBody";
-import { clamp, degToRad } from "../../core/util/MathUtil";
+import { clamp } from "../../core/util/MathUtil";
 import { V, V2d } from "../../core/Vector";
 import { CollisionGroups } from "../Collision";
 import { NudgeEvent } from "../controllers/NudgeController";
@@ -11,7 +11,6 @@ import { P2Materials } from "../playfield/P2Materials";
 import Table from "../tables/Table";
 import {
   BallCollisionInfo,
-  getNameFromSoundInfo,
   hasCollisionInfo,
   WithBallCollisionInfo,
 } from "./BallCollisionInfo";
@@ -19,7 +18,7 @@ import BallMesh from "./BallMesh";
 import BallSoundController from "./BallSoundController";
 
 const RADIUS = 1.0625; // Radius in 1/2 inches
-const FRICTION = 0.008; // rolling friction
+const FRICTION = 0.05; // rolling friction
 const GRAVITY = 2.0 * 386.0; // 1/2 inches/s^2
 
 export default class Ball extends BaseEntity

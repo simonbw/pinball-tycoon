@@ -10,7 +10,7 @@ import {
 } from "../../ball/BallCollisionInfo";
 import { CollisionGroups } from "../../Collision";
 
-const SEGMENTS_PER_HALF_INCH = 1.0;
+const SEGMENTS_PER_HALF_INCH = 0.8;
 
 interface Options {
   color?: number;

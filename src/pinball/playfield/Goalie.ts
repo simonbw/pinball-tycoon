@@ -6,6 +6,7 @@ import { SoundInstance } from "../sound/SoundInstance";
 import { scoreEvent } from "../system/LogicBoard";
 import { getDefenderUpCount } from "./Defender";
 import DropTarget from "./DropTarget";
+import { Body } from "p2";
 
 const MATERIAL = new MeshPhongMaterial({
   color: 0xff0000,
@@ -25,6 +26,8 @@ export default class Goalie extends DropTarget implements Entity {
 
   constructor(start: V2d, end: V2d) {
     super(start, end.sub(start).angle, WIDTH, HEIGHT, DROP_FORCE, RESET_TIME);
+
+    this.body.type = Body.KINEMATIC;
 
     this.start = start.clone();
     this.end = end.clone();
@@ -77,6 +80,7 @@ export default class Goalie extends DropTarget implements Entity {
       this.mesh.position.y = y;
       this.body.position[0] = x;
       this.body.position[1] = y;
+      this.body.aabbNeedsUpdate = true;
     }
   }
 }

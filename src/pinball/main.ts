@@ -7,7 +7,8 @@ import { ContactMaterials } from "./playfield/P2Materials";
 import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
 import { makeSVGTable } from "./tables/SvgTable/SVGTable";
-import HockeyTable from "./tables/HockeyTable";
+import CustomBroadphase from "../core/physics/CustomBroadphase";
+import CustomNarrowphase from "../core/physics/CustomNarrowphase";
 
 declare global {
   interface Window {
@@ -20,13 +21,16 @@ declare global {
 export async function main() {
   await new Promise((resolve) => window.addEventListener("load", resolve));
 
-  try {
-    const audioContext = new (AudioContext || webkitAudioContext)();
-  } catch (e) {
-    console.error("Could not create AudioContext");
+  const game = new Game({
+    tickIterations: 22,
+    broadphase: new CustomBroadphase(),
+    narrowphase: new CustomNarrowphase(),
+  });
+
+  for (const contactMaterial of ContactMaterials) {
+    game.world.addContactMaterial(contactMaterial);
   }
 
-  const game = new Game(audioContext, ContactMaterials, 22);
   window.DEBUG = { game };
   game.start();
 
