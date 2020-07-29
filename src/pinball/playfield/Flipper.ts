@@ -65,7 +65,9 @@ export default class Flipper extends BaseEntity
     public side: Side = "left",
     public length: number = 6,
     public width: number = 1.2,
-    public downAngle: number = DEFAULT_DOWN_ANGLE,
+    public downAngle: number = side === "left"
+      ? DEFAULT_DOWN_ANGLE
+      : reflectX(DEFAULT_DOWN_ANGLE),
     swing = DEFAULT_SWING,
     public strength: number = 1.0
   ) {

@@ -7,6 +7,7 @@ import Entity, { WithOwner } from "./entity/Entity";
 import EntityList from "./EntityList";
 import { GameRenderer3d } from "./graphics/GameRenderer3d";
 import { IOManager } from "./io/IO";
+import CustomWorld from "./physics/CustomWorld";
 
 interface GameOptions {
   audio?: AudioContext;
@@ -77,7 +78,7 @@ export default class Game {
 
     this.tickIterations = tickIterations;
     this.framerate = framerate;
-    this.world = new p2.World({ gravity: [0, 0], broadphase });
+    this.world = new CustomWorld({ gravity: [0, 0], broadphase });
     if (narrowphase) {
       this.world.narrowphase = narrowphase;
     }

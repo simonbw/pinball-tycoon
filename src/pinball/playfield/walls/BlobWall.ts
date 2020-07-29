@@ -1,4 +1,4 @@
-import { Body } from "p2";
+import p2, { Body, Convex, vec2 } from "p2";
 import { ExtrudeBufferGeometry, Matrix3, Mesh, Shape, Vector2 } from "three";
 import { WALL_SIDE_MATERIAL, WALL_TOP_MATERIAL } from ".";
 import BaseEntity from "../../../core/entity/BaseEntity";
@@ -40,25 +40,36 @@ export default class BlobWall extends BaseEntity
 
     this.disposeables.push(geometry);
 
-    this.body = new Body({ mass: 0 });
+    const tempBody = new Body({ mass: 0 });
+
     if (!isCCW(points)) {
       points.reverse();
     }
 
-    const success = this.body.fromPolygon(points, {
+    const success = tempBody.fromPolygon(points, {
       optimalDecomp: points.length < 8,
       removeCollinearPoints: 0.001,
       skipSimpleCheck: false,
     });
 
-    if (!success || this.body.getArea() <= 0) {
+    if (!success || tempBody.getArea() <= 0) {
       console.error("decomposition failed", points);
       throw new Error("decomposition failed");
     }
 
-    for (const shape of this.body.shapes) {
+    this.bodies = [];
+    for (const shape of [...tempBody.shapes]) {
+      const body = new Body({
+        mass: 0,
+        position: vec2.clone(tempBody.position),
+      });
+      this.bodies.push(body);
+      tempBody.removeShape(shape);
+
       shape.collisionGroup = CollisionGroups.Table;
       shape.collisionMask = CollisionGroups.Ball;
+
+      body.addShape(shape, shape.position, shape.angle);
     }
   }
 }

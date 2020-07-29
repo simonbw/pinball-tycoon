@@ -30,9 +30,7 @@ export default class MultiWall extends BaseEntity
       throw new Error("Need at least 2 points for a multiwall.");
     }
 
-    this.body = new Body({
-      mass: 0,
-    });
+    this.bodies = [];
 
     for (let i = 1; i < points.length; i++) {
       const start = points[i - 1];
@@ -42,6 +40,10 @@ export default class MultiWall extends BaseEntity
       const length = delta.magnitude;
       const center = start.add(delta.mul(0.5));
 
+      const body = new Body({
+        mass: 0,
+      });
+
       const shape = new Capsule({
         length,
         radius: width / 2,
@@ -49,7 +51,9 @@ export default class MultiWall extends BaseEntity
       shape.material = P2Materials.plastic;
       shape.collisionGroup = CollisionGroups.Table;
       shape.collisionMask = CollisionGroups.Ball;
-      this.body.addShape(shape, center, delta.angle);
+      body.addShape(shape, center, delta.angle);
+
+      this.bodies.push(body);
     }
 
     if (renderSelf) {

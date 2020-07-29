@@ -23,6 +23,7 @@
     "fontfaceobserver": "^2.1.0",
     "hast-util-select": "^4.0.0",
     "p2": "^0.7.1",
+    "poly-decomp": "^0.3.0",
     "standardized-audio-context": "^24.1.22",
     "svg-parser": "^2.0.4",
     "svg-path-parse": "^1.1.3",

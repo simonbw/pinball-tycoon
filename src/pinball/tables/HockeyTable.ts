@@ -27,7 +27,7 @@ import Table from "./Table";
 import Topglass from "../environment/Topglass";
 
 const BOUNDS: Rect = Rect.fromCorners([-24, 0], [28, 100]);
-const INCLINE = degToRad(15);
+const INCLINE = degToRad(5.5);
 const BALL_DROP = V(26, 92);
 
 export default class HockeyTable extends Table implements Entity {
@@ -98,7 +98,7 @@ export default class HockeyTable extends Table implements Entity {
     this.addChildren(
       new MultiWall([V(-24, 40), V(-20, 50), V(-20, 53), V(-24, 56)]),
       new MultiWall([V(24, 47), V(20, 50), V(20, 53), V(24, 56)]),
-      new Flipper(V(22, 48.5), "right", 3.6, 1.0, degToRad(130), degToRad(-20))
+      new Flipper(V(22, 48.5), "right", 3.6, 1.0, degToRad(130), degToRad(60))
     );
 
     // Top curves?
@@ -138,8 +138,8 @@ export default class HockeyTable extends Table implements Entity {
       new Slingshot(V(-9, 24 + LO), V(-13, 10 + LO), { middleOffset: 0.3 }),
       new MultiWall([V(13, 10 + LO), V(13, 21 + LO), V(9, 24 + LO)], 0.9),
       new MultiWall([V(-13, 10 + LO), V(-13, 21 + LO), V(-9, 24 + LO)], 0.9),
-      new Flipper(V(-8, 30.25 + LO), "left", 1.25, 6.2),
-      new Flipper(V(8, 30.25 + LO), "right", 1.25, 6.2),
+      new Flipper(V(-8, 30.25 + LO), "left", 6.2, 1.25),
+      new Flipper(V(8, 30.25 + LO), "right", 6.2, 1.25),
       new BallSaveLamp(V(0, LO + 30.5)),
       // Outlanes
       new MultiWall([V(-20, LO - 2), V(-20, 22 + LO), V(-8, 30 + LO)]),
