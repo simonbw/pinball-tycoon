@@ -21,7 +21,7 @@ import { createNoiseNormalMap } from "../graphics/proceduralTextures";
 import Reflector from "../graphics/Reflector";
 import { PositionalSound } from "../sound/PositionalSound";
 import { scoreEvent } from "../system/LogicBoard";
-import { lerp } from "../../core/util/MathUtil";
+import { lerp, clamp } from "../../core/util/MathUtil";
 
 const FRICTION = 0.9;
 const HEIGHT = 1.9;
@@ -92,10 +92,14 @@ export default class Spinner extends BaseEntity
 
   onSpin(forward: boolean) {
     const speed = Math.abs(this.spinVelocity);
-    this.addChild(
+    this.addChildren(
       new PositionalSound("pop1", this.getPosition(), {
         speed: 1.6 + speed * 0.023,
         gain: 0.5,
+      }),
+      new PositionalSound("spinner2", this.getPosition(), {
+        speed: 0.9 + speed * 0.033,
+        gain: 1.3 * clamp(speed / 22) + 0.1,
       })
     );
     this.game!.dispatch(scoreEvent(100));

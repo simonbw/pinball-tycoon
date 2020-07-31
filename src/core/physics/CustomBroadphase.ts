@@ -48,7 +48,6 @@ export default class CustomBroadphase extends SAPBroadphase {
   addBodyToHash(body: Body) {
     const cells = this.aabbToCells(body.getAABB());
     if (cells === HUGE) {
-      console.log("huge body added");
       this.hugeBodies.add(body);
     } else {
       for (const cell of cells) {

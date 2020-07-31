@@ -39,7 +39,7 @@ export default class Bumper extends BaseEntity implements Entity {
     if (isBall(ball)) {
       this.game!.dispatch(scoreEvent(700));
       this.addChild(
-        new PositionalSound("pop1", this.getPosition(), { gain: 1.5 })
+        new PositionalSound("bumper1", this.getPosition(), { gain: 1.1 })
       );
       const impulse = ball
         .getPosition()

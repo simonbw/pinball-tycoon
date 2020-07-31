@@ -6,6 +6,8 @@ import ballRolling3 from "../../../resources/audio/ball-rolling-3.flac";
 import ballRolling from "../../../resources/audio/ball-rolling.flac";
 import boing1 from "../../../resources/audio/boing-1.flac";
 import boing2 from "../../../resources/audio/boing-2.flac";
+import bumper1 from "../../../resources/audio/bumper-1.flac";
+import bumper2 from "../../../resources/audio/bumper-2.flac";
 import buzz from "../../../resources/audio/buzz.flac";
 import defenderDown1 from "../../../resources/audio/defender-down-1.flac";
 import defenderDown2 from "../../../resources/audio/defender-down-2.flac";
@@ -15,6 +17,8 @@ import defenderUp2 from "../../../resources/audio/defender-up-2.flac";
 import drain from "../../../resources/audio/drain.flac";
 import flipperDown from "../../../resources/audio/flipper-down.flac";
 import flipperHit from "../../../resources/audio/flipper-hit.flac";
+import flipperUp2 from "../../../resources/audio/flipper-up-2.flac";
+import flipperUp3 from "../../../resources/audio/flipper-up-3.flac";
 import flipperUp from "../../../resources/audio/flipper-up.flac";
 import gameOver from "../../../resources/audio/game-over.flac";
 import gameStart from "../../../resources/audio/game-start.flac";
@@ -32,13 +36,14 @@ import ringingHit1 from "../../../resources/audio/ringing-hit-1.flac";
 import rubberHit1 from "../../../resources/audio/rubber-hit-1.flac";
 import rubberHit2 from "../../../resources/audio/rubber-hit-2.flac";
 import rubberHit3 from "../../../resources/audio/rubber-hit-3.flac";
+import spinner2 from "../../../resources/audio/spinner-2.flac";
 import suck1 from "../../../resources/audio/suck-1.flac";
-import upgrade from "../../../resources/audio/upgrade.flac";
-import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
-import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 import tilt1 from "../../../resources/audio/tilt-1.flac";
 import tilt2 from "../../../resources/audio/tilt-2.flac";
 import tilt3 from "../../../resources/audio/tilt-3.flac";
+import upgrade from "../../../resources/audio/upgrade.flac";
+import wallHit1 from "../../../resources/audio/wall-hit-1.flac";
+import wallHit2 from "../../../resources/audio/wall-hit-2.flac";
 
 // TODO: These shouln't be listed in core/
 export const SOUND_URLS = {
@@ -50,6 +55,8 @@ export const SOUND_URLS = {
   ballRolling3,
   boing1,
   boing2,
+  bumper1,
+  bumper2,
   buzz,
   defenderDown1,
   defenderDown2,
@@ -60,6 +67,8 @@ export const SOUND_URLS = {
   flipperDown,
   flipperHit,
   flipperUp,
+  flipperUp2,
+  flipperUp3,
   gameOver,
   gameStart,
   gateHit,
@@ -76,6 +85,7 @@ export const SOUND_URLS = {
   rubberHit1,
   rubberHit2,
   rubberHit3,
+  spinner2,
   suck1,
   tilt1,
   tilt2,
@@ -105,6 +115,10 @@ export async function loadSound(
 
 export function getSoundDuration(soundName: SoundName): number {
   return SOUNDS.get(soundName)?.duration ?? -1;
+}
+
+export function soundIsLoaded(name: SoundName) {
+  return SOUNDS.get(name) != undefined;
 }
 
 export function loadAllSounds(audioContext: AudioContext) {

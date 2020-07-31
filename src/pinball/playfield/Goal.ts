@@ -64,7 +64,7 @@ export default class Goal extends BaseEntity
         width - WALL_WIDTH,
         depth * 0.5,
         CAPTURE_DURATION,
-        () => V(0, 500).irotate(this.body!.angle + rNormal(0, degToRad(10))),
+        () => V(0, 500).irotate(this.body!.angle + rNormal(0, degToRad(0))),
         () => {
           this.goalCount += 1;
           this.game!.dispatch(scoreEvent(25000 * Math.min(this.goalCount, 4)));

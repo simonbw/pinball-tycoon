@@ -1,10 +1,11 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import { soundIsLoaded } from "../../core/resources/sounds";
+import { clamp } from "../../core/util/MathUtil";
 import Flipper from "../playfield/Flipper";
 import { PositionalSound } from "./PositionalSound";
-import { clamp } from "../../core/util/MathUtil";
 
-const BUZZ_GAIN = 0.25;
+const BUZZ_GAIN = 0.23;
 
 export default class FlipperSoundController extends BaseEntity
   implements Entity {
@@ -21,16 +22,14 @@ export default class FlipperSoundController extends BaseEntity
   }
 
   getGain() {
-    return (this.flipper.length / 6) ** 1.5;
+    return clamp(this.flipper.length / 6.5) ** 3;
   }
 
   async engage() {
     this.buzzSound.gain = BUZZ_GAIN;
-    if (this.flipper.length < 5) {
-      await this.wait(0.003);
-    }
+    const soundName = soundIsLoaded("flipperUp") ? "flipperUp" : "flipperUp2";
     this.addChild(
-      new PositionalSound("flipperUp", this.flipper.getPosition(), {
+      new PositionalSound(soundName, this.flipper.getPosition(), {
         gain: this.getGain(),
       })
     );
@@ -38,8 +37,11 @@ export default class FlipperSoundController extends BaseEntity
 
   async disengage() {
     this.buzzSound.gain = 0.0;
+    const soundName = soundIsLoaded("flipperDown")
+      ? "flipperDown"
+      : "flipperUp2";
     this.addChild(
-      new PositionalSound("flipperDown", this.flipper.getPosition(), {
+      new PositionalSound(soundName, this.flipper.getPosition(), {
         gain: this.getGain(),
       })
     );

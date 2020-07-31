@@ -25,7 +25,7 @@ export function getNameFromSoundInfo(info: SoundInfo): SoundName {
   if ("name" in info) {
     return info.name;
   } else {
-    return choose(info.names);
+    return choose(...info.names);
   }
 }
 export interface WithBallCollisionInfo {

@@ -7,7 +7,7 @@ export interface BallSaveChangeEvent {
   active: boolean;
 }
 
-function ballSaveChange(active: boolean): BallSaveChangeEvent {
+function ballSaveLampEvent(active: boolean): BallSaveChangeEvent {
   return {
     type: "ballSaveChange",
     active,
@@ -25,7 +25,7 @@ export default class BallSaveSystem extends BaseEntity implements Entity {
   }
 
   emitUpdate() {
-    this.game?.dispatch(ballSaveChange(this.canSave()));
+    this.game?.dispatch(ballSaveLampEvent(this.canSave()));
   }
 
   canSave() {

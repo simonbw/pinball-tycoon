@@ -125,9 +125,7 @@ export default class Slingshot extends BaseEntity implements Entity {
 
         this.game!.dispatch({ type: "score", points: 45 });
 
-        this.addChild(
-          new PositionalSound("boing1", this.getPosition(), { gain: 0.5 })
-        );
+        this.addChild(new PositionalSound("boing1", this.getPosition()));
 
         this.slingshotMesh.animationStartTime = this.game!.elapsedTime;
       }
