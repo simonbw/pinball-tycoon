@@ -15,10 +15,17 @@ import defenderDown3 from "../../../resources/audio/defender-down-3.flac";
 import defenderUp1 from "../../../resources/audio/defender-up-1.flac";
 import defenderUp2 from "../../../resources/audio/defender-up-2.flac";
 import drain from "../../../resources/audio/drain.flac";
+import flipperDown2 from "../../../resources/audio/flipper-down-2.flac";
+import flipperDown3 from "../../../resources/audio/flipper-down-3.flac";
 import flipperDown from "../../../resources/audio/flipper-down.flac";
 import flipperHit from "../../../resources/audio/flipper-hit.flac";
 import flipperUp2 from "../../../resources/audio/flipper-up-2.flac";
 import flipperUp3 from "../../../resources/audio/flipper-up-3.flac";
+import flipperUp4 from "../../../resources/audio/flipper-up-4.flac";
+import flipperUp5 from "../../../resources/audio/flipper-up-5.flac";
+import flipperUp6 from "../../../resources/audio/flipper-up-6.flac";
+import flipperUp7 from "../../../resources/audio/flipper-up-7.flac";
+import flipperUp8 from "../../../resources/audio/flipper-up-8.flac";
 import flipperUp from "../../../resources/audio/flipper-up.flac";
 import gameOver from "../../../resources/audio/game-over.flac";
 import gameStart from "../../../resources/audio/game-start.flac";
@@ -65,10 +72,17 @@ export const SOUND_URLS = {
   defenderUp2,
   drain,
   flipperDown,
+  flipperDown2,
+  flipperDown3,
   flipperHit,
   flipperUp,
   flipperUp2,
   flipperUp3,
+  flipperUp4,
+  flipperUp5,
+  flipperUp6,
+  flipperUp7,
+  flipperUp8,
   gameOver,
   gameStart,
   gateHit,

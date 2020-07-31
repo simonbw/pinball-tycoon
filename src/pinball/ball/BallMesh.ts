@@ -5,6 +5,7 @@ import { V, V2d } from "../../core/Vector";
 import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
 import Ball from "./Ball";
+import { getGraphicsQuality } from "../controllers/GraphicsQualityController";
 
 export default class BallMesh extends BaseEntity implements Entity {
   mesh: Mesh;
@@ -47,8 +48,13 @@ export default class BallMesh extends BaseEntity implements Entity {
   onRender() {
     this.mesh.position.copy(this.ball.getPosition3());
 
-    if (this.game!.framenumber % 4 === 1) {
-      this.reflector.update();
+    switch (getGraphicsQuality()) {
+      case "medium":
+        this.reflector.update([this.game!.framenumber % 6]);
+        break;
+      case "high":
+        this.reflector.update();
+        break;
     }
   }
 }

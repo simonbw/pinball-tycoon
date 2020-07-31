@@ -17,7 +17,7 @@ export default class OverheadLight extends BaseEntity implements Entity {
   }
 
   updateQuality() {
-    this.light.castShadow = getGraphicsQuality() === "high";
+    // this.light.castShadow = getGraphicsQuality() === "high";
   }
 
   handlers = {

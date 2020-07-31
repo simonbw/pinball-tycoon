@@ -71,8 +71,8 @@ export default class GraphicsQualityController extends BaseEntity
 
   setHigh() {
     CURRENT_QUALITY = "high";
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    // this.renderer.shadowMap.enabled = true;
+    // this.renderer.shadowMap.type = PCFSoftShadowMap;
     this.renderer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.composer.setPixelRatio(window.devicePixelRatio ?? 1);
     this.game!.dispatch(graphicsQualityEvent("high"));

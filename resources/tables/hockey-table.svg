@@ -40,7 +40,7 @@
       <title>Right Slingshot</title>
     </line>
   </g>
-  <g transform="matrix(0.751825, -0.42459, 0.482239, 0.853904, -16.000599, 24.0259)" style="">
+  <g transform="matrix(0.74921, -0.429186, 0.48746, 0.850935, -16.005798, 24.059275)" style="" data-spit-offset="10">
     <title>Goal Zone</title>
     <rect width="10" height="5" style="fill: rgb(255, 0, 0);" class="goal"/>
     <line style="stroke-width: 0.25px; stroke: rgb(255, 238, 0);" x1="0" y1="7" x2="2.5" y2="7" class="defender"/>
@@ -132,10 +132,10 @@
   <rect x="13.774" y="81.627" width="4.018" height="5.02" style="fill: rgb(216, 216, 216);" transform="matrix(0.520702, 0.853739, -0.853739, 0.520702, 84.273026, -1.947744)" class="scoop"/>
   <circle style="fill: rgb(59, 230, 230);" cx="18.479" cy="39.535" r="1.6" class="bumper"/>
   <g>
-    <use width="2" height="2" transform="matrix(0.9938610792160034, -0.11063700914382935, 0.11063700914382935, 0.9938610792160034, -22.680761337280273, 30.095563888549805)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
-    <use width="2" height="2" transform="matrix(0.5000010132789612, 0.8660269975662231, -0.8660269975662231, 0.5000010132789612, 17.34326934814453, 56.4162712097168)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.9938611388206482, -0.11063701659440994, 0.11063701659440994, 0.9938611388206482, -22.680761337280273, 30.095563888549805)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.5000010132789612, 0.8660270571708679, -0.8660270571708679, 0.5000010132789612, 17.34326934814453, 56.4162712097168)" id="use-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.7244240045547485, 0.6893550157546997, -0.6893550157546997, 0.7244240045547485, 15.66988754272461, 41.198455810546875)" id="right-loop-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
-    <use width="2" height="2" transform="matrix(0.9468360543251038, -0.5317369103431702, 0.43956300616264343, 0.7827029228210449, -8.686561584472656, 30.79273796081543)" id="goal-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.9468361139297485, -0.5317368507385254, 0.43956300616264343, 0.7827028632164001, -8.686561584472656, 30.79273796081543)" id="goal-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 52.165531158447266)" id="use-2" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 55.234703063964844)" id="use-3" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.008588000200688839, -0.37337398529052734, 0.37337398529052734, 0.008588000200688839, -18.72756576538086, 58.227230072021484)" id="use-4" style="fill: rgb(140, 0, 255);" xlink:href="#target-lamp-symbol"/>

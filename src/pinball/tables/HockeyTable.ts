@@ -31,8 +31,6 @@ const INCLINE = degToRad(5.5);
 const BALL_DROP = V(26, 92);
 
 export default class HockeyTable extends Table implements Entity {
-  spotlights: Light[] = [];
-
   constructor() {
     super(BOUNDS, INCLINE, BALL_DROP);
 
@@ -171,14 +169,6 @@ export default class HockeyTable extends Table implements Entity {
       // new BallSpotlight(this, this.center.x, this.bounds.bottom, -10, 200)
       ();
   }
-
-  handlers = {
-    setQuality: () => {
-      for (const light of this.spotlights) {
-        light.castShadow = getGraphicsQuality() === "high";
-      }
-    },
-  };
 }
 
 /** Create a bezier point */

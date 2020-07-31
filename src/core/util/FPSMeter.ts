@@ -2,6 +2,7 @@ import BaseEntity from "../entity/BaseEntity";
 import Entity from "../entity/Entity";
 import Game from "../Game";
 
+const SMOOTHING = 0.95;
 export default class FPSMeter extends BaseEntity implements Entity {
   persistent = true;
   lastUpdate: number;
@@ -20,7 +21,8 @@ export default class FPSMeter extends BaseEntity implements Entity {
   onRender() {
     const now = performance.now();
     const duration = now - this.lastUpdate;
-    this.averageDuration = 0.9 * this.averageDuration + 0.1 * duration;
+    this.averageDuration =
+      SMOOTHING * this.averageDuration + (1.0 - SMOOTHING) * duration;
     this.lastUpdate = now;
   }
 

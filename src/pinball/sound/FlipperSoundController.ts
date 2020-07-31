@@ -27,9 +27,8 @@ export default class FlipperSoundController extends BaseEntity
 
   async engage() {
     this.buzzSound.gain = BUZZ_GAIN;
-    const soundName = soundIsLoaded("flipperUp") ? "flipperUp" : "flipperUp2";
     this.addChild(
-      new PositionalSound(soundName, this.flipper.getPosition(), {
+      new PositionalSound("flipperUp4", this.flipper.getPosition(), {
         gain: this.getGain(),
       })
     );
@@ -37,11 +36,8 @@ export default class FlipperSoundController extends BaseEntity
 
   async disengage() {
     this.buzzSound.gain = 0.0;
-    const soundName = soundIsLoaded("flipperDown")
-      ? "flipperDown"
-      : "flipperUp2";
     this.addChild(
-      new PositionalSound(soundName, this.flipper.getPosition(), {
+      new PositionalSound("flipperDown3", this.flipper.getPosition(), {
         gain: this.getGain(),
       })
     );

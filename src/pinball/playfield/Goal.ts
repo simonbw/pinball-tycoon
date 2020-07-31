@@ -17,6 +17,12 @@ import { degToRad } from "../../core/util/MathUtil";
 const CAPTURE_DURATION = 1.5;
 const WALL_WIDTH = 0.5;
 
+interface GoalOptions {
+  angle?: number;
+  width?: number;
+  depth?: number;
+  spitAngleOffset?: number;
+}
 export default class Goal extends BaseEntity
   implements Entity, WithBallCollisionInfo {
   sensorShape: Shape;
@@ -30,7 +36,8 @@ export default class Goal extends BaseEntity
     position: V2d,
     angle: number = 0,
     width = 8.0,
-    depth: number = 5.0
+    depth: number = 5.0,
+    spitAngleOffset: number = 0
   ) {
     super();
 
@@ -64,7 +71,10 @@ export default class Goal extends BaseEntity
         width - WALL_WIDTH,
         depth * 0.5,
         CAPTURE_DURATION,
-        () => V(0, 500).irotate(this.body!.angle + rNormal(0, degToRad(0))),
+        () =>
+          V(0, 500).irotate(
+            this.body!.angle + spitAngleOffset + rNormal(0, degToRad(0))
+          ),
         () => {
           this.goalCount += 1;
           this.game!.dispatch(scoreEvent(25000 * Math.min(this.goalCount, 4)));

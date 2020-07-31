@@ -1,10 +1,4 @@
-import {
-  Body,
-  Capsule,
-  RevoluteConstraint,
-  RotationalSpring,
-  Convex,
-} from "p2";
+import { Body, Convex, RevoluteConstraint, RotationalSpring } from "p2";
 import {
   ExtrudeBufferGeometry,
   Mesh,
@@ -15,19 +9,16 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { CustomHandlersMap } from "../../core/entity/GameEventHandler";
 import Game from "../../core/Game";
-import DampedRotationalSpring from "../../core/physics/DampedRotationalSpring";
+import RotationalSolenoidSpring from "../../core/physics/RotationalSolenoidSpring";
 import { angleDelta, degToRad, reflectX } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import {
   BallCollisionInfo,
   WithBallCollisionInfo,
 } from "../ball/BallCollisionInfo";
-import { getBinding } from "../ui/KeyboardBindings";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./P2Materials";
-import { TEXTURES } from "../graphics/textures";
 import FlipperSoundController from "../sound/FlipperSoundController";
-import RotationalSolenoidSpring from "../../core/physics/RotationalSolenoidSpring";
+import { P2Materials } from "./P2Materials";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000cc,
@@ -38,7 +29,7 @@ const MATERIAL = new MeshStandardMaterial({
 const DEFAULT_DOWN_ANGLE = degToRad(30);
 const DEFAULT_SWING = degToRad(60);
 const UP_STIFFNESS = 150;
-const DOWN_STIFFNESS = 35;
+const DOWN_STIFFNESS = 45;
 const DAMPING = 12.5;
 const OVEREXTENSION_AMOUNT = degToRad(3);
 const MASS = 2.8;

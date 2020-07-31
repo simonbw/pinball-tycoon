@@ -1,16 +1,17 @@
 import { CubeCamera, Object3D, WebGLCubeRenderTarget, Vector3 } from "three";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
+import FastCubeCamera from "./FastCubeCamera";
 
 export default class Reflector extends BaseEntity implements Entity {
-  cubeCamera: CubeCamera;
+  cubeCamera: FastCubeCamera;
   public parentMesh?: Object3D;
   public getCameraPosition?: () => Vector3;
 
   constructor(quality: number = 32, distance: number = 10) {
     super();
     const renderTarget = new WebGLCubeRenderTarget(quality);
-    this.cubeCamera = new CubeCamera(0.1, distance, renderTarget);
+    this.cubeCamera = new FastCubeCamera(0.25, distance, renderTarget);
     this.object3ds.push(this.cubeCamera);
     this.cubeCamera.up.set(0, 0, -1);
     this.disposeables.push(renderTarget);
@@ -30,7 +31,7 @@ export default class Reflector extends BaseEntity implements Entity {
     return this.cubeCamera.renderTarget.texture;
   }
 
-  update() {
+  update(sides?: number[]) {
     if (this.parentMesh) {
       const oldVisible = this.parentMesh.visible;
       this.parentMesh.visible = false;
@@ -40,7 +41,7 @@ export default class Reflector extends BaseEntity implements Entity {
       } else {
         this.cubeCamera.position.copy(this.parentMesh.position);
       }
-      this.cubeCamera.update(threeRenderer, scene);
+      this.cubeCamera.update(threeRenderer, scene, sides);
       this.parentMesh.visible = oldVisible;
     }
   }

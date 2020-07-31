@@ -95,7 +95,7 @@ export default class Spinner extends BaseEntity
     this.addChildren(
       new PositionalSound("pop1", this.getPosition(), {
         speed: 1.6 + speed * 0.023,
-        gain: 0.5,
+        gain: 0.25,
       }),
       new PositionalSound("spinner2", this.getPosition(), {
         speed: 0.9 + speed * 0.033,
