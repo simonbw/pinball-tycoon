@@ -7,8 +7,14 @@ import {
   Shape,
   ContactMaterial,
   Utils,
+  RaycastResult,
+  Ray,
+  WorldOptions,
 } from "p2";
 import { ContactInfo } from "../ContactList";
+import CustomBroadphase from "./CustomBroadphase";
+import CustomNarrowphase from "./CustomNarrowphase";
+import CustomSolver from "./CustomSolver";
 
 interface WorldPrivate extends World {
   internalStep: (dt: number) => void;
@@ -39,11 +45,27 @@ interface PrivateOverlapKeeper extends OverlapKeeper {
 
 export default class CustomWorld extends World {
   // Adding types that are missing
+  broadphase!: CustomBroadphase;
+  solver!: CustomSolver;
   overlapKeeper!: PrivateOverlapKeeper;
   disabledBodyCollisionPairs!: Body[];
 
+  // Actual stuff that we're keeping track of now
   dynamicBodies = new Set<Body>();
   kinematicBodies = new Set<Body>();
+
+  constructor(options: WorldOptions) {
+    super({
+      broadphase: new CustomBroadphase(),
+      islandSplit: false,
+      solver: new CustomSolver(),
+      ...options,
+    });
+    this.solver.setWorld(this);
+    this.applyGravity = false;
+    this.applyDamping = false;
+    this.narrowphase = new CustomNarrowphase();
+  }
 
   addBody(body: Body) {
     super.addBody.call(this, body);
@@ -55,6 +77,22 @@ export default class CustomWorld extends World {
     }
   }
 
+  removeBody(body: Body) {
+    super.removeBody.call(this, body);
+
+    this.dynamicBodies.delete(body);
+    this.kinematicBodies.delete(body);
+  }
+
+  raycast(result: RaycastResult, ray: Ray) {
+    // Get all bodies within the ray AABB
+    const bodies = this.broadphase.rayQuery(ray);
+    ray.intersectBodies(result, bodies);
+    return result.hasHit();
+  }
+
+  // TODO: Implement better hitTest
+
   internalStep(dt: number) {
     this.stepping = true;
 
@@ -62,35 +100,30 @@ export default class CustomWorld extends World {
 
     this.lastTimeStep = dt;
 
-    this.doEarlyStuff(dt);
-    const broadphaseResult = this.doBroadphaseStuff();
-    this.doNarrowphaseStuff(broadphaseResult);
-    this.doWakeupStuff();
-    this.doMiddleEventStuff();
-    this.doConstraintStuff(dt);
-    this.doIntegrateStuff(dt);
-    this.doImpactEvents();
-    this.doSleepStuff(dt);
+    this.stepPreCollision(dt);
+    const broadphaseResult = this.stepBroadphase();
+    this.stepNarrowphase(broadphaseResult);
+    this.stepWakeup();
+    this.stepContactEvents();
+    this.stepConstraints(dt);
+    this.stepIntegrate(dt);
+    this.stepImpactEvents();
+    this.stepSleep(dt);
 
     this.stepping = false;
 
-    this.doCleanupStuff();
+    this.stepCleanup();
 
     this.emit(this.postStepEvent);
   }
-
-  doEarlyStuff(dt: number) {
-    const Nsprings = this.springs.length;
-    const springs = this.springs;
-    const bodies = this.bodies;
+  //#region internalStep
+  stepPreCollision(dt: number) {
     const g = this.gravity;
-    const Nbodies = this.bodies.length;
     const mg = step_mg;
-    const add = vec2.add;
 
     // Update approximate friction gravity.
     if (this.useWorldGravityAsFrictionGravity) {
-      var gravityLen = vec2.length(this.gravity);
+      const gravityLen = vec2.length(this.gravity);
       if (!(gravityLen === 0 && this.useFrictionGravityOnZeroGravity)) {
         // Nonzero gravity. Use it.
         this.frictionGravity = gravityLen;
@@ -99,37 +132,30 @@ export default class CustomWorld extends World {
 
     // Add gravity to bodies
     if (this.applyGravity) {
-      for (var i = 0; i !== Nbodies; i++) {
-        var b = bodies[i],
-          fi = b.force;
-        if (b.type !== Body.DYNAMIC || b.sleepState === Body.SLEEPING) {
-          continue;
+      for (const body of this.dynamicBodies) {
+        if (body.sleepState !== Body.SLEEPING) {
+          vec2.scale(mg, g, body.mass * body.gravityScale);
+          vec2.add(body.force, body.force, mg);
         }
-        vec2.scale(mg, g, b.mass * b.gravityScale); // F=m*g
-        add(fi, fi, mg);
       }
     }
 
     // Add spring forces
     if (this.applySpringForces) {
-      for (var i = 0; i !== Nsprings; i++) {
-        var s = springs[i];
+      for (const s of this.springs) {
         s.applyForce();
       }
     }
 
     // Add damping
     if (this.applyDamping) {
-      for (var i = 0; i !== Nbodies; i++) {
-        var b = bodies[i];
-        if (b.type === Body.DYNAMIC) {
-          b.applyDamping(dt);
-        }
+      for (const body of this.dynamicBodies) {
+        body.applyDamping(dt);
       }
     }
   }
 
-  doBroadphaseStuff() {
+  stepBroadphase() {
     // Broadphase
     var result = this.broadphase.getCollisionPairs(this);
 
@@ -172,7 +198,7 @@ export default class CustomWorld extends World {
     return result;
   }
 
-  doNarrowphaseStuff(broadphaseResult: Body[]) {
+  stepNarrowphase(broadphaseResult: Body[]) {
     const np = this.narrowphase;
 
     // Narrowphase
@@ -223,12 +249,9 @@ export default class CustomWorld extends World {
     }
   }
 
-  doWakeupStuff() {
-    const bodies = this.bodies;
-    const Nbodies = bodies.length;
+  stepWakeup() {
     // Wake up bodies
-    for (var i = 0; i !== Nbodies; i++) {
-      var body = bodies[i];
+    for (const body of this.dynamicBodies) {
       if ((body as any)._wakeUpAfterNarrowphase) {
         body.wakeUp();
         (body as any)._wakeUpAfterNarrowphase = false;
@@ -236,16 +259,16 @@ export default class CustomWorld extends World {
     }
   }
 
-  doMiddleEventStuff() {
+  stepContactEvents() {
     const np = this.narrowphase;
 
     // Emit end overlap events
     if (this.has("endContact", undefined as any)) {
       this.overlapKeeper.getEndOverlaps(endOverlaps);
-      var e = this.endContactEvent;
-      var l = endOverlaps.length;
-      while (l--) {
-        var data = endOverlaps[l];
+      const e = this.endContactEvent;
+      let i = endOverlaps.length;
+      while (i--) {
+        var data = endOverlaps[i];
         e.shapeA = data.shapeA;
         e.shapeB = data.shapeB;
         e.bodyA = data.bodyA;
@@ -262,35 +285,33 @@ export default class CustomWorld extends World {
     preSolveEvent.contactEquations = preSolveEvent.frictionEquations = [];
   }
 
-  doConstraintStuff(dt: number) {
+  stepConstraints(dt: number) {
     const solver = this.solver;
     const np = this.narrowphase;
-    const constraints = this.constraints;
     const islandManager = this.islandManager;
 
     // update constraint equations
-    var Nconstraints = constraints.length;
-    for (i = 0; i !== Nconstraints; i++) {
-      constraints[i].update();
+    for (const constraint of this.constraints) {
+      constraint.update();
     }
 
     if (
       np.contactEquations.length ||
       np.frictionEquations.length ||
-      Nconstraints
+      this.constraints.length
     ) {
       if (this.islandSplit) {
         // Split into islands
         islandManager.equations.length = 0;
         Utils.appendArray(islandManager.equations, np.contactEquations);
         Utils.appendArray(islandManager.equations, np.frictionEquations);
-        for (i = 0; i !== Nconstraints; i++) {
-          Utils.appendArray(islandManager.equations, constraints[i].equations);
+        for (const constraint of this.constraints) {
+          Utils.appendArray(islandManager.equations, constraint.equations);
         }
+        for (let i = 0; i < this.constraints.length; i++) {}
         islandManager.split(this);
 
-        for (var i = 0; i !== islandManager.islands.length; i++) {
-          var island = islandManager.islands[i];
+        for (const island of islandManager.islands) {
           if (island.equations.length) {
             solver.solveIsland(dt, island);
           }
@@ -301,8 +322,8 @@ export default class CustomWorld extends World {
         solver.addEquations(np.frictionEquations);
 
         // Add user-defined constraint equations
-        for (i = 0; i !== Nconstraints; i++) {
-          solver.addEquations(constraints[i].equations);
+        for (const constraint of this.constraints) {
+          solver.addEquations(constraint.equations);
         }
 
         if (this.solveConstraints) {
@@ -314,34 +335,23 @@ export default class CustomWorld extends World {
     }
   }
 
-  doIntegrateStuff(dt: number) {
+  stepIntegrate(dt: number) {
     const bodies = this.bodies;
     const Nbodies = this.bodies.length;
 
     // Step forward
     for (const body of this.kinematicBodies) {
       body.integrate(dt);
+      body.setZeroForce();
     }
 
     for (const body of this.dynamicBodies) {
       body.integrate(dt);
-    }
-
-    // for (var i = 0; i !== Nbodies; i++) {
-    //   var body = bodies[i];
-
-    //   // if(body.sleepState !== Body.SLEEPING && body.type !== Body.STATIC){
-    //   body.integrate(dt);
-    //   // }
-    // }
-
-    // Reset force
-    for (var i = 0; i !== Nbodies; i++) {
-      bodies[i].setZeroForce();
+      body.setZeroForce();
     }
   }
 
-  doImpactEvents() {
+  stepImpactEvents() {
     const np = this.narrowphase;
 
     // Emit impact event
@@ -364,7 +374,7 @@ export default class CustomWorld extends World {
     }
   }
 
-  doSleepStuff(dt: number) {
+  stepSleep(dt: number) {
     const bodies = this.bodies;
     const Nbodies = bodies.length;
     // Sleeping update
@@ -388,7 +398,7 @@ export default class CustomWorld extends World {
     }
   }
 
-  doCleanupStuff() {
+  stepCleanup() {
     // Remove bodies that are scheduled for removal
     var bodiesToBeRemoved = ((this as unknown) as WorldPrivate)
       .bodiesToBeRemoved;
@@ -397,4 +407,5 @@ export default class CustomWorld extends World {
     }
     bodiesToBeRemoved.length = 0;
   }
+  //#endregion internalStep
 }

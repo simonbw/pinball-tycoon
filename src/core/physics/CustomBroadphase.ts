@@ -1,10 +1,9 @@
-import { Body, SAPBroadphase, World, AABB, Broadphase } from "p2";
-import Ball from "../../pinball/ball/Ball";
-import { WithOwner } from "../entity/Entity";
+import { AABB, Body, Broadphase, SAPBroadphase, World, Ray } from "p2";
 import Grid from "../util/Grid";
 
 const CUSTOM_BROADPHASE_TYPE = 3;
-const HUGE_LIMIT = 500;
+const HUGE_LIMIT = 200;
+const DEFAULT_CELL_SIZE = 6;
 const HUGE: [number, number][] = [];
 
 export default class CustomBroadphase extends SAPBroadphase {
@@ -13,9 +12,7 @@ export default class CustomBroadphase extends SAPBroadphase {
   hugeBodies: Set<Body> = new Set();
   spatialHash = new Grid<Set<Body>>(); // TODO: This could be faster with a single array
 
-  cellSize = 4;
-
-  constructor() {
+  constructor(private cellSize: number = DEFAULT_CELL_SIZE) {
     super(CUSTOM_BROADPHASE_TYPE);
   }
 
@@ -91,12 +88,6 @@ export default class CustomBroadphase extends SAPBroadphase {
           result.push(dBody, other);
         }
       }
-
-      for (const hugeBody of this.hugeBodies) {
-        if (hugeBody.getAABB().overlaps(dBody.getAABB())) {
-          result.push(dBody, hugeBody);
-        }
-      }
     }
 
     for (const kBody of this.kinematicBodies) {
@@ -107,14 +98,18 @@ export default class CustomBroadphase extends SAPBroadphase {
   }
 
   getCell(cell: [number, number]): Set<Body> {
-    if (!this.spatialHash.has(cell)) {
-      this.spatialHash.set(cell, new Set());
+    const storedSet = this.spatialHash.get(cell);
+    if (storedSet) {
+      return storedSet;
+    } else {
+      const newSet = new Set<Body>();
+      this.spatialHash.set(cell, newSet);
+      return newSet;
     }
-    return this.spatialHash.get(cell)!;
   }
 
   /** Returns the cells that overlap the aabb. Returns HUGE if the aabb is "huge". */
-  aabbToCells(aabb: AABB): [number, number][] {
+  aabbToCells(aabb: AABB, checkHuge = true): [number, number][] {
     const result: [number, number][] = [];
 
     const lowX = Math.floor(aabb.lowerBound[0] / this.cellSize);
@@ -124,11 +119,12 @@ export default class CustomBroadphase extends SAPBroadphase {
 
     // Check for huge
     if (
-      !isFinite(lowX) ||
-      !isFinite(lowY) ||
-      !isFinite(highX) ||
-      !isFinite(highY) ||
-      Math.abs(highX - lowX) * Math.abs(highY - lowY) > HUGE_LIMIT
+      checkHuge &&
+      (!isFinite(lowX) ||
+        !isFinite(lowY) ||
+        !isFinite(highX) ||
+        !isFinite(highY) ||
+        Math.abs(highX - lowX) * Math.abs(highY - lowY) > HUGE_LIMIT)
     ) {
       return HUGE;
     }
@@ -145,11 +141,54 @@ export default class CustomBroadphase extends SAPBroadphase {
   aabbQuery(_: World, aabb: AABB, result?: Body[]): Body[] {
     result = result ?? [];
 
-    const cells = this.aabbToCells(aabb);
-
-    for (const cell of cells) {
+    for (const cell of this.aabbToCells(aabb, false)) {
       for (const body of this.getCell(cell)) {
         if (body.getAABB().overlaps(aabb) && result.indexOf(body) < 0) {
+          result.push(body);
+        }
+      }
+    }
+
+    for (const hugeBody of this.hugeBodies) {
+      if (aabb.overlaps(hugeBody.getAABB())) {
+        result.push(hugeBody);
+      }
+    }
+
+    return result;
+  }
+
+  rayQuery(ray: Ray): Body[] {
+    const result: Body[] = [];
+
+    // See https://www.redblobgames.com/grids/line-drawing.html
+    const x1 = ray.from[0] / this.cellSize;
+    const y1 = ray.from[1] / this.cellSize;
+    const x2 = ray.to[0] / this.cellSize;
+    const y2 = ray.to[1] / this.cellSize;
+
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const xSteps = Math.ceil(Math.abs(dx));
+    const ySteps = Math.ceil(Math.abs(dy));
+    const signX = dx > 0 ? 1 : -1;
+    const signY = dy > 0 ? 1 : -1;
+
+    let cellX = Math.floor(x1);
+    let cellY = Math.floor(y1);
+    for (let ix = 0, iy = 0; ix < xSteps || iy < ySteps; ) {
+      if ((0.5 + ix) / xSteps < (0.5 + iy) / ySteps) {
+        // next step is horizontal
+        cellX += signX;
+        ix++;
+      } else {
+        // next step is vertical
+        cellY += signY;
+        iy++;
+      }
+
+      for (const body of this.getCell([cellX, cellY])) {
+        if (result.indexOf(body) < 0) {
           result.push(body);
         }
       }

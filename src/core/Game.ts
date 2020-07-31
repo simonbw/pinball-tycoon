@@ -62,13 +62,7 @@ export default class Game {
   /**
    * Create a new Game.
    */
-  constructor({
-    audio,
-    tickIterations = 5,
-    framerate = 60,
-    broadphase,
-    narrowphase,
-  }: GameOptions) {
+  constructor({ audio, tickIterations = 5, framerate = 60 }: GameOptions) {
     this.entities = new EntityList();
     this.entitiesToRemove = new Set();
 
@@ -78,12 +72,7 @@ export default class Game {
 
     this.tickIterations = tickIterations;
     this.framerate = framerate;
-    this.world = new CustomWorld({ gravity: [0, 0], broadphase });
-    if (narrowphase) {
-      this.world.narrowphase = narrowphase;
-    }
-    this.world.applyGravity = false;
-    this.world.applyDamping = false;
+    this.world = new CustomWorld({ gravity: [0, 0] });
     this.world.on("beginContact", this.beginContact, null);
     this.world.on("endContact", this.endContact, null);
     this.world.on("impact", this.impact, null);

@@ -25,8 +25,6 @@ export async function main() {
 
   const game = new Game({
     tickIterations: 22,
-    broadphase: new CustomBroadphase(),
-    narrowphase: new CustomNarrowphase(),
   });
 
   for (const contactMaterial of ContactMaterials) {

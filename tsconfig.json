@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "lib": ["es2018", "dom"],
     "noEmit": true,
-    "target": "es5",
+    "target": "ES5",
     "downlevelIteration": true,
     "strict": true
   }

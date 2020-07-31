@@ -23,10 +23,13 @@ export default class TiltMeter extends BaseEntity implements Entity {
   }
 
   onTick(dt: number) {
-    this.velocity.iadd(this.position.mul(GRAVITY * dt));
+    const g = GRAVITY * dt;
+    this.velocity[0] += this.position[0] * g;
+    this.velocity[1] += this.position[1] * g;
     this.velocity.imul(1.0 - FRICTION * dt);
 
-    this.position.iadd(this.velocity.mul(dt));
+    this.position[0] += this.velocity[0] * dt;
+    this.position[1] += this.velocity[1] * dt;
 
     const [x, y] = this.position;
     const [lx, ly] = this.limits;
