@@ -37,7 +37,6 @@ export default class Table extends BaseEntity implements Entity {
     );
 
     if (process.env.NODE_ENV === "development") {
-      console.log("adding magic");
       this.addChild(new MagicBallController());
     }
   }

@@ -295,7 +295,7 @@ export function getExtractors() {
         const width = getNumberAttribute(node, "width") ?? 0;
         const height = getNumberAttribute(node, "height") ?? 0;
         const angle = getTransformAngle(m);
-        const spitAngleOffset = getAngleAttribute(node, "data-spit-offset");
+        const releaseAngleOffset = getAngleAttribute(node, "data-spit-offset");
         const x = left + width / 2;
         const y = top + height / 2;
         // TODO: transform width & height
@@ -305,7 +305,7 @@ export function getExtractors() {
           angle,
           width * w,
           height * h,
-          spitAngleOffset
+          releaseAngleOffset
         );
 
         const parent = nodeToEntity.get(node.parentElement!);

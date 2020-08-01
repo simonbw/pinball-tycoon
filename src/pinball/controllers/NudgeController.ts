@@ -31,10 +31,10 @@ export default class NudgeController extends BaseEntity implements Entity {
     const power = 55;
     switch (key) {
       case getBinding("NUDGE_UP_LEFT"):
-        this.nudge(V(-power, power));
+        this.nudge(V(power, power));
         break;
       case getBinding("NUDGE_UP_RIGHT"):
-        this.nudge(V(power, power));
+        this.nudge(V(-power, power));
         break;
     }
   }

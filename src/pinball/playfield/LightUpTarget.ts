@@ -47,7 +47,7 @@ export default class LightUpTarget extends BaseEntity
     this.p2Shape = new Box({ width: width, height: depth });
     this.p2Shape.collisionGroup = CollisionGroups.Table;
     this.p2Shape.collisionMask = CollisionGroups.Ball;
-    this.p2Shape.material = P2Materials.rubber;
+    this.p2Shape.material = P2Materials.plastic;
     this.body.addShape(this.p2Shape);
 
     this.material = new MeshPhongMaterial({ color });

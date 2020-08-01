@@ -22,7 +22,7 @@ interface GoalOptions {
   angle?: number;
   width?: number;
   depth?: number;
-  spitAngleOffset?: number;
+  releaseAngleOffset?: number;
 }
 export default class Goal extends BaseEntity
   implements Entity, WithBallCollisionInfo {
@@ -65,7 +65,7 @@ export default class Goal extends BaseEntity
 
     this.addChild(new GoalMesh(position, angle, width, depth));
 
-    const releaseAngle = angle + releaseAngleOffset;
+    const releaseAngle = angle - releaseAngleOffset;
     this.addChild(
       new Scoop(
         position.add(V(0, -0.2 * depth).irotate(angle)),
@@ -73,7 +73,7 @@ export default class Goal extends BaseEntity
         width - WALL_WIDTH,
         depth * 0.5,
         CAPTURE_DURATION,
-        () => V(0, 500).irotate(releaseAngle + rNormal(0, degToRad(0))),
+        () => V(0, 450).irotate(releaseAngle + rNormal(0, degToRad(1.5))),
         () => this.onScoop(),
         () => this.onRelease()
       )

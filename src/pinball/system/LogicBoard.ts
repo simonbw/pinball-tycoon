@@ -159,7 +159,6 @@ export default class LogicBoard extends BaseEntity implements Entity {
     },
 
     tilt: ({ count }: TiltEvent) => {
-      console.log("tilt!");
       if (count >= 3) {
         this.score = 0;
         this.game!.dispatch(updateScoreEvent(this.score));

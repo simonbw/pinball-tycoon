@@ -73,7 +73,7 @@ export default class TextOverlay extends BaseEntity implements Entity {
 
     // Render the text
     this.ctx.fillStyle = "#ff0";
-    this.ctx.font = "24px sans-serif";
+    this.ctx.font = "20px sans-serif";
     this.ctx.textBaseline = "middle";
     this.ctx.textAlign = this.align;
     if (this.align === "left") {

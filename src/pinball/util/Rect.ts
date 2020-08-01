@@ -71,6 +71,22 @@ export class Rect {
     return new Rect(top, top + height, left, left + width);
   }
 
+  static fromTopRight(
+    [right, top]: [number, number],
+    width: number,
+    height: number
+  ): Rect {
+    return new Rect(top, top + height, right - width, right);
+  }
+
+  static fromBottomLeft(
+    [left, bottom]: [number, number],
+    width: number,
+    height: number
+  ): Rect {
+    return new Rect(bottom - height, bottom, left, left + width);
+  }
+
   static fromBottomRight(
     [right, bottom]: [number, number],
     width: number,

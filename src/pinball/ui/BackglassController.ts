@@ -80,7 +80,7 @@ export default class BackglassController extends BaseEntity implements Entity {
   async flashText(text: string, duration: number = 3.0) {
     this.clearTimers("flashText");
     this.textToFlash = text;
-    await this.wait(3, undefined, "flashText");
+    await this.wait(duration, undefined, "flashText");
     this.textToFlash = undefined;
   }
 
@@ -95,7 +95,7 @@ export default class BackglassController extends BaseEntity implements Entity {
 
     newObjective: ({ objective }: NewObjectiveEvent) => {
       this.currentObjective = objective;
-      this.flashText("NEW OBJECTIVE");
+      this.flashText("NEW OBJECTIVE", 2.0);
     },
 
     ballSaved: () => {
@@ -103,10 +103,10 @@ export default class BackglassController extends BaseEntity implements Entity {
     },
 
     tilt: ({ count }: TiltEvent) => {
-      if (count < 2) {
-        this.flashText("TILT WARNING", 2);
+      if (count >= 3) {
+        this.flashText("TILT!", 4);
       } else {
-        this.flashText("TILT!", 5);
+        this.flashText("WARNING!", 1);
       }
     },
   };

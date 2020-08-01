@@ -175,6 +175,7 @@ export default class Lamp extends BaseEntity implements Entity {
   }
 
   stopFlashing() {
+    this.stopTransitions();
     this.clearTimers("flash");
   }
 

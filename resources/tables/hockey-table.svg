@@ -44,9 +44,9 @@
     </line>
     <path d="M 23.933 57.341 L 19.321 54.094 L 19.321 67.565 L 23.933 64.494" style="stroke: rgb(0, 0, 0); fill: none;" class="wall" transform="matrix(-1, 0, 0, -1, 43.254, 121.659004)"/>
   </g>
-  <g transform="matrix(0.74921, -0.429186, 0.48746, 0.850935, -16.005798, 24.059275)" style="" data-spit-offset="10" class="goal-controller">
+  <g transform="matrix(0.74921, -0.429186, 0.48746, 0.850935, -16.005798, 24.059275)" style="" class="goal-controller">
     <title>Goal Zone</title>
-    <rect width="10" height="5" style="fill: rgb(255, 0, 0);" class="goal"/>
+    <rect width="10" height="5" style="fill: rgb(255, 0, 0);" class="goal" data-spit-offset="-14"/>
     <line style="stroke-width: 0.25px; stroke: rgb(255, 238, 0);" x1="0" y1="7" x2="2.5" y2="7" class="defender"/>
     <line style="stroke-width: 0.25px; stroke: rgb(255, 238, 0);" x1="3.75" y1="7" x2="6.25" y2="7" class="defender"/>
     <line style="stroke-width: 0.25px; stroke: rgb(255, 238, 0);" x1="7.5" y1="7" x2="10" y2="7" class="defender"/>
@@ -133,7 +133,7 @@
   </circle>
   <circle style="fill: rgb(216, 216, 216);" cx="-18.85" cy="32.295" r="0.3" class="post" transform="matrix(0.999366, -0.035611, 0.035611, 0.999366, -0.824053, -0.337601)"/>
   <circle style="fill: rgb(216, 216, 216);" cx="1.951" cy="25.406" r="0.3" class="post" transform="matrix(0.999366, -0.035611, 0.035611, 0.999366, -0.824052, -0.337592)"/>
-  <rect x="13.774" y="81.627" width="4.018" height="5.02" style="fill: rgb(216, 216, 216);" transform="matrix(0.295922, 0.955212, -0.955212, 0.295922, 96.358398, 15.363011)" class="scoop" id="side-scoop">
+  <rect x="13.774" y="81.627" width="4.018" height="5.02" style="fill: rgb(216, 216, 216);" transform="matrix(0.417564, 0.908647, -0.908647, 0.417564, 90.52066, 5.86325)" class="scoop" id="side-scoop">
     <title>Lower Scoop</title>
   </rect>
   <rect x="-1" y="72" width="2" height="5" style="fill: rgb(170, 255, 170);" class="slow-mo-lamps" id="slow-mo-lamps"/>
@@ -152,7 +152,7 @@
   </circle>
   <g id="target-lamps">
     <title>Target Lamps</title>
-    <use width="2" height="2" transform="matrix(0.9938613176345825, -0.11063703894615173, 0.11063703894615173, 0.9938613176345825, -22.680761337280273, 30.095563888549805)" id="left-outer-ramp-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="2" height="2" transform="matrix(0.9938613176345825, -0.11063703894615173, 0.11063703894615173, 0.9938613176345825, -22.680761337280273, 30.095563888549805)" id="spinner-target-lamp" style="fill: rgb(255, 187, 0);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.5000010132789612, 0.8660270571708679, -0.8660270571708679, 0.5000010132789612, 17.34326934814453, 56.4162712097168)" id="scoop-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="1.8" height="1.8" transform="matrix(0.7244240045547485, 0.6893550157546997, -0.6893550157546997, 0.7244240045547485, 15.66988754272461, 41.198455810546875)" id="pass-bumper-target-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="2" height="2" transform="matrix(0.946836, -0.531737, 0.439563, 0.782703, -8.399378, 30.683056)" id="goal-target-lamp" style="fill: rgb(255, 0, 0);" xlink:href="#target-lamp-symbol"/>
@@ -162,8 +162,8 @@
     <use width="1.8" height="1.8" transform="matrix(0.851255, 0.524752, -0.524752, 0.851255, 12.340837, 28.416559)" id="bumper-target-lamp-1" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol"/>
     <use width="1.8" height="1.8" transform="matrix(0.996708, 0.0811, -0.0811, 0.996708, 7.013271, 25.793505)" id="bumper-target-lamp-2" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol" bx:origin="-0.262 0.518"/>
     <use width="1.8" height="1.8" transform="matrix(0.162677, 0.986682, -0.986682, 0.162677, -6.082778, 9.852618)" id="top-bumper-target-lamp" style="fill: rgb(0, 0, 255);" xlink:href="#target-lamp-symbol" bx:origin="0.532 0.543"/>
-    <use width="1.5" height="1.5" transform="matrix(0.999947, 0.01038, -0.01038, 0.999947, -19.042175, 73.848427)" id="inlane-target-lamp-1" style="fill: rgb(0, 255, 255);" xlink:href="#target-lamp-symbol"/>
-    <use width="1.5" height="1.5" transform="matrix(0.999947, 0.01038, -0.01038, 0.999947, 17.557823, 73.848427)" id="inlane-target-lamp-2" style="fill: rgb(0, 255, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="1.5" height="1.5" transform="matrix(0.999947, 0.01038, -0.01038, 0.999947, -19.042175, 77.848427)" id="inlane-target-lamp-1" style="fill: rgb(0, 255, 255);" xlink:href="#target-lamp-symbol"/>
+    <use width="1.5" height="1.5" transform="matrix(0.999947, 0.01038, -0.01038, 0.999947, 17.557823, 77.848427)" id="inlane-target-lamp-2" style="fill: rgb(0, 255, 255);" xlink:href="#target-lamp-symbol"/>
   </g>
   <circle style="fill: rgb(170, 0, 0);" cx="18.288" cy="34.907" r="0.7" class="rollover" id="pass-loop-rollover">
     <title>Pass Loop Rollover</title>
@@ -171,10 +171,10 @@
   <path style="stroke-width: 0.1px; fill: rgb(17, 17, 17);" d="M 27.559 27 L 27.559 0 L -23.524 0 L -23.524 27 C -23.524 -9.754 27.559 -7.128 27.559 27 Z" class="wall" id="far-back-wall">
     <title>Top Corners</title>
   </path>
-  <circle style="fill: rgb(170, 0, 0);" cx="18.3" cy="72.452" r="0.7" class="rollover" id="right-inlane-rollover" data-direction="-90">
+  <circle style="fill: rgb(170, 0, 0);" cx="18.3" cy="76.452" r="0.7" class="rollover" id="right-inlane-rollover" data-direction="-90">
     <title>Right Inlane Rollover</title>
   </circle>
-  <circle style="fill: rgb(170, 0, 0);" cx="-18.3" cy="72.452" r="0.7" class="rollover" id="left-inlane-rollover" data-direction="-90">
+  <circle style="fill: rgb(170, 0, 0);" cx="-18.3" cy="76.452" r="0.7" class="rollover" id="left-inlane-rollover" data-direction="-90">
     <title>Left Inlane Rollover</title>
   </circle>
   <text x="0" y="0" style="white-space: pre; fill: rgb(255, 255, 0); font-family: &quot;Roboto Slab&quot;; font-size: 28px; text-anchor: end;" transform="matrix(0.064031, 0, 0, 0.064031, 23.5, 96)" data-height="3" id="right-instructions">$RF<tspan x="17.149999618530273" dy="1em">​</tspan></text>

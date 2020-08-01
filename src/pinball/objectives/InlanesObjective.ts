@@ -4,15 +4,35 @@ import { RolloverEvent } from "../playfield/Rollover";
 import TargetLamp from "../playfield/lamps/TargetLamp";
 
 export default class InlanesObjective extends Objective implements Entity {
-  constructor(public inlaneRolloversRemaining: number = 3) {
+  leftDone: boolean = false;
+  rightDone: boolean = false;
+
+  constructor() {
     super();
   }
 
   handlers = {
-    rollover: ({ id }: RolloverEvent) => {
-      if (id === "left-inlane-rollover" || id === "right-inlane-rollover") {
-        this.inlaneRolloversRemaining -= 1;
-        if (this.inlaneRolloversRemaining <= 0) {
+    rollover: ({ rollover, skipFlash }: RolloverEvent) => {
+      if (
+        rollover.id === "left-inlane-rollover" ||
+        rollover.id === "right-inlane-rollover"
+      ) {
+        skipFlash();
+        rollover.lamp.stopFlashing();
+        rollover.lamp.turnOn();
+
+        const [leftTargetLamp, rightTargetLamp] = this.getLamps();
+        if (rollover.id === "left-inlane-rollover") {
+          this.leftDone = true;
+          leftTargetLamp.stopFlashing();
+          leftTargetLamp.turnOff();
+        } else {
+          this.rightDone = true;
+          rightTargetLamp.stopFlashing();
+          rightTargetLamp.turnOff();
+        }
+
+        if (this.leftDone && this.rightDone) {
           this.complete();
         }
       }
@@ -40,6 +60,14 @@ export default class InlanesObjective extends Objective implements Entity {
   }
 
   toString() {
-    return `Blocks: ${this.inlaneRolloversRemaining}`;
+    if (!this.leftDone && !this.rightDone) {
+      return `Defend Flanks`;
+    } else if (!this.leftDone) {
+      return `Defend Left Flank`;
+    } else if (!this.rightDone) {
+      return `Defend Right Flank`;
+    } else {
+      return `Goal Defended`;
+    }
   }
 }

@@ -14,8 +14,8 @@ const DEFAULT_BINDINGS = {
 
   NUDGE_RIGHT: K("Slash"),
   NUDGE_LEFT: K("KeyZ"),
-  NUDGE_UP_LEFT: K("KeyC"),
-  NUDGE_UP_RIGHT: K("Comma"),
+  NUDGE_UP_RIGHT: K("KeyC"),
+  NUDGE_UP_LEFT: K("Comma"),
 
   PAUSE: K("Escape"),
 

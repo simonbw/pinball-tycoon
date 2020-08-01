@@ -4,13 +4,13 @@ import { RolloverEvent } from "../playfield/Rollover";
 import TargetLamp from "../playfield/lamps/TargetLamp";
 
 export default class PassLoopObjective extends Objective implements Entity {
-  constructor(public rolloversRemaining: number = 7) {
+  constructor(public rolloversRemaining: number = 5) {
     super();
   }
 
   handlers = {
-    rollover: ({ id }: RolloverEvent) => {
-      if (id === "pass-loop-rollover") {
+    rollover: ({ rollover }: RolloverEvent) => {
+      if (rollover.id === "pass-loop-rollover") {
         this.rolloversRemaining -= 1;
         if (this.rolloversRemaining <= 0) {
           this.complete();

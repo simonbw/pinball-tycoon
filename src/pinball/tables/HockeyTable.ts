@@ -11,16 +11,30 @@ export async function makeHockeyTable() {
 
   const leftKeyName = keyCodeToName(getBinding("LEFT_FLIPPER"));
   const rightKeyName = keyCodeToName(getBinding("RIGHT_FLIPPER"));
+  const leftNudgeKeyName = keyCodeToName(getBinding("NUDGE_UP_RIGHT"));
+  const rightNudgeKeyName = keyCodeToName(getBinding("NUDGE_UP_LEFT"));
   table.addChildren(
     new TextOverlay(
       `${leftKeyName}`,
-      Rect.fromTopLeft([-23, 96], 5, 3),
+      Rect.fromBottomLeft([-23, 99], 5, 2),
+      -3,
+      "left"
+    ),
+    new TextOverlay(
+      `${leftNudgeKeyName}`,
+      Rect.fromBottomLeft([-23, 97], 5, 2),
       -3,
       "left"
     ),
     new TextOverlay(
       `${rightKeyName}`,
-      Rect.fromBottomRight([23, 99], 5, 4),
+      Rect.fromBottomRight([23, 99], 5, 2),
+      -3,
+      "right"
+    ),
+    new TextOverlay(
+      `${rightNudgeKeyName}`,
+      Rect.fromBottomRight([23, 97], 5, 2),
       -3,
       "right"
     )

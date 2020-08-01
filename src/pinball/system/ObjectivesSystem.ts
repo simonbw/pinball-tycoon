@@ -40,7 +40,7 @@ export default class ObjectivesSystem extends BaseEntity implements Entity {
       await this.currentObjective.waitTillComplete();
       this.completedObjectives.push(this.currentObjective);
       await this.wait(0.2);
-      this.game.dispatch(scoreEvent(250000));
+      this.game.dispatch(scoreEvent(250000)); // TODO: Scores based on difficulty
       this.addChild(new SoundInstance("goal"));
       await this.wait(1.5);
     }

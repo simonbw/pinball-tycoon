@@ -4,7 +4,7 @@ import { KeyCode } from "../../core/io/Keys";
 import Ball, { isBall } from "../ball/Ball";
 import { getBinding } from "../ui/KeyboardBindings";
 
-const FORCE = 150;
+const FORCE = 250;
 const GRAVITY_COMP = 132;
 
 /** Magically control the ball to put it where we want it */

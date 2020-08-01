@@ -10,8 +10,10 @@ import { SoundInstance } from "../sound/SoundInstance";
 
 export interface RolloverEvent {
   type: "rollover";
+  rollover: Rollover;
   id?: string;
   ball: Ball;
+  skipFlash: () => void;
 }
 
 interface RolloverOptions {
@@ -46,13 +48,13 @@ export default class Rollover extends BaseEntity implements Entity {
     this.lamp = this.addChild(new Lamp(position, { color }));
   }
 
-  async onRollover() {
+  async onRollover(shouldFlash: boolean = true) {
     this.cooldown = true;
     if (this.score > 0) {
       this.addChild(new SoundInstance("defenderDown3"));
       this.game!.dispatch(scoreEvent(this.score));
     }
-    await this.lamp.flash(4, 0.08, 0.08);
+    if (shouldFlash) await this.lamp.flash(4, 0.08, 0.08);
     this.cooldown = false;
   }
 
@@ -67,9 +69,18 @@ export default class Rollover extends BaseEntity implements Entity {
   async onBeginContact(ball: Entity) {
     if (isBall(ball)) {
       if (!this.cooldown && this.directionMatches(ball.body.velocity)) {
-        const e: RolloverEvent = { type: "rollover", id: this.id, ball };
+        let shouldFlash = true;
+        const e: RolloverEvent = {
+          type: "rollover",
+          id: this.id,
+          ball,
+          rollover: this,
+          skipFlash: () => {
+            shouldFlash = false;
+          },
+        };
         this.game!.dispatch(e);
-        this.onRollover();
+        this.onRollover(shouldFlash);
         await this.wait(0.2);
       }
     }
