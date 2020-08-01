@@ -1,6 +1,6 @@
 import Objective from "./Objective";
 import Entity from "../../core/entity/Entity";
-import { RolloverEvent } from "../playfield/Rollover";
+import Rollover, { RolloverEvent } from "../playfield/Rollover";
 import TargetLamp from "../playfield/lamps/TargetLamp";
 
 export default class InlanesObjective extends Objective implements Entity {
@@ -39,6 +39,13 @@ export default class InlanesObjective extends Objective implements Entity {
     },
   };
 
+  getRollovers() {
+    return [
+      this.game!.entities.byId("left-inlane-rollover")! as Rollover,
+      this.game!.entities.byId("right-inlane-rollover")! as Rollover,
+    ];
+  }
+
   getLamps(): TargetLamp[] {
     return [
       this.game!.entities.byId("inlane-target-lamp-1")! as TargetLamp,
@@ -56,6 +63,10 @@ export default class InlanesObjective extends Objective implements Entity {
     for (const lamp of this.getLamps()) {
       lamp.stopFlashing();
       lamp.turnOff();
+    }
+    for (const rollover of this.getRollovers()) {
+      rollover.lamp.stopFlashing();
+      rollover.lamp.turnOff();
     }
   }
 
