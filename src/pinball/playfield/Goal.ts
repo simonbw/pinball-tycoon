@@ -13,6 +13,7 @@ import GoalMesh from "./GoalMesh";
 import Scoop from "./Scoop";
 import { rNormal } from "../../core/util/Random";
 import { degToRad } from "../../core/util/MathUtil";
+import { release } from "os";
 
 const CAPTURE_DURATION = 1.5;
 const WALL_WIDTH = 0.5;
@@ -37,7 +38,7 @@ export default class Goal extends BaseEntity
     angle: number = 0,
     width = 8.0,
     depth: number = 5.0,
-    spitAngleOffset: number = 0
+    releaseAngleOffset: number = 0
   ) {
     super();
 
@@ -64,6 +65,7 @@ export default class Goal extends BaseEntity
 
     this.addChild(new GoalMesh(position, angle, width, depth));
 
+    const releaseAngle = angle + releaseAngleOffset;
     this.addChild(
       new Scoop(
         position.add(V(0, -0.2 * depth).irotate(angle)),
@@ -71,22 +73,21 @@ export default class Goal extends BaseEntity
         width - WALL_WIDTH,
         depth * 0.5,
         CAPTURE_DURATION,
-        () =>
-          V(0, 500).irotate(
-            this.body!.angle + spitAngleOffset + rNormal(0, degToRad(0))
-          ),
-        () => {
-          this.goalCount += 1;
-          this.game!.dispatch(scoreEvent(25000 * Math.min(this.goalCount, 4)));
-          this.game!.dispatch({ type: "goal" });
-          this.addChild(new SoundInstance("goal"));
-        },
-        async () => {
-          await this.wait(0.3);
-          this.game!.dispatch({ type: "resetDefenders" });
-        }
+        () => V(0, 500).irotate(releaseAngle + rNormal(0, degToRad(0))),
+        () => this.onScoop(),
+        () => this.onRelease()
       )
     );
+  }
+
+  async onScoop() {
+    this.game!.dispatch(scoreEvent(25000));
+    this.game!.dispatch({ type: "goal" });
+    this.addChild(new SoundInstance("goal"));
+  }
+
+  async onRelease() {
+    await this.wait(0.3);
   }
 
   handlers = {

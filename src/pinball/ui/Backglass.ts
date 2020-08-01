@@ -12,9 +12,19 @@ import { UpdateScoreEvent } from "../system/LogicBoard";
 import { getBinding } from "./KeyboardBindings";
 import { keyCodeToName, KeyCode } from "../../core/io/Keys";
 import Table from "../tables/Table";
+import BackglassController from "./BackglassController";
 
 type DisplayMode = "pre-game" | "midgame" | "post-game";
 
+const PADDING = 10;
+
+export type BackglassTextPosition =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right"
+  | "middle"
+  | "sub-middle";
 export default class Backglass extends BaseEntity implements Entity {
   displayMode: DisplayMode = "pre-game";
   ctx: CanvasRenderingContext2D;
@@ -23,7 +33,11 @@ export default class Backglass extends BaseEntity implements Entity {
   score: number = 0;
   statsEnabled: boolean = false;
 
-  constructor(table: Table, heightAboveTable: number = 0) {
+  constructor(
+    table: Table,
+    heightAboveTable: number = 0,
+    private color: string = "#f00"
+  ) {
     super();
     this.fpsMeter = this.addChild(new FPSMeter());
 
@@ -51,6 +65,33 @@ export default class Backglass extends BaseEntity implements Entity {
     geometry.translate(cx, 0, -height / 2 - heightAboveTable);
     this.mesh = new Mesh(geometry, material);
     this.mesh.rotateX(-table.incline);
+
+    this.addChild(new BackglassController(this));
+  }
+
+  get topLeft(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [PADDING, PADDING];
+  }
+  get topRight(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [width - PADDING, PADDING];
+  }
+  get bottomLeft(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [PADDING, height - PADDING];
+  }
+  get bottomRight(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [width - PADDING, height - PADDING];
+  }
+  get middle(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [width / 2, height / 2];
+  }
+  get subMiddle(): [number, number] {
+    const { width, height } = this.ctx.canvas;
+    return [width / 2, height / 2];
   }
 
   handlers = {
@@ -62,76 +103,47 @@ export default class Backglass extends BaseEntity implements Entity {
     gameOver: () => (this.displayMode = "post-game"),
   };
 
-  onKeyDown(keyCode: KeyCode) {
-    if (keyCode === getBinding("TOGGLE_STATS")) {
-      this.statsEnabled = !this.statsEnabled;
-    }
-  }
-
-  onRender() {
-    this.renderBack();
-
-    // TODO: Make this event based instead of onRender
-
-    if (this.game!.paused) {
-      const pauseKeyName = keyCodeToName(getBinding("PAUSE"));
-      this.renderMiddleText(`Paused`);
-      this.renderSubMiddleText(`Press ${pauseKeyName} to unpause`);
-    } else {
-      switch (this.displayMode) {
-        case "pre-game":
-          const startKey = keyCodeToName(getBinding("START_GAME"));
-          this.renderMiddleText(`Press ${startKey} to start`);
-          break;
-        case "midgame":
-          this.renderScore();
-          break;
-        case "post-game":
-          this.renderScore();
-          this.renderMiddleText("Game Over");
-          break;
-      }
-    }
-    if (this.statsEnabled) {
-      this.renderStats();
-    }
-    this.texture.needsUpdate = true;
-  }
-
-  renderBack() {
+  clear() {
     const { width, height } = this.ctx.canvas;
     this.ctx.fillStyle = "#111";
     this.ctx.fillRect(0, 0, width, height);
   }
 
-  renderMiddleText(text: string) {
-    const { width: w, height: h } = this.ctx.canvas;
-    this.ctx.fillStyle = "#f00";
-    this.ctx.font = "64px DS Digital, sans-serif";
-    this.ctx.textBaseline = "bottom";
-    this.ctx.textAlign = "center";
-    this.ctx.fillText(text, w / 2, h / 2 - 4, w - 20);
+  renderText(text: string, position: BackglassTextPosition, size: number = 64) {
+    switch (position) {
+      case "top-left":
+        return this._renderText(text, size, "top", "left", this.topLeft);
+      case "bottom-left":
+        return this._renderText(text, size, "bottom", "left", this.bottomLeft);
+      case "top-right":
+        return this._renderText(text, size, "top", "right", this.topRight);
+      case "bottom-right":
+        return this._renderText(
+          text,
+          size,
+          "bottom",
+          "right",
+          this.bottomRight
+        );
+      case "middle":
+        return this._renderText(text, size, "bottom", "center", this.middle);
+      case "sub-middle":
+        return this._renderText(text, size, "top", "center", this.subMiddle);
+    }
   }
 
-  renderSubMiddleText(text: string) {
-    const { width: w, height: h } = this.ctx.canvas;
-    this.ctx.fillStyle = "#f00";
-    this.ctx.font = "48px DS Digital, sans-serif";
-    this.ctx.textBaseline = "top";
-    this.ctx.textAlign = "center";
-    this.ctx.fillText(text, w / 2, h / 2 + 4, w - 20);
-  }
-
-  renderScore() {
-    const { width: w, height: h } = this.ctx.canvas;
-    this.ctx.fillStyle = "#f00";
-    this.ctx.font = "64px DS Digital, sans-serif";
-    this.ctx.textBaseline = "top";
-    this.ctx.textAlign = "right";
-    const scoreText = this.score.toLocaleString(undefined, {
-      useGrouping: true,
-    });
-    this.ctx.fillText(`${scoreText} pts`, w - 10, 10, w - 20);
+  _renderText(
+    text: string,
+    size: number,
+    baseline: CanvasTextBaseline,
+    align: CanvasTextAlign,
+    [x, y]: [number, number]
+  ) {
+    this.ctx.fillStyle = this.color;
+    this.ctx.font = `${size}px DS Digital, sans-serif`;
+    this.ctx.textBaseline = baseline;
+    this.ctx.textAlign = align;
+    this.ctx.fillText(text, x, y, this.ctx.canvas.width - PADDING * 2);
   }
 
   renderStats() {

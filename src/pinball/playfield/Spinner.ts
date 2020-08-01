@@ -103,6 +103,7 @@ export default class Spinner extends BaseEntity
       })
     );
     this.game!.dispatch(scoreEvent(100));
+    this.game!.dispatch({ type: "spin", spinner: this, forward });
   }
 }
 

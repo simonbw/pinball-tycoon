@@ -17,26 +17,27 @@ export interface RolloverEvent {
 interface RolloverOptions {
   direction?: number;
   color?: number;
-  id?: string;
+  score?: number;
 }
 
 export default class Rollover extends BaseEntity implements Entity {
+  tags = ["rollover"];
   lamp: Lamp;
   direction: V2d | undefined;
-  id: string | undefined;
+  score: number;
   cooldown: boolean = false;
 
   constructor(
     position: [number, number],
     radius: number = 1.0,
-    { direction, color, id }: RolloverOptions = {}
+    { direction, color, score }: RolloverOptions = {}
   ) {
     super();
+    this.score = score ?? 1000;
 
     if (direction != undefined) {
       this.direction = V(Math.cos(direction), Math.sin(direction));
     }
-    this.id = id;
 
     this.body = new Body({ position: V(position), collisionResponse: false });
     const shape = new Circle({ radius });
@@ -47,7 +48,10 @@ export default class Rollover extends BaseEntity implements Entity {
 
   async onRollover() {
     this.cooldown = true;
-    this.addChild(new SoundInstance("defenderDown3"));
+    if (this.score > 0) {
+      this.addChild(new SoundInstance("defenderDown3"));
+      this.game!.dispatch(scoreEvent(this.score));
+    }
     await this.lamp.flash(4, 0.08, 0.08);
     this.cooldown = false;
   }

@@ -1,12 +1,9 @@
+import { Body } from "p2";
 import { MeshPhongMaterial } from "three";
 import Entity from "../../core/entity/Entity";
 import { clamp } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
-import { SoundInstance } from "../sound/SoundInstance";
-import { scoreEvent } from "../system/LogicBoard";
-import { getDefenderUpCount } from "./Defender";
 import DropTarget from "./DropTarget";
-import { Body } from "p2";
 
 const MATERIAL = new MeshPhongMaterial({
   color: 0xff0000,
@@ -31,35 +28,10 @@ export default class Goalie extends DropTarget implements Entity {
 
     this.start = start.clone();
     this.end = end.clone();
-
-    // TODO: Figure out how to do handlers nicer
-    this.handlers["goal"] = () => {
-      this.clearTimers();
-      this.lower();
-      this.speed = this.speed % 5;
-      this.speed = this.speed + 1;
-    };
-    this.handlers["resetDefenders"] = () => {
-      this.raise();
-    };
-    this.handlers["gameStart"] = () => {
-      this.speed = 1.0;
-    };
   }
 
-  onDrop() {
-    const defenderUpCount = getDefenderUpCount(this.game!);
-    if (defenderUpCount === 0) {
-      this.game!.dispatch(scoreEvent(5300 * (this.speed + 1)));
-      this.addChild(new SoundInstance("goalieDown"));
-    } else {
-      this.game!.dispatch(scoreEvent(3450 * (this.speed + 1)));
-      this.addChild(new SoundInstance("goalieDown"));
-    }
-  }
-
-  onTimeout() {
-    this.addChild(new SoundInstance("defenderUp2"));
+  setSpeed(speed: number) {
+    this.speed = speed;
   }
 
   getMaterial() {

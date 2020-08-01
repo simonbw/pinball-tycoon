@@ -102,9 +102,10 @@ export default class CameraController extends BaseEntity implements Entity {
 
     const balls = game.entities.getTagged("ball").filter(isBall);
     const weightedCenter = this.table.center.clone();
+    weightedCenter.z -= 8;
     if (!still) {
       for (const ball of balls) {
-        weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.3);
+        weightedCenter.y = lerp(weightedCenter.y, ball.getPosition().y, 0.25);
       }
     }
     const speed = balls.length > 0 ? 0.1 : 0.01;

@@ -9,7 +9,9 @@ export default class BallRemainingLamp extends BaseEntity implements Entity {
 
   constructor(position: [number, number], private n: number) {
     super();
-    this.lamp = this.addChild(new Lamp(position, { color: 0xaa0000 }));
+    this.lamp = this.addChild(
+      new Lamp(position, { color: 0xaa0000, intensity: 1.0 })
+    );
   }
 
   handlers = {

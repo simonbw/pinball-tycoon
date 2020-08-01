@@ -22,6 +22,8 @@ export default interface Entity
   /** The game this entity belongs to. This should only be set by the Game. */
   game: Game | null;
 
+  id?: string;
+
   /** Children that get added/destroyed along with this entity */
   readonly children?: Entity[];
 

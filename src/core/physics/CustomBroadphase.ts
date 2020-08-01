@@ -1,19 +1,28 @@
 import { AABB, Body, Broadphase, SAPBroadphase, World, Ray } from "p2";
 import Grid from "../util/Grid";
+import { mod } from "../util/MathUtil";
 
 const CUSTOM_BROADPHASE_TYPE = 3;
 const HUGE_LIMIT = 200;
 const DEFAULT_CELL_SIZE = 6;
-const HUGE: [number, number][] = [];
+const HUGE: number[] = [];
 
 export default class CustomBroadphase extends SAPBroadphase {
   dynamicBodies: Set<Body> = new Set();
   kinematicBodies: Set<Body> = new Set();
   hugeBodies: Set<Body> = new Set();
-  spatialHash = new Grid<Set<Body>>(); // TODO: This could be faster with a single array
+  partitions: Set<Body>[] = [];
 
-  constructor(private cellSize: number = DEFAULT_CELL_SIZE) {
+  constructor(
+    private cellSize: number = DEFAULT_CELL_SIZE,
+    private width: number = 24,
+    private height: number = 24
+  ) {
     super(CUSTOM_BROADPHASE_TYPE);
+
+    for (let i = 0; i < width * height; i++) {
+      this.partitions.push(new Set());
+    }
   }
 
   setWorld(world: World) {
@@ -51,7 +60,7 @@ export default class CustomBroadphase extends SAPBroadphase {
       this.hugeBodies.add(body);
     } else {
       for (const cell of cells) {
-        this.getCell(cell).add(body);
+        this.partitions[cell].add(body);
       }
     }
   }
@@ -62,7 +71,7 @@ export default class CustomBroadphase extends SAPBroadphase {
       this.hugeBodies.delete(body);
     } else {
       for (const cell of cells) {
-        this.getCell(cell).delete(body);
+        this.partitions[cell].delete(body);
       }
     }
   }
@@ -96,20 +105,13 @@ export default class CustomBroadphase extends SAPBroadphase {
     return result;
   }
 
-  getCell(cell: [number, number]): Set<Body> {
-    const storedSet = this.spatialHash.get(cell);
-    if (storedSet) {
-      return storedSet;
-    } else {
-      const newSet = new Set<Body>();
-      this.spatialHash.set(cell, newSet);
-      return newSet;
-    }
+  xyToCell(x: number, y: number) {
+    return mod(x, this.width) + mod(y, this.height) * this.width;
   }
 
   /** Returns the cells that overlap the aabb. Returns HUGE if the aabb is "huge". */
-  aabbToCells(aabb: AABB, checkHuge = true): [number, number][] {
-    const result: [number, number][] = [];
+  aabbToCells(aabb: AABB, checkHuge = true): number[] {
+    const result: number[] = [];
 
     const lowX = Math.floor(aabb.lowerBound[0] / this.cellSize);
     const lowY = Math.floor(aabb.lowerBound[1] / this.cellSize);
@@ -130,7 +132,7 @@ export default class CustomBroadphase extends SAPBroadphase {
 
     for (let x = lowX; x < highX; x++) {
       for (let y = lowY; y < highY; y++) {
-        result.push([x, y]);
+        result.push(this.xyToCell(x, y));
       }
     }
 
@@ -141,7 +143,7 @@ export default class CustomBroadphase extends SAPBroadphase {
     result = result ?? [];
 
     for (const cell of this.aabbToCells(aabb, false)) {
-      for (const body of this.getCell(cell)) {
+      for (const body of this.partitions[cell]) {
         if (body.getAABB().overlaps(aabb) && result.indexOf(body) < 0) {
           result.push(body);
         }
@@ -186,7 +188,9 @@ export default class CustomBroadphase extends SAPBroadphase {
         iy++;
       }
 
-      for (const body of this.getCell([cellX, cellY])) {
+      const cell = this.xyToCell(cellX, cellY);
+
+      for (const body of this.partitions[cell]) {
         if (result.indexOf(body) < 0) {
           result.push(body);
         }

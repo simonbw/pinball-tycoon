@@ -23,6 +23,7 @@ export default abstract class BaseEntity implements Entity {
   pausable: boolean = true;
   persistent: boolean = false;
   springs?: Spring[];
+  id?: string;
 
   // Convert local coordinates to world coordinates.
   // Requires a body
@@ -103,13 +104,12 @@ export default abstract class BaseEntity implements Entity {
     if (this.children) {
       const timers = this.children.filter(isTimer);
       for (const timer of timers) {
-        if (!timerId || timerId === timer.id) timer.destroy();
+        if (!timerId || timerId === timer.timerId) timer.destroy();
       }
     }
   }
 }
 
-// TODO: Implement this some other way? Ideally without extending BaseEntity
 class Timer extends BaseEntity implements Entity {
   timeRemaining: number = 0;
   endEffect?: () => void;
@@ -119,7 +119,7 @@ class Timer extends BaseEntity implements Entity {
     private delay: number,
     endEffect?: () => void,
     duringEffect?: (dt: number, t: number) => void,
-    public id?: string
+    public timerId?: string
   ) {
     super();
     this.timeRemaining = delay;

@@ -1,9 +1,8 @@
 import { Color, Matrix3 } from "three";
 import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
-import Popper from "../../playfield/Popper";
+import OverheadLight from "../../environment/OverheadLight";
 import Bumper from "../../playfield/Bumper";
-import LightUpTarget from "../../playfield/LightUpTarget";
 import Defender from "../../playfield/Defender";
 import Drain from "../../playfield/Drain";
 import Flipper from "../../playfield/Flipper";
@@ -15,15 +14,21 @@ import BallSaveLamp from "../../playfield/lamps/BallSaveLamp";
 import { BULB_GEOMETRY_ARROW } from "../../playfield/lamps/LampShapes";
 import SlowMoLamps from "../../playfield/lamps/SlowMoLamps";
 import TargetLamp from "../../playfield/lamps/TargetLamp";
+import LightUpTarget from "../../playfield/LightUpTarget";
 import Magnet from "../../playfield/Magnet";
 import MagnetOrbiter from "../../playfield/MagnetOrbiter";
-import OverheadLight from "../../environment/OverheadLight";
 import Plunger from "../../playfield/Plunger";
+import Popper from "../../playfield/Popper";
 import Post from "../../playfield/Post";
+import Rollover from "../../playfield/Rollover";
+import Scoop from "../../playfield/Scoop";
 import Slingshot from "../../playfield/Slingshot";
 import Spinner from "../../playfield/Spinner";
+import BlobWall from "../../playfield/walls/BlobWall";
 import MultiWall from "../../playfield/walls/MultiWall";
 import PathWall from "../../playfield/walls/PathWall";
+import GoalZoneController from "../../system/GoalZoneController";
+import TargetBank from "../../system/TargetBank";
 import { Rect } from "../../util/Rect";
 import {
   getAngleAttribute,
@@ -36,10 +41,6 @@ import {
   pathStringToShape,
   transformPoint,
 } from "./svgUtils";
-import Scoop from "../../playfield/Scoop";
-import TargetBank from "../../system/TargetBank";
-import Rollover from "../../playfield/Rollover";
-import BlobWall from "../../playfield/walls/BlobWall";
 
 export type Extractor = (
   node: SVGElement,
@@ -81,7 +82,7 @@ export function getExtractors() {
       }
     },
 
-    // Bumper
+    // Rollover
     (node, m) => {
       if (node.matches("circle.rollover")) {
         const x = getNumberProp(node.getAttribute("cx"));
@@ -90,9 +91,9 @@ export function getExtractors() {
         const position = transformPoint(x, y, m);
         const direction = getAngleAttribute(node, "data-direction");
         const color = new Color(node.style.fill).getHex();
-        const id = node.id;
+        const score = getNumberAttribute(node, "data-score");
 
-        return new Rollover(position, r, { direction, color, id });
+        return new Rollover(position, r, { direction, color, score });
       }
     },
 
@@ -278,8 +279,15 @@ export function getExtractors() {
       }
     },
 
-    // goal
+    // goal zone
     (node, m) => {
+      if (node.matches(".goal-controller")) {
+        return new GoalZoneController();
+      }
+    },
+
+    // goal
+    (node, m, nodeToEntity) => {
       if (node.matches("rect.goal")) {
         const [w, h] = [getTransformWidth(m), getTransformHeight(m)];
         const left = getNumberProp(node.getAttribute("x"));
@@ -291,18 +299,26 @@ export function getExtractors() {
         const x = left + width / 2;
         const y = top + height / 2;
         // TODO: transform width & height
-        return new Goal(
+
+        const goal = new Goal(
           transformPoint(x, y, m),
           angle,
           width * w,
           height * h,
           spitAngleOffset
         );
+
+        const parent = nodeToEntity.get(node.parentElement!);
+        if (parent instanceof GoalZoneController) {
+          parent.addGoal(goal);
+        } else {
+          return goal;
+        }
       }
     },
 
     // defender
-    (node, m) => {
+    (node, m, nodeToEntity) => {
       if (node.matches("line.defender")) {
         const x1 = getNumberProp(node.getAttribute("x1"));
         const y1 = getNumberProp(node.getAttribute("y1"));
@@ -312,12 +328,20 @@ export function getExtractors() {
         const b = transformPoint(x2, y2, m);
         const center = a.add(b).imul(0.5);
         const delta = b.sub(a);
-        return new Defender(center, delta.angle);
+
+        const defender = new Defender(center, delta.angle);
+
+        const parent = nodeToEntity.get(node.parentElement!);
+        if (parent instanceof GoalZoneController) {
+          parent.addDefender(defender);
+        } else {
+          return defender;
+        }
       }
     },
 
     // goalie
-    (node, m) => {
+    (node, m, nodeToEntity) => {
       if (node.matches("line.goalie")) {
         const x1 = getNumberProp(node.getAttribute("x1"));
         const y1 = getNumberProp(node.getAttribute("y1"));
@@ -325,7 +349,14 @@ export function getExtractors() {
         const y2 = getNumberProp(node.getAttribute("y2"));
         const start = transformPoint(x1, y1, m);
         const end = transformPoint(x2, y2, m);
-        return new Goalie(start, end);
+        const goalie = new Goalie(start, end);
+
+        const parent = nodeToEntity.get(node.parentElement!);
+        if (parent instanceof GoalZoneController) {
+          parent.addGoalie(goalie);
+        } else {
+          return goalie;
+        }
       }
     },
 

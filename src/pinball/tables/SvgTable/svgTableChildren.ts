@@ -29,6 +29,9 @@ function getChildrenFromNode(
       const entity = extractor(node, transform, entityMap);
       if (entity != undefined) {
         entityMap.set(node, entity);
+        if (node.id) {
+          entity.id = node.id;
+        }
         break; // TODO: Allow multiple entities per element?
       }
     }

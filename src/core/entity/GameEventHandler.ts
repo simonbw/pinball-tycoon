@@ -6,7 +6,6 @@ export interface CustomHandlersMap {
 
 export default interface GameEventHandler {
   /** Custom event handlers */
-  // TODO: Figure out how to do this nicer
   readonly handlers?: CustomHandlersMap;
   /** Called when added to the game */
   onAdd?(game: Game): void;

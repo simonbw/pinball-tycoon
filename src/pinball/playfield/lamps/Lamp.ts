@@ -80,7 +80,7 @@ export default class Lamp extends BaseEntity implements Entity {
     {
       color = 0xdddddd,
       size = 0.6,
-      intensity = 1.0,
+      intensity = 0.8,
       toggleTime = 0.06,
       bulbGeometry = BULB_GEOMETRY_CIRCLE,
       angle = 0,
@@ -172,6 +172,10 @@ export default class Lamp extends BaseEntity implements Entity {
   stopTransitions() {
     this.clearTimers("percent-timer");
     this.clearTimers("color-timer");
+  }
+
+  stopFlashing() {
+    this.clearTimers("flash");
   }
 
   async flash(

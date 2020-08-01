@@ -7,6 +7,10 @@ import { CustomHandlersMap } from "./entity/GameEventHandler";
  * Keeps track of entities. Has lots of useful indexes.
  */
 export default class EntityList implements Iterable<Entity> {
+  private idToEntity = new Map<string, Entity>();
+  private tagged = new ListMap<string, Entity>();
+  private handlers = new ListMap<string, Entity>();
+
   all = new Set<Entity>();
 
   filtered = {
@@ -19,9 +23,6 @@ export default class EntityList implements Iterable<Entity> {
     hasMesh: new FilterList<Entity>((e) => Boolean(e.mesh)),
     hasBody: new FilterList<Entity>((e) => Boolean(e.body)),
   };
-
-  private tagged = new ListMap<string, Entity>();
-  private handlers = new ListMap<string, Entity>();
 
   add(entity: Entity) {
     this.all.add(entity);
@@ -39,6 +40,13 @@ export default class EntityList implements Iterable<Entity> {
       for (const handler of Object.keys(entity.handlers)) {
         this.handlers.add(handler, entity);
       }
+    }
+
+    if (entity.id) {
+      if (this.idToEntity.has(entity.id)) {
+        throw new Error(`entities with duplicate ids: ${entity.id}`);
+      }
+      this.idToEntity.set(entity.id, entity);
     }
   }
 
@@ -59,6 +67,14 @@ export default class EntityList implements Iterable<Entity> {
         this.handlers.remove(handler, entity);
       }
     }
+
+    if (entity.id) {
+      this.idToEntity.delete(entity.id);
+    }
+  }
+
+  byId(id: string) {
+    return this.idToEntity.get(id);
   }
 
   /** Returns all entities with the given tag. */

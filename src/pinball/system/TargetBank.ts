@@ -16,6 +16,7 @@ export default class TargetBank extends BaseEntity implements Entity {
     if (!this.cooldown) {
       if (this.targets.every((t) => t.lit)) {
         this.game!.dispatch(scoreEvent(15000));
+        this.game!.dispatch({ type: "targetBankComplete", targetBank: this });
         this.addChild(new SoundInstance("upgrade"));
         await this.flash(2);
         await this.lightShow(2);

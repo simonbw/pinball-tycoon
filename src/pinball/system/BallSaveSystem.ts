@@ -36,10 +36,12 @@ export default class BallSaveSystem extends BaseEntity implements Entity {
     if (this.initialSave) {
       this.initialSave = false;
       this.emitUpdate();
+      this.game!.dispatch({ type: "ballSaved" });
       return true;
     } else if (this.earnedSave) {
       this.earnedSave = false;
       this.emitUpdate();
+      this.game!.dispatch({ type: "ballSaved" });
       return true;
     }
     return false;

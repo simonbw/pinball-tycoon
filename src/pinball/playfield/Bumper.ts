@@ -4,7 +4,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { clamp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
-import { isBall } from "../ball/Ball";
+import Ball, { isBall } from "../ball/Ball";
 import { scoreEvent } from "../system/LogicBoard";
 import { PositionalSound } from "../sound/PositionalSound";
 import { CollisionGroups } from "../Collision";
@@ -14,9 +14,17 @@ import { rNormal } from "../../core/util/Random";
 
 const STRENGTH = 250;
 
+interface BumperHitEvent {
+  type: "bumperHit";
+  bumper: Bumper;
+  ball: Ball;
+}
+
 export default class Bumper extends BaseEntity implements Entity {
+  tags = ["bumper"];
   lastHit: number = -Infinity;
   body: Body;
+  enabled: boolean = true;
 
   constructor(position: V2d, size: number = 1.7) {
     super();
@@ -36,8 +44,14 @@ export default class Bumper extends BaseEntity implements Entity {
   }
 
   async onImpact(ball: Entity) {
-    if (isBall(ball)) {
-      this.game!.dispatch(scoreEvent(700));
+    if (isBall(ball) && this.enabled) {
+      const event: BumperHitEvent = {
+        type: "bumperHit",
+        bumper: this,
+        ball,
+      };
+      this.game!.dispatch(event);
+      this.game?.dispatch(scoreEvent(700));
       this.addChild(
         new PositionalSound("bumper1", this.getPosition(), { gain: 1.1 })
       );

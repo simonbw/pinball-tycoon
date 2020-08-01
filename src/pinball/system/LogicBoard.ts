@@ -57,7 +57,7 @@ function ballsRemainingEvent(ballsRemaining: number): BallsRemainingEvent {
   };
 }
 
-type GamePhase =
+export type GamePhase =
   | "off"
   | "inserting-coin"
   | "awaiting-plunge"
@@ -111,17 +111,12 @@ export default class LogicBoard extends BaseEntity implements Entity {
       this.game!.dispatch(ballsRemainingEvent(this.ballsRemaining));
 
       await this.wait(0.5);
-
       // TODO: Game start sound
-
-      this.gamePhase = "awaiting-plunge";
-      // TODO: Detect Plunge
-      this.gamePhase = "playing";
-
       this.game!.dispatch(newBallEvent());
     },
 
     newBall: async (e: NewBallEvent) => {
+      this.gamePhase = "awaiting-plunge";
       if (e.fromSave) {
         this.addChild(new SoundInstance("defenderDown1"));
       } else {
@@ -143,7 +138,6 @@ export default class LogicBoard extends BaseEntity implements Entity {
 
       if (this.ballSaveSystem.saveIfPossible()) {
         await this.wait(0.8);
-        console.log("ball saved");
         this.game!.dispatch(newBallEvent(true));
       } else if (this.ballsRemaining > 0) {
         this.addChild(new SoundInstance("drain"));
@@ -173,9 +167,14 @@ export default class LogicBoard extends BaseEntity implements Entity {
       }
     },
 
-    // TODO: Move this to an objectives logic board
-    rollover: (e: RolloverEvent) => {
-      this.game!.dispatch(scoreEvent(1000));
+    rollover: ({ id }: RolloverEvent) => {
+      if (
+        id === "has-plunged-rollover" &&
+        this.gamePhase === "awaiting-plunge"
+      ) {
+        this.gamePhase = "playing";
+        this.game?.dispatch({ type: "hasPlunged" });
+      }
     },
   };
 
