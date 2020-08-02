@@ -11,30 +11,24 @@ import {
 import { getChildrenFromDoc } from "./svgTableChildren";
 import { fetchSVGDoc } from "./svgUtils";
 
-export async function makeSVGTable(url: string) {
-  const doc = await fetchSVGDoc(url);
+export default class SVGTable extends Table {
+  constructor(doc: Document) {
+    super(getTableBounds(doc), getIncline(doc), getBallDropPosition(doc));
 
-  const table = new Table(
-    getTableBounds(doc),
-    getIncline(doc),
-    getBallDropPosition(doc)
-  );
+    this.addChild(new GeneralIllumination());
 
-  table.addChild(new GeneralIllumination());
+    // Cabinet
+    this.addChild(new Cabinet(this, 6, 4));
 
-  // Cabinet
-  table.addChild(new Cabinet(table, 6, 4));
+    // Backglass
+    this.addChild(new Backglass(this, 6 + 4));
 
-  // Backglass
-  table.addChild(new Backglass(table, 6 + 4));
+    // Playfield
+    this.addChild(new Playfield(this.bounds));
 
-  // Playfield
-  table.addChild(new Playfield(table.bounds));
-
-  // Load everything else up
-  console.time("getChildren");
-  table.addChildren(...getChildrenFromDoc(doc));
-  console.timeEnd("getChildren");
-
-  return table;
+    // Load everything else up
+    console.time("getChildren");
+    this.addChildren(...getChildrenFromDoc(doc));
+    console.timeEnd("getChildren");
+  }
 }

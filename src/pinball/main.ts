@@ -5,7 +5,7 @@ import PauseController from "./controllers/PauseController";
 import { ContactMaterials } from "./playfield/P2Materials";
 import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
-import { makeHockeyTable } from "./tables/HockeyTable";
+import HockeyTable, { loadHockeyDoc } from "./tables/HockeyTable";
 
 declare global {
   interface Window {
@@ -39,7 +39,7 @@ export async function main() {
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
   // game.addEntity(new SimpleTable());
-  game.addEntity(await makeHockeyTable());
+  game.addEntity(new HockeyTable(await loadHockeyDoc()));
 
   // So we don't remove the html from the screen until we've actually hopefully rendered the table
   preloader.destroy();

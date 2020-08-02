@@ -30,7 +30,6 @@ export default class Table extends BaseEntity implements Entity {
     const logicBoard = this.addChild(new LogicBoard(this));
     this.addChildren(
       new CameraController(this),
-
       new NudgeController(),
       new SlowMoController(logicBoard),
       new TiltMeter()
@@ -40,6 +39,8 @@ export default class Table extends BaseEntity implements Entity {
       this.addChild(new MagicBallController());
     }
   }
+
+  makeControllers() {}
 
   onAdd(game: Game) {
     game.dispatch({ type: "envUpdated" });

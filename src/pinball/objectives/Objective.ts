@@ -28,6 +28,6 @@ export default class Objective extends BaseEntity implements Entity {
   }
 
   toString() {
-    return this.complete ? this.constructor.name : "Objective Complete";
+    return this.isComplete ? this.constructor.name : "Objective Complete";
   }
 }
