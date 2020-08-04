@@ -12,7 +12,7 @@ import {
   WorldOptions,
 } from "p2";
 import { ContactInfo } from "../ContactList";
-import CustomBroadphase from "./CustomBroadphase";
+import SpatialHashingBroadphase from "./SpatialHashingBroadphase";
 import CustomNarrowphase from "./CustomNarrowphase";
 import CustomSolver from "./CustomSolver";
 
@@ -45,7 +45,7 @@ interface PrivateOverlapKeeper extends OverlapKeeper {
 
 export default class CustomWorld extends World {
   // Adding types that are missing
-  broadphase!: CustomBroadphase;
+  broadphase!: SpatialHashingBroadphase;
   solver!: CustomSolver;
   overlapKeeper!: PrivateOverlapKeeper;
   disabledBodyCollisionPairs!: Body[];
@@ -56,7 +56,7 @@ export default class CustomWorld extends World {
 
   constructor(options: WorldOptions) {
     super({
-      broadphase: new CustomBroadphase(),
+      broadphase: new SpatialHashingBroadphase(),
       islandSplit: false,
       solver: new CustomSolver(),
       ...options,

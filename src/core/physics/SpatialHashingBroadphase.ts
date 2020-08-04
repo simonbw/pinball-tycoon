@@ -7,7 +7,7 @@ const HUGE_LIMIT = 200;
 const DEFAULT_CELL_SIZE = 6;
 const HUGE: number[] = [];
 
-export default class CustomBroadphase extends SAPBroadphase {
+export default class SpatialHashingBroadphase extends SAPBroadphase {
   dynamicBodies: Set<Body> = new Set();
   kinematicBodies: Set<Body> = new Set();
   hugeBodies: Set<Body> = new Set();
