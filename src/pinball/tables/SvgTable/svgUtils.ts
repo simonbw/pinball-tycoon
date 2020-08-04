@@ -52,7 +52,7 @@ export function parsePointString(s: string): V2d[] {
 
 /** Apply a 2d matrix transform to [x, y] */
 export function transformPoint(x: number, y: number, m: Matrix3): V2d {
-  return V(new Vector2(x, y).applyMatrix3(m).toArray());
+  return V(new Vector2(x, y).applyMatrix3(m).toArray() as [number, number]);
 }
 
 /** Get the angle of a transform matrix */

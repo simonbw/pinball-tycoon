@@ -33,6 +33,7 @@ export default class Playfield extends BaseEntity implements Entity {
       normalMap: TEXTURES.PlasticScuffedNormal,
       clearcoat: 0.5,
       clearcoatRoughness: 0.8,
+      // @ts-ignore
       clearcoatRoughnessMap: TEXTURES.PlasticScuffedRoughness,
     });
 
