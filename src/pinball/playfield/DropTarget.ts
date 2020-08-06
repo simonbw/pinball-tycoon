@@ -12,7 +12,7 @@ import {
 import { scoreEvent } from "../system/LogicBoard";
 import { PositionalSound } from "../sound/PositionalSound";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 
 const UP_SPEED = 15.0;
 const DOWN_SPEED = 100.0;

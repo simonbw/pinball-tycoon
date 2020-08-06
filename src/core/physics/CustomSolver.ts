@@ -6,6 +6,7 @@ import {
   ContactEquation,
   FrictionEquation,
 } from "p2";
+import CustomWorld from "./CustomWorld";
 
 interface EquationExtended extends Equation {
   a: number;
@@ -26,46 +27,18 @@ interface BodyExtended extends Body {
 
 export default class CustomSolver extends GSSolver {
   equations!: EquationExtended[];
-
-  dynamicBodies = new Set<BodyExtended>();
-  kinematicBodies = new Set<BodyExtended>();
-  world!: World;
+  world!: CustomWorld;
 
   constructor() {
     super({ iterations: 1, tolerance: 0 });
   }
 
-  setWorld(world: World) {
+  setWorld(world: CustomWorld) {
     this.world = world;
-    world.on("addBody", ({ body }: { body: BodyExtended }) =>
-      this.onAddBody(body)
-    );
-    world.on("removeBody", ({ body }: { body: BodyExtended }) =>
-      this.onRemoveBody(body)
-    );
-  }
-
-  onAddBody(body: BodyExtended) {
-    if (body.type === Body.DYNAMIC) {
-      this.dynamicBodies.add(body);
-    } else if (body.type === Body.KINEMATIC) {
-      // is static
-    }
-  }
-
-  onRemoveBody(body: BodyExtended) {
-    if (body.type === Body.DYNAMIC) {
-      this.dynamicBodies.delete(body);
-    } else if (body.type === Body.KINEMATIC) {
-      this.kinematicBodies.delete(body);
-    } else {
-      // is static
-    }
   }
 
   prepareBodies() {
-    const bodies = this.world.bodies as BodyExtended[];
-    for (const body of this.dynamicBodies) {
+    for (const body of this.world.dynamicBodies) {
       body.updateSolveMassProperties();
     }
   }
@@ -86,17 +59,15 @@ export default class CustomSolver extends GSSolver {
   }
 
   prepareBodies2() {
-    const bodies = this.world.bodies as BodyExtended[];
-    for (const body of this.dynamicBodies) {
-      body.resetConstraintVelocity();
+    for (const body of this.world.dynamicBodies) {
+      (body as BodyExtended).resetConstraintVelocity();
     }
   }
 
   // Add result to velocity
   postBodies() {
-    const bodies = this.world.bodies as BodyExtended[];
-    for (const body of this.dynamicBodies) {
-      body.addConstraintVelocity();
+    for (const body of this.world.dynamicBodies) {
+      (body as BodyExtended).addConstraintVelocity();
     }
   }
 

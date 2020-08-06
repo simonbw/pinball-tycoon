@@ -2,10 +2,12 @@ import AutoPauser from "../core/AutoPauser";
 import Game from "../core/Game";
 import GraphicsQualityController from "./controllers/GraphicsQualityController";
 import PauseController from "./controllers/PauseController";
-import { ContactMaterials } from "./playfield/P2Materials";
+import { ContactMaterials } from "./P2Materials";
 import { initPostProcessing } from "./postprocessing";
 import Preloader from "./Preloader";
 import HockeyTable, { loadHockeyDoc } from "./tables/HockeyTable";
+import SpaceCadetTable, { loadSpaceCadetDoc } from "./tables/SpaceCadeTable";
+import SimpleTable from "./tables/SimpleTable";
 
 declare global {
   interface Window {
@@ -38,9 +40,23 @@ export async function main() {
   game.addEntity(new AutoPauser());
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
-  // game.addEntity(new SimpleTable());
-  game.addEntity(new HockeyTable(await loadHockeyDoc()));
+  game.addEntity(await makeTable());
 
   // So we don't remove the html from the screen until we've actually hopefully rendered the table
   preloader.destroy();
+}
+
+async function makeTable() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tableName = urlParams.get("table");
+
+  switch (tableName) {
+    case "simple":
+      return new SimpleTable();
+    case "space-cadet":
+      return new SpaceCadetTable(await loadSpaceCadetDoc());
+    case "hockey":
+    default:
+      return new HockeyTable(await loadHockeyDoc());
+  }
 }

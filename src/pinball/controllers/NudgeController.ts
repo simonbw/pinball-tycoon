@@ -36,6 +36,9 @@ export default class NudgeController extends BaseEntity implements Entity {
       case getBinding("NUDGE_UP_RIGHT"):
         this.nudge(V(-power, power));
         break;
+      case getBinding("NUDGE_UP"):
+        this.nudge(V(0, power * 1.5));
+        break;
     }
   }
 

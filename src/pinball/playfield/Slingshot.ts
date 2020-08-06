@@ -5,7 +5,7 @@ import { clamp, radToDeg, lerp, degToRad } from "../../core/util/MathUtil";
 import { V2d } from "../../core/Vector";
 import Ball, { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 import SlingshotMesh from "./SlingshotMesh";
 import Post from "./Post";
 import { PositionalSound } from "../sound/PositionalSound";

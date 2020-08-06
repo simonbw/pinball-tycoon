@@ -1,7 +1,6 @@
-import Objective from "./Objective";
 import Entity from "../../core/entity/Entity";
-import { RolloverEvent } from "../playfield/Rollover";
 import TargetLamp from "../playfield/lamps/TargetLamp";
+import Objective from "./Objective";
 
 export default class SpinnerObjective extends Objective implements Entity {
   constructor(public spinsRemaining: number = 100) {

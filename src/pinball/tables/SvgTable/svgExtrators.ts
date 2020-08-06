@@ -3,12 +3,12 @@ import Entity from "../../../core/entity/Entity";
 import { degToRad } from "../../../core/util/MathUtil";
 import OverheadLight from "../../environment/OverheadLight";
 import Bumper from "../../playfield/Bumper";
-import Defender from "../../playfield/Defender";
 import Drain from "../../playfield/Drain";
 import Flipper from "../../playfield/Flipper";
 import Gate from "../../playfield/Gate";
-import Goal from "../../playfield/Goal";
-import Goalie from "../../playfield/Goalie";
+import Defender from "../../playfield/hockey/Defender";
+import Goal from "../../playfield/hockey/Goal";
+import Goalie from "../../playfield/hockey/Goalie";
 import BallRemainingLamp from "../../playfield/lamps/BallRemainingLamp";
 import BallSaveLamp from "../../playfield/lamps/BallSaveLamp";
 import { BULB_GEOMETRY_ARROW } from "../../playfield/lamps/LampShapes";
@@ -274,8 +274,18 @@ export function getExtractors() {
         const angle = getTransformAngle(m);
         const x = left + width / 2;
         const y = top + height / 2;
+        const captureDuration = getNumberAttribute(
+          node,
+          "data-capture-duration"
+        );
         // TODO: transform width & height
-        return new Scoop(transformPoint(x, y, m), angle, width * w, height * h);
+        return new Scoop(
+          transformPoint(x, y, m),
+          angle,
+          width * w,
+          height * h,
+          captureDuration
+        );
       }
     },
 
@@ -373,6 +383,7 @@ export function getExtractors() {
         const angleSpread = getAngleAttribute(node, "data-angle-spread");
         const minStrength = getNumberAttribute(node, "data-min-strength");
         const maxStrength = getNumberAttribute(node, "data-max-strength");
+        const triggerSpeed = getNumberAttribute(node, "data-trigger-speed");
         const color = new Color(node.style.stroke).getHex();
         return new Slingshot(a, b, {
           middleOffset,
@@ -380,6 +391,7 @@ export function getExtractors() {
           minStrength,
           maxStrength,
           color,
+          triggerSpeed,
         });
       }
     },

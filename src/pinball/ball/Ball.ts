@@ -7,7 +7,7 @@ import { clamp } from "../../core/util/MathUtil";
 import { V, V2d } from "../../core/Vector";
 import { CollisionGroups } from "../Collision";
 import { NudgeEvent } from "../controllers/NudgeController";
-import { P2Materials } from "../playfield/P2Materials";
+import { P2Materials } from "../P2Materials";
 import Table from "../tables/Table";
 import {
   BallCollisionInfo,

@@ -35,7 +35,7 @@ export default class ObjectivesSystem extends BaseEntity implements Entity {
   async objectivesLoop() {
     this.looping = true;
     while (this.game && this.looping) {
-      this.currentObjective = this.addChild(makeRandomObjective());
+      this.currentObjective = this.addChild(this.getNextObjective());
       this.game.dispatch(newObjectiveEvent(this.currentObjective));
       await this.currentObjective.waitTillComplete();
       this.completedObjectives.push(this.currentObjective);
@@ -51,6 +51,10 @@ export default class ObjectivesSystem extends BaseEntity implements Entity {
     this.clearTimers();
   }
 
+  getNextObjective(): Objective {
+    return new HitBumperObjective(5);
+  }
+
   handlers = {
     newBall: async () => {
       this.stopLooping();
@@ -62,22 +66,4 @@ export default class ObjectivesSystem extends BaseEntity implements Entity {
       this.objectivesLoop();
     },
   };
-}
-
-function makeRandomObjective(): Objective {
-  switch (rInteger(0, 6)) {
-    case 0:
-      return new HitBumperObjective();
-    case 1:
-      return new InlanesObjective();
-    case 2:
-      return new ScoreGoalsObjective(1);
-    case 3:
-      return new TargetBankObjective();
-    case 4:
-      return new PassLoopObjective();
-    case 5:
-    default:
-      return new SpinnerObjective();
-  }
 }

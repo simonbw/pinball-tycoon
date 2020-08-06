@@ -16,7 +16,7 @@ import {
 import Reflector from "../graphics/Reflector";
 import { TEXTURES } from "../graphics/textures";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 
 const RUBBER_MATERIAL = new MeshStandardMaterial({
   color: 0x070707,

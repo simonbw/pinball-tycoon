@@ -115,8 +115,8 @@ export default class SpatialHashingBroadphase extends SAPBroadphase {
 
     const lowX = Math.floor(aabb.lowerBound[0] / this.cellSize);
     const lowY = Math.floor(aabb.lowerBound[1] / this.cellSize);
-    const highX = Math.ceil(aabb.upperBound[0] / this.cellSize);
-    const highY = Math.ceil(aabb.upperBound[1] / this.cellSize);
+    const highX = Math.floor(aabb.upperBound[0] / this.cellSize);
+    const highY = Math.floor(aabb.upperBound[1] / this.cellSize);
 
     // Check for huge
     if (
@@ -130,8 +130,8 @@ export default class SpatialHashingBroadphase extends SAPBroadphase {
       return HUGE;
     }
 
-    for (let x = lowX; x < highX; x++) {
-      for (let y = lowY; y < highY; y++) {
+    for (let x = lowX; x <= highX; x++) {
+      for (let y = lowY; y <= highY; y++) {
         result.push(this.xyToCell(x, y));
       }
     }

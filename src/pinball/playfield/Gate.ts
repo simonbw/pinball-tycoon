@@ -11,7 +11,7 @@ import {
 } from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "../Collision";
 import GateMesh from "./GateMesh";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 
 export default class Gate extends BaseEntity
   implements Entity, WithBallCollisionInfo {

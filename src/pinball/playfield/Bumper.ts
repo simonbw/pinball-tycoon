@@ -8,7 +8,7 @@ import Ball, { isBall } from "../ball/Ball";
 import { scoreEvent } from "../system/LogicBoard";
 import { PositionalSound } from "../sound/PositionalSound";
 import { CollisionGroups } from "../Collision";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 import BumperMesh from "./BumperMesh";
 import { rNormal } from "../../core/util/Random";
 

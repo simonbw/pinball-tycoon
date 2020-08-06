@@ -6,7 +6,7 @@ import Entity from "../../../core/entity/Entity";
 import { V2d } from "../../../core/Vector";
 import { CollisionGroups } from "../../Collision";
 import { makeOutlineShape } from "../../graphics/OutlineShape";
-import { P2Materials } from "../P2Materials";
+import { P2Materials } from "../../P2Materials";
 import {
   WithBallCollisionInfo,
   BallCollisionInfo,

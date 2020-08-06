@@ -18,7 +18,7 @@ import {
 } from "../ball/BallCollisionInfo";
 import { CollisionGroups } from "../Collision";
 import FlipperSoundController from "../sound/FlipperSoundController";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 
 const MATERIAL = new MeshStandardMaterial({
   color: 0x0000cc,

@@ -11,7 +11,11 @@ import { Rect } from "../util/Rect";
  * The main boundary of the game, makes sure the ball can't possibly be in weird places.
  */
 export default class Playfield extends BaseEntity implements Entity {
+  tags = ["playfield"];
+  id = "playfield";
+
   material: MeshPhysicalMaterial;
+  onEmissive: number = 0x111111;
   constructor({ top, bottom, left, right }: Rect) {
     super();
 
@@ -28,14 +32,12 @@ export default class Playfield extends BaseEntity implements Entity {
 
     this.material = new MeshPhysicalMaterial({
       color: 0xffffff,
-      map: TEXTURES.HockeyPlayfield,
       roughness: 0.8,
       normalMap: TEXTURES.PlasticScuffedNormal,
       clearcoat: 0.5,
       clearcoatRoughness: 0.8,
-      // @ts-ignore
-      clearcoatRoughnessMap: TEXTURES.PlasticScuffedRoughness,
     });
+    this.material.clearcoatRoughnessMap = TEXTURES.PlasticScuffedRoughness;
 
     const width = right - left;
     const height = bottom - top;
@@ -46,7 +48,7 @@ export default class Playfield extends BaseEntity implements Entity {
     const [cx, cy] = V(left, top).iadd([right, bottom]).imul(0.5);
     this.mesh = new Mesh(geometry, this.material);
     this.mesh.position.set(cx, cy, 0);
-    this.mesh.castShadow = true;
+    this.mesh.castShadow = false;
     this.mesh.receiveShadow = true;
 
     this.disposeables.push(this.material, geometry);
@@ -54,14 +56,13 @@ export default class Playfield extends BaseEntity implements Entity {
 
   handlers = {
     turnOn: async () => {
-      const onEmissive = 0x111126;
       for (let i = 0; i < 2; i++) {
-        this.material.emissive.set(onEmissive).multiplyScalar(0.5);
+        this.material.emissive.set(this.onEmissive).multiplyScalar(0.5);
         await this.wait(0.04);
         this.material.emissive.set(0x0);
         await this.wait(0.1);
       }
-      this.material.emissive.set(onEmissive);
+      this.material.emissive.set(this.onEmissive);
     },
   };
 }

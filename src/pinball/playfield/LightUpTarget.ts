@@ -12,7 +12,7 @@ import {
 import { CollisionGroups } from "../Collision";
 import { PositionalSound } from "../sound/PositionalSound";
 import { scoreEvent } from "../system/LogicBoard";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 
 export default class LightUpTarget extends BaseEntity
   implements Entity, WithBallCollisionInfo {

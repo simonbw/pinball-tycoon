@@ -16,8 +16,10 @@ interface ScoopOptions {
   width?: number;
   depth?: number;
   captureDuration?: number;
-  getReleaseForce?: () => V2d;
   soundName?: SoundName;
+  getReleaseForce?: () => V2d;
+  onScoop?: () => void;
+  onRelease?: () => voi;
 }
 
 /** Captures a ball for a duration then spits it back out */

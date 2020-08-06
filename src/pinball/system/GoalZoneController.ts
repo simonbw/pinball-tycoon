@@ -1,8 +1,8 @@
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
-import Defender from "../playfield/Defender";
-import Goal from "../playfield/Goal";
-import Goalie from "../playfield/Goalie";
+import Defender from "../playfield/hockey/Defender";
+import Goal from "../playfield/hockey/Goal";
+import Goalie from "../playfield/hockey/Goalie";
 import { scoreEvent } from "./LogicBoard";
 import { SoundInstance } from "../sound/SoundInstance";
 import { clamp } from "../../core/util/MathUtil";

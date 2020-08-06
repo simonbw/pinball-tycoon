@@ -11,7 +11,7 @@ import {
 import { CollisionGroups } from "../Collision";
 import { PositionalSound } from "../sound/PositionalSound";
 import { getBinding } from "../ui/KeyboardBindings";
-import { P2Materials } from "./P2Materials";
+import { P2Materials } from "../P2Materials";
 import PlungerMesh from "./PlungerMesh";
 
 const WIDTH = 2;
