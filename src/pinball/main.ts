@@ -8,6 +8,7 @@ import Preloader from "./Preloader";
 import HockeyTable, { loadHockeyDoc } from "./tables/HockeyTable";
 import SpaceCadetTable, { loadSpaceCadetDoc } from "./tables/SpaceCadeTable";
 import SimpleTable from "./tables/SimpleTable";
+import DebugRenderer from "../core/graphics/DebugRenderer";
 
 declare global {
   interface Window {
@@ -41,7 +42,7 @@ export async function main() {
   game.addEntity(new PauseController());
   game.addEntity(new GraphicsQualityController());
   game.addEntity(await makeTable());
-
+  game.addEntity(new DebugRenderer());
   // So we don't remove the html from the screen until we've actually hopefully rendered the table
   preloader.destroy();
 }

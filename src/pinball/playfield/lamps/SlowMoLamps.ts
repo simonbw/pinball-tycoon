@@ -40,6 +40,7 @@ export default class SlowMoLamps extends BaseEntity implements Entity {
     const nLamps = this.lamps.length;
     for (let i = 0; i < nLamps; i++) {
       const lamp = this.lamps[i];
+      lamp.clearTimers();
       const min = i / nLamps;
       const lampPercent = clamp((percent - min) * nLamps);
       lamp.setBrightnessImmediate(smoothstep(lampPercent) ** 0.3);

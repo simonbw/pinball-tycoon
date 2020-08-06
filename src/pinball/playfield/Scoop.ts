@@ -3,7 +3,7 @@ import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { SoundName } from "../../core/resources/sounds";
 import { degToRad } from "../../core/util/MathUtil";
-import { rNormal } from "../../core/util/Random";
+import { rNormal, rUniform } from "../../core/util/Random";
 import { V, V2d } from "../../core/Vector";
 import { isBall } from "../ball/Ball";
 import { CollisionGroups } from "../Collision";
@@ -19,7 +19,7 @@ interface ScoopOptions {
   soundName?: SoundName;
   getReleaseForce?: () => V2d;
   onScoop?: () => void;
-  onRelease?: () => voi;
+  onRelease?: () => void;
 }
 
 /** Captures a ball for a duration then spits it back out */
@@ -50,7 +50,9 @@ export default class Scoop extends BaseEntity implements Entity {
     if (this.getReleaseForce) {
       return this.getReleaseForce();
     } else {
-      return V(0, 400).irotate(this.body!.angle + rNormal(0, degToRad(5)));
+      return V(0, rUniform(400, 500)).irotate(
+        this.body!.angle + rNormal(0, degToRad(0))
+      );
     }
   }
 

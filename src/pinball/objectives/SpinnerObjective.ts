@@ -17,7 +17,9 @@ export default class SpinnerObjective extends Objective implements Entity {
   };
 
   getLamps(): TargetLamp[] {
-    return [this.game!.entities.byId("spinner-target-lamp")! as TargetLamp];
+    return [
+      this.game!.entities.byId("spinner-target-lamp")! as TargetLamp,
+    ].filter((x) => x);
   }
 
   onAdd() {

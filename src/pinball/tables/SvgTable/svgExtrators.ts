@@ -41,6 +41,7 @@ import {
   pathStringToShape,
   transformPoint,
 } from "./svgUtils";
+import ToggleGroup from "../../system/ToggleGroup";
 
 export type Extractor = (
   node: SVGElement,
@@ -83,7 +84,7 @@ export function getExtractors() {
     },
 
     // Rollover
-    (node, m) => {
+    (node, m, nodeToEntity) => {
       if (node.matches("circle.rollover")) {
         const x = getNumberProp(node.getAttribute("cx"));
         const y = getNumberProp(node.getAttribute("cy"));
@@ -93,7 +94,14 @@ export function getExtractors() {
         const color = new Color(node.style.fill).getHex();
         const score = getNumberAttribute(node, "data-score");
 
-        return new Rollover(position, r, { direction, color, score });
+        const rollover = new Rollover(position, r, { direction, color, score });
+
+        const maybeBank = nodeToEntity.get(node.parentElement!);
+        if (maybeBank instanceof ToggleGroup) {
+          maybeBank.addRollover(rollover);
+        } else {
+          return rollover;
+        }
       }
     },
 
@@ -229,9 +237,15 @@ export function getExtractors() {
     },
 
     // target lamps
-    (node, m) => {
+    (node) => {
       if (node.matches(`.target-bank`)) {
         return new TargetBank();
+      }
+    },
+
+    (node) => {
+      if (node.matches(`.toggle-lights`)) {
+        return new ToggleGroup();
       }
     },
 

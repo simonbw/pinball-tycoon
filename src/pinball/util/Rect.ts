@@ -56,6 +56,10 @@ export class Rect {
     this.center = V(this.left + this.width / 2, this.top + this.height / 2);
   }
 
+  clone() {
+    return new Rect(this.top, this.bottom, this.left, this.right);
+  }
+
   static fromCorners(
     [left, top]: [number, number],
     [right, bottom]: [number, number]

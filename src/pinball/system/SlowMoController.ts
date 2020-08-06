@@ -11,7 +11,7 @@ const RAMP_UP_SPEED = 0.005;
 const COOLDOWN_POINT = 0.8;
 
 // const DRAIN_SPEED = 0.5;
-const DRAIN_SPEED = 0.5;
+const DRAIN_SPEED = 0.005;
 const FILL_SPEED = 0.2;
 
 export interface SlowMoRemainingEvent {
@@ -47,7 +47,7 @@ export default class SlowMoController extends BaseEntity implements Entity {
   }
 
   handlers = {
-    newBall: () => {
+    newBall: async () => {
       this.remaining = 1.0;
       this.cooldown = false;
       this.game!.dispatch(remainingEvent(this.remaining));

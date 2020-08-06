@@ -37,7 +37,8 @@ const DEFAULT_BINDINGS = {
   MAGIC_RIGHT: K("ArrowRight"),
   MAGIC_DOWN: K("ArrowDown"),
 
-  TOGGLE_STATS: K("Backquote"),
+  TOGGLE_STATS: K("Tab"),
+  TOGGLE_DEBUG_DRAWING: K("Backquote"),
 };
 
 let bindings = { ...DEFAULT_BINDINGS };

@@ -22,7 +22,7 @@ export default class HitBumperObjective extends Objective implements Entity {
       this.game!.entities.byId("bumper-target-lamp-2")! as TargetLamp,
       this.game!.entities.byId("top-bumper-target-lamp")! as TargetLamp,
       this.game!.entities.byId("pass-bumper-target-lamp")! as TargetLamp,
-    ];
+    ].filter((x) => x);
   }
 
   onAdd() {

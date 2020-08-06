@@ -3,7 +3,7 @@ import bumperModel from "../../../resources/models/bumperModel.glb";
 import BaseEntity from "../../core/entity/BaseEntity";
 import Entity from "../../core/entity/Entity";
 import { MODELS } from "../../core/resources/models";
-import { clamp } from "../../core/util/MathUtil";
+import { clamp, lerp } from "../../core/util/MathUtil";
 import Bumper from "./Bumper";
 
 const ANIMATION_DURATION = 0.25;
@@ -16,7 +16,7 @@ export default class BumperMesh extends BaseEntity implements Entity {
     this.mesh = MODELS.get(bumperModel)!.clone();
     this.mesh.rotateX(-Math.PI / 2);
     this.mesh.position.set(x, y, -size);
-    this.mesh.scale.set(size, size, size);
+    this.mesh.scale.set(size, lerp(size, 2.0, 0.3), size);
 
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = false;

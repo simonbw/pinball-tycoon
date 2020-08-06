@@ -166,9 +166,9 @@ export default class LogicBoard extends BaseEntity implements Entity {
       }
     },
 
-    rollover: ({ id }: RolloverEvent) => {
+    rollover: ({ rollover }: RolloverEvent) => {
       if (
-        id === "has-plunged-rollover" &&
+        rollover.id === "has-plunged-rollover" &&
         this.gamePhase === "awaiting-plunge"
       ) {
         this.gamePhase = "playing";
